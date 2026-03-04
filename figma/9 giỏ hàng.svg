@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="#F8FAFC" />
+
+  <g id="Header">
+    <rect width="1440" height="80" fill="#FFFFFF" filter="url(#shadow)" />
+    
+    <g id="Logo_Header" style="cursor: pointer;">
+      <circle cx="80" cy="40" r="16" fill="#2563EB" />
+      <circle cx="96" cy="40" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="125" y="48" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+
+    <g id="User_Profile" style="cursor: pointer;">
+      <circle cx="1190" cy="40" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="1190" cy="35" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M1178 48 C1178 41 1202 41 1202 48" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <text x="1220" y="46" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      <path d="M1305 37 L1312 44 L1319 37" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <text x="130" y="150" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Giỏ hàng của bạn</text>
+
+  <g id="Left_Cart_Items">
+    
+    <rect x="130" y="180" width="800" height="60" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+    <g id="Select_All" style="cursor: pointer;">
+      <rect x="150" y="200" width="20" height="20" rx="4" fill="#FBBF24" />
+      <path d="M154 210 L158 214 L166 204" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="185" y="215" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Chọn tất cả (2 sản phẩm)</text>
+    </g>
+
+    <g id="Item_1" transform="translate(0, 260)">
+      <rect x="130" y="0" width="800" height="180" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+      
+      <rect x="150" y="80" width="20" height="20" rx="4" fill="#FBBF24" style="cursor: pointer;" />
+      <path d="M154 90 L158 94 L166 84" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <rect x="190" y="20" width="105" height="140" rx="8" fill="#FCE7F3" />
+      
+      <text x="320" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
+      
+      <g id="Delete_Icon_1" style="cursor: pointer;">
+        <path d="M895 38 L907 38 M899 38 V35 C899 34 900 33 901 33 L901 33 C902 33 903 34 903 35 V38 M896 38 V48 C896 49 897 50 898 50 L904 50 C905 50 906 49 906 48 V38" stroke="#94A3B8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <text x="320" y="75" font-family="Arial, sans-serif" font-size="16" fill="#475569">Màu sắc: Đen - Size: M</text>
+      
+      <text x="320" y="105" font-family="Arial, sans-serif" font-size="16" fill="#475569">Đơn giá: <tspan font-weight="bold" fill="#0F172A">399.000đ</tspan></text>
+
+      <text x="320" y="145" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Số lượng:</text>
+      <rect x="405" y="123" width="110" height="36" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+      <text x="425" y="147" font-family="Arial, sans-serif" font-size="20" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">-</text>
+      <text x="460" y="146" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A" text-anchor="middle">1</text>
+      <text x="495" y="148" font-family="Arial, sans-serif" font-size="18" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">+</text>
+
+      <text x="910" y="145" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#EF4444" text-anchor="end">Số tiền: 399.000đ</text>
+    </g>
+
+    <g id="Item_2" transform="translate(0, 460)">
+      <rect x="130" y="0" width="800" height="180" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+      
+      <rect x="150" y="80" width="20" height="20" rx="4" fill="#FBBF24" style="cursor: pointer;" />
+      <path d="M154 90 L158 94 L166 84" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <rect x="190" y="20" width="105" height="140" rx="8" fill="#FFE4E6" />
+      
+      <text x="320" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Quần Jeans Nam Regular Can Túi</text>
+      
+      <g id="Delete_Icon_2" style="cursor: pointer;">
+        <path d="M895 38 L907 38 M899 38 V35 C899 34 900 33 901 33 L901 33 C902 33 903 34 903 35 V38 M896 38 V48 C896 49 897 50 898 50 L904 50 C905 50 906 49 906 48 V38" stroke="#94A3B8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <text x="320" y="75" font-family="Arial, sans-serif" font-size="16" fill="#475569">Màu sắc: Xanh chàm - Size: 28</text>
+      
+      <text x="320" y="105" font-family="Arial, sans-serif" font-size="16" fill="#475569">Đơn giá: <tspan font-weight="bold" fill="#0F172A">449.000đ</tspan></text>
+
+      <text x="320" y="145" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Số lượng:</text>
+      <rect x="405" y="123" width="110" height="36" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+      <text x="425" y="147" font-family="Arial, sans-serif" font-size="20" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">-</text>
+      <text x="460" y="146" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A" text-anchor="middle">2</text>
+      <text x="495" y="148" font-family="Arial, sans-serif" font-size="18" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">+</text>
+
+      <text x="910" y="145" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#EF4444" text-anchor="end">Số tiền: 898.000đ</text>
+    </g>
+  </g>
+
+  <g id="Right_Order_Summary">
+    <rect x="960" y="180" width="350" height="150" rx="16" fill="#FFFFFF" filter="url(#shadow)" />
+    
+    <text x="990" y="230" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Tổng tiền</text>
+    <text x="1280" y="230" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#EF4444" text-anchor="end">1.297.000đ</text>
+
+    <g id="Button_Place_Order" style="cursor: pointer;">
+      <rect x="990" y="255" width="290" height="52" rx="26" fill="#FFB800" />
+      <text x="1120" y="287" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A" text-anchor="middle">Đặt hàng</text>
+      <path d="M1170 281 L1178 281 M1174 277 L1178 281 L1174 285" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+</svg>

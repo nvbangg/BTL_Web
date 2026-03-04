@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="50%" stop-color="#EFF6FF" />
+      <stop offset="100%" stop-color="#DBEAFE" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2563EB" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <g id="Background_Page">
+    <rect width="1440" height="1024" fill="url(#heroGradient)" />
+    <circle cx="150" cy="350" r="300" fill="#BFDBFE" opacity="0.4" />
+    <circle cx="1300" cy="650" r="400" fill="#93C5FD" opacity="0.3" />
+    <circle cx="850" cy="200" r="150" fill="#DBEAFE" opacity="0.6" />
+  </g>
+
+  <g id="Header">
+    <rect width="1440" height="80" fill="none" />
+    
+    <g id="Logo_Header" style="cursor: pointer;">
+      <circle cx="80" cy="40" r="16" fill="#2563EB" />
+      <circle cx="96" cy="40" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="125" y="48" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+
+    <g id="User_Profile" style="cursor: pointer;">
+      <circle cx="1190" cy="40" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="1190" cy="35" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M1178 48 C1178 41 1202 41 1202 48" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <text x="1220" y="46" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      <path d="M1305 37 L1312 44 L1319 37" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <g id="Product_Detail_Content">
+    
+    <g id="Left_Images_Column">
+      <rect x="130" y="140" width="570" height="730" rx="16" fill="#FCE7F3" />
+      
+      <g id="Thumbnails_Carousel" transform="translate(0, 890)">
+        <g id="Arrow_Left" style="cursor: pointer;">
+          <circle cx="155" cy="45" r="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M160 38 L150 45 L160 52" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+
+        <rect x="195" y="0" width="90" height="90" rx="12" fill="#FCE7F3" stroke="#2563EB" stroke-width="2" style="cursor: pointer;" />
+        <rect x="305" y="0" width="90" height="90" rx="12" fill="#FFE4E6" style="cursor: pointer;" />
+        <rect x="415" y="0" width="90" height="90" rx="12" fill="#FBCFE8" style="cursor: pointer;" />
+        <rect x="525" y="0" width="90" height="90" rx="12" fill="#F1F5F9" style="cursor: pointer;" />
+
+        <g id="Arrow_Right" style="cursor: pointer;">
+          <circle cx="675" cy="45" r="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M670 38 L680 45 L670 52" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
+    </g>
+
+    <g id="Right_Details_Column">
+      <rect x="740" y="140" width="570" height="840" rx="24" fill="#FFFFFF" filter="url(#shadow)" />
+
+      <text x="790" y="220" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
+      
+      <text x="790" y="280" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#EF4444">399.000đ</text>
+      <text x="1260" y="275" font-family="Arial, sans-serif" font-size="16" fill="#64748B" text-anchor="end">Đã bán: 1.2k</text>
+
+      <line x1="790" y1="320" x2="1260" y2="320" stroke="#E2E8F0" stroke-width="1.5" />
+
+      <g id="Description_Section">
+        <text x="790" y="370" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Mô tả sản phẩm</text>
+        
+        <text x="790" y="410" font-family="Arial, sans-serif" font-size="16" fill="#475569">
+          <tspan font-weight="bold" fill="#0F172A">Danh mục:</tspan> Áo sơ mi
+        </text>
+        <text x="790" y="440" font-family="Arial, sans-serif" font-size="16" fill="#475569">
+          <tspan font-weight="bold" fill="#0F172A">Giới tính:</tspan> Nam
+        </text>
+        
+        <text x="790" y="470" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Chi tiết:</text>
+        
+        <text x="790" y="500" font-family="Arial, sans-serif" font-size="16" fill="#475569">Áo sơ mi form rộng thoải mái, thiết kế vạt áo bất đối xứng độc</text>
+        <text x="790" y="525" font-family="Arial, sans-serif" font-size="16" fill="#475569">đáo. Chất liệu vải cotton cao cấp thoáng mát, thấm hút mồ hôi</text>
+        <text x="790" y="550" font-family="Arial, sans-serif" font-size="16" fill="#475569">tốt, dễ dàng phối với nhiều trang phục dạo phố.</text>
+      </g>
+
+      <line x1="790" y1="590" x2="1260" y2="590" stroke="#E2E8F0" stroke-width="1.5" />
+
+      <g id="Color_Selection">
+        <text x="790" y="640" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Màu sắc:</text>
+        
+        <g style="cursor: pointer;">
+          <rect x="880" y="615" width="70" height="36" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+          <text x="915" y="638" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2563EB" text-anchor="middle">Đen</text>
+        </g>
+        
+        <g style="cursor: pointer;">
+          <rect x="965" y="615" width="70" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="1000" y="638" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Trắng</text>
+        </g>
+
+        <g style="cursor: pointer;">
+          <rect x="1050" y="615" width="70" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="1085" y="638" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Be</text>
+        </g>
+      </g>
+
+      <g id="Size_Selection">
+        <text x="790" y="720" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Size:</text>
+        
+        <g style="cursor: pointer;">
+          <rect x="880" y="695" width="50" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="905" y="718" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">S</text>
+        </g>
+
+        <g style="cursor: pointer;">
+          <rect x="945" y="695" width="50" height="36" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+          <text x="970" y="718" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2563EB" text-anchor="middle">M</text>
+        </g>
+
+        <g style="cursor: pointer;">
+          <rect x="1010" y="695" width="50" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="1035" y="718" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">L</text>
+        </g>
+
+        <g style="cursor: pointer;">
+          <rect x="1075" y="695" width="50" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="1100" y="718" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">XL</text>
+        </g>
+      </g>
+
+      <g id="Purchase_Row">
+        <text x="790" y="810" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Số lượng:</text>
+        
+        <rect x="885" y="780" width="130" height="48" rx="24" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+        <text x="915" y="808" font-family="Arial, sans-serif" font-size="22" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">-</text>
+        <text x="950" y="807" font-family="Arial, sans-serif" font-size="16" fill="#0F172A" text-anchor="middle">1</text>
+        <text x="985" y="809" font-family="Arial, sans-serif" font-size="20" fill="#0F172A" text-anchor="middle" style="cursor: pointer;">+</text>
+
+        <g id="Button_Add_To_Cart" style="cursor: pointer;">
+          <rect x="1035" y="780" width="225" height="48" rx="24" fill="#FFB800" />
+          
+          <g transform="translate(1060, 792)">
+            <circle cx="7" cy="18" r="1.5" fill="#0F172A" />
+            <circle cx="16" cy="18" r="1.5" fill="#0F172A" />
+            <path d="M1 2 L4 2 L6.5 13.5 C6.7 14.3 7.4 15 8.3 15 L17 15 C17.8 15 18.5 14.4 18.7 13.6 L21 5 L5 5" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          
+          <text x="1165" y="808" font-family="Arial, sans-serif" font-size="16" font-weight="500" fill="#0F172A" text-anchor="middle">Thêm vào giỏ hàng</text>
+        </g>
+      </g>
+
+    </g>
+  </g>
+</svg>

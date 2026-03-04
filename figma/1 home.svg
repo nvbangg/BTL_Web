@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="50%" stop-color="#EFF6FF" />
+      <stop offset="100%" stop-color="#DBEAFE" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2563EB" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#heroGradient)" />
+
+  <circle cx="150" cy="350" r="300" fill="#BFDBFE" opacity="0.4" />
+  <circle cx="1300" cy="650" r="400" fill="#93C5FD" opacity="0.3" />
+  <circle cx="850" cy="200" r="150" fill="#DBEAFE" opacity="0.6" />
+
+  <g id="Header">
+    <rect width="1440" height="80" fill="none" />
+    
+    <g id="Logo">
+      <circle cx="80" cy="40" r="16" fill="#2563EB" />
+      <circle cx="96" cy="40" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="125" y="48" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+
+    <g id="Button_Login" style="cursor: pointer;">
+      <circle cx="1230" cy="40" r="14" stroke="#0F172A" stroke-width="2" fill="none" />
+      <circle cx="1230" cy="35" r="5" stroke="#0F172A" stroke-width="2" fill="none" />
+      <path d="M1220.5 48.5 C1220.5 43.5 1239.5 43.5 1239.5 48.5" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      
+      <text x="1255" y="47" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#004085">Đăng nhập</text>
+    </g>
+  </g>
+  <g id="Hero_Section">
+    <text x="720" y="380" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#0F172A" text-anchor="middle">Chào mừng đến với Fashon Shop</text>
+    
+    <text x="720" y="440" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">Nơi phong cách của bạn được khẳng định. Khám phá các bộ sưu tập thời trang</text>
+    <text x="720" y="475" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">mới nhất, chất lượng cao với mức giá vô cùng hợp lý.</text>
+    
+    <g id="CTA_Button" style="cursor: pointer;">
+      <rect x="580" y="530" width="280" height="64" rx="32" fill="#2563EB" filter="url(#shadow)" />
+      <text x="720" y="570" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Xem các mặt hàng</text>
+    </g>
+  </g>
+  <g id="Footer">
+    <rect y="824" width="1440" height="200" fill="#1E293B" />
+    
+    <g id="Footer_Brand">
+      <text x="120" y="880" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">Fashon Shop</text>
+      <text x="120" y="920" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">© 2026 Bản quyền thuộc về Fashon Shop.</text>
+      <text x="120" y="950" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">Phát triển bởi: Nguyễn Văn Bằng</text>
+    </g>
+
+    <g id="Footer_Contact">
+      <text x="550" y="880" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">Thông tin liên hệ</text>
+      <text x="550" y="920" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">📍 Địa chỉ: Học viện Công nghệ Bưu chính Viễn thông, Hà Nội</text>
+      <text x="550" y="950" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">📞 Điện thoại: 0987.654.321</text>
+      <text x="550" y="980" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">✉️ Email: contact@fashonshop.vn</text>
+    </g>
+
+    <g id="Footer_Social">
+      <text x="1050" y="880" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">Kết nối với chúng tôi</text>
+      <text x="1050" y="920" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">💬 Zalo: 0987.654.321</text>
+      <text x="1050" y="950" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">🌐 Messenger: m.me/fashonshop.vn</text>
+    </g>
+  </g>
+  </svg>

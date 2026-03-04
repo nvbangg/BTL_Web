@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="50%" stop-color="#EFF6FF" />
+      <stop offset="100%" stop-color="#DBEAFE" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2563EB" flood-opacity="0.15"/>
+    </filter>
+    <filter id="toastShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#10B981" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <g id="Background_Page">
+    <rect width="1440" height="1024" fill="url(#heroGradient)" />
+    <circle cx="150" cy="350" r="300" fill="#BFDBFE" opacity="0.4" />
+    <circle cx="1300" cy="650" r="400" fill="#93C5FD" opacity="0.3" />
+    <circle cx="850" cy="200" r="150" fill="#DBEAFE" opacity="0.6" />
+  </g>
+
+  <g id="Header">
+    <rect width="1440" height="80" fill="none" />
+    
+    <g id="Logo_Header" style="cursor: pointer;">
+      <circle cx="80" cy="40" r="16" fill="#2563EB" />
+      <circle cx="96" cy="40" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="125" y="48" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+
+    <g id="User_Profile" style="cursor: pointer;">
+      <circle cx="1190" cy="40" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="1190" cy="35" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M1178 48 C1178 41 1202 41 1202 48" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      
+      <text x="1220" y="46" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      
+      <path d="M1305 44 L1312 37 L1319 44" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <g id="Search_Page_Content">
+    
+    <g id="Search_And_Filters_Row">
+      <rect x="130" y="140" width="1040" height="60" rx="30" fill="#FFFFFF" filter="url(#shadow)" />
+      <circle cx="170" cy="170" r="8" stroke="#64748B" stroke-width="2" fill="none" />
+      <path d="M176 176 L182 182" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+      <text x="200" y="176" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Tìm kiếm quần áo</text>
+      
+      <rect x="1040" y="146" width="120" height="48" rx="24" fill="#2563EB" style="cursor: pointer;" />
+      <text x="1100" y="175" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Tìm kiếm</text>
+
+      <g id="Button_Filter" style="cursor: pointer;">
+        <rect x="1190" y="140" width="120" height="60" rx="30" fill="#E2E8F0" />
+        <path d="M1215 162 L1235 162 L1227 172 L1227 180 L1223 177 L1223 172 Z" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+        <text x="1245" y="176" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">Lọc</text>
+      </g>
+    </g>
+
+    <g id="Sorting_Row">
+      <text x="130" y="260" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Sắp xếp theo:</text>
+      
+      <g id="Sort_Popular" style="cursor: pointer;">
+        <rect x="270" y="235" width="90" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="315" y="258" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Nổi bật</text>
+      </g>
+      
+      <g id="Sort_BestSeller" style="cursor: pointer;">
+        <rect x="375" y="235" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="425" y="258" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Bán chạy</text>
+      </g>
+
+      <g id="Sort_Newest" style="cursor: pointer;">
+        <rect x="490" y="235" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="540" y="258" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Mới nhất</text>
+      </g>
+
+      <g id="Sort_Price" style="cursor: pointer;">
+        <rect x="605" y="235" width="80" height="36" rx="18" fill="#F1F5F9" />
+        <text x="635" y="258" font-family="Arial, sans-serif" font-size="15" fill="#0F172A" text-anchor="middle">Giá</text>
+        <path d="M652 258 L657 253 L662 258" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <g id="Product_Row_1">
+      <g id="Card_1">
+        <rect x="130" y="300" width="280" height="360" rx="12" fill="#FCE7F3" />
+        <text x="130" y="690" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">399.000đ</text>
+        <text x="130" y="720" font-family="Arial, sans-serif" font-size="15" fill="#475569">Áo Sơ-mi Ngắn Tay asymmetrical...</text>
+      </g>
+      
+      <g id="Card_2">
+        <rect x="430" y="300" width="280" height="360" rx="12" fill="#FFE4E6" />
+        <text x="430" y="690" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">449.000đ</text>
+        <text x="430" y="720" font-family="Arial, sans-serif" font-size="15" fill="#475569">Áo Sơ-mi Ngắn Tay Raglan collection</text>
+      </g>
+
+      <g id="Card_3">
+        <rect x="730" y="300" width="280" height="360" rx="12" fill="#FBCFE8" />
+        <text x="730" y="690" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">349.000đ</text>
+        <text x="730" y="720" font-family="Arial, sans-serif" font-size="15" fill="#475569">Áo Không Tay Thêu Hoa Collection</text>
+      </g>
+
+      <g id="Card_4">
+        <rect x="1030" y="300" width="280" height="360" rx="12" fill="#FCE7F3" />
+        <text x="1030" y="690" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">399.000đ</text>
+        <text x="1030" y="720" font-family="Arial, sans-serif" font-size="15" fill="#475569">Áo Sơ-mi Ngắn Tay Relax Fit Collection</text>
+      </g>
+    </g>
+
+    <g id="Product_Row_2">
+      <rect x="130" y="760" width="280" height="360" rx="12" fill="#FBCFE8" />
+      <rect x="430" y="760" width="280" height="360" rx="12" fill="#FFE4E6" />
+      <rect x="730" y="760" width="280" height="360" rx="12" fill="#F1F5F9" />
+      <rect x="1030" y="760" width="280" height="360" rx="12" fill="#E2E8F0" />
+    </g>
+  </g>
+
+  <g id="User_Dropdown_Menu">
+    <rect x="1150" y="70" width="180" height="195" rx="12" fill="#FFFFFF" filter="url(#shadow)" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_Cart" style="cursor: pointer;">
+      <rect x="1160" y="80" width="160" height="40" rx="8" fill="#F8FAFC" />
+      <path d="M1174 96 V93 C1174 89 1186 89 1186 93 V96 M1171 96 H1189 L1187 108 H1173 Z" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="1200" y="105" font-family="Arial, sans-serif" font-size="16" fill="#0F172A">Giỏ hàng</text>
+    </g>
+    
+    <g id="Menu_Item_Orders" style="cursor: pointer;">
+      <rect x="1160" y="120" width="160" height="40" rx="8" fill="none" />
+      <path d="M1172 136 L1180 132 L1188 136 L1188 144 L1180 148 L1172 144 Z M1172 136 L1180 140 L1188 136 M1180 148 V140" stroke="#475569" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      <text x="1200" y="145" font-family="Arial, sans-serif" font-size="16" fill="#475569">Đơn hàng</text>
+    </g>
+    
+    <g id="Menu_Item_Admin" style="cursor: pointer;">
+      <rect x="1160" y="160" width="160" height="40" rx="8" fill="none" />
+      <rect x="1173" y="173" width="5" height="5" rx="1" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <rect x="1182" y="173" width="5" height="5" rx="1" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <rect x="1173" y="182" width="5" height="5" rx="1" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <rect x="1182" y="182" width="5" height="5" rx="1" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="1200" y="185" font-family="Arial, sans-serif" font-size="16" fill="#475569">Trang Admin</text>
+    </g>
+
+    <path d="M1150 205 L1330 205" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_Logout" style="cursor: pointer;">
+      <rect x="1160" y="210" width="160" height="40" rx="8" fill="none" />
+      <path d="M1181 223 H1175 V237 H1181 M1184 226 L1188 230 L1184 234 M1178 230 H1188" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="1200" y="235" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#EF4444">Đăng xuất</text>
+    </g>
+  </g>
+
+  <g id="Toast_Success">
+    <rect x="1080" y="920" width="320" height="64" rx="12" fill="#FFFFFF" filter="url(#toastShadow)" stroke="#10B981" stroke-width="1.5" />
+    <circle cx="1120" cy="952" r="14" fill="#10B981" />
+    <path d="M1114 952 L1118 957 L1126 947" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1145" y="958" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Đăng nhập thành công</text>
+  </g>
+
+</svg>

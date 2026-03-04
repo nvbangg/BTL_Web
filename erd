@@ -1,0 +1,105 @@
+Enum role_enum {
+  admin
+  customer
+}
+
+Enum order_status_enum {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+Enum product_gender_enum {
+  male
+  female
+  unisex
+}
+
+Table users {
+  id integer [pk, increment]
+  email varchar [not null, unique]
+  password varchar [not null]
+  name varchar
+  phone varchar
+  address text
+  role role_enum [not null, default: 'customer']
+  created_at timestamp [not null, default: `now()`]
+}
+
+Table categories {
+  id integer [pk, increment]
+  name varchar [not null, unique]
+  description text
+}
+
+Table products {
+  id integer [pk, increment]
+  category_id integer [not null]
+  name varchar [not null]
+  description text
+  thumbnail varchar [not null]
+  gender product_gender_enum [not null, default: 'unisex']
+  price decimal(10,2) [not null]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `now()`]
+}
+
+Table product_images {
+  id integer [pk, increment]
+  product_id integer [not null]
+  image varchar [not null]
+  sort_order integer [not null, default: 0]
+}
+
+Table product_variants {
+  id integer [pk, increment]
+  product_id integer [not null]
+  size varchar [not null]
+  color varchar [not null]
+  stock integer [not null, default: 0]
+  price_override decimal(10,2)
+}
+
+Table cart_items {
+  id integer [pk, increment]
+  user_id integer [not null]
+  product_variant_id integer [not null]
+  quantity integer [not null, default: 1]
+  created_at timestamp [not null, default: `now()`]
+  indexes {
+    (user_id, product_variant_id) [unique]
+  }
+}
+
+Table orders {
+  id integer [pk, increment]
+  user_id integer [not null]
+  status order_status_enum [not null, default: 'pending']
+  total_price decimal(10,2) [not null]
+  shipping_name varchar [not null]
+  shipping_phone varchar [not null]
+  shipping_address text [not null]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+}
+
+Table order_items {
+  id integer [pk, increment]
+  order_id integer [not null]
+  product_variant_id integer [not null]
+  quantity integer [not null]
+  price_at_purchase decimal(10,2) [not null]
+}
+
+Ref: categories.id < products.category_id
+Ref: products.id < product_images.product_id
+Ref: products.id < product_variants.product_id
+
+Ref: users.id < cart_items.user_id
+Ref: product_variants.id < cart_items.product_variant_id
+
+Ref: users.id < orders.user_id
+Ref: orders.id < order_items.order_id
+Ref: product_variants.id < order_items.product_variant_id
