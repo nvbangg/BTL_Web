@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    actor Guest as Khách
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    Guest->>UI: (1) Nhấn nút Đăng nhập
+    UI-->>Guest: (2) Hiển thị form nhập email
+
+    Guest->>UI: (3) Nhập email và nhấn Tiếp tục
+    UI->>System: (4) Gửi email để kiểm tra
+    System-->>UI: (5) Báo email chưa tồn tại
+
+    UI-->>Guest: (6) Hiển thị form đăng ký
+    Guest->>UI: (7) Nhập thông tin đăng ký và nhấn Tiếp tục
+
+    UI->>System: (8) Gửi thông tin đăng ký
+    System-->>UI: (9) Kiểm tra hợp lệ và tạo tài khoản mới
+    System-->>UI: (10) Xác nhận tạo tài khoản thành công
+
+    UI-->>Guest: (11) Chuyển đến trang danh sách sản phẩm và thông báo đăng ký thành công

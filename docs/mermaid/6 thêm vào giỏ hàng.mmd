@@ -1,0 +1,11 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    User->>UI: (1) Chọn biến thể và nhấn Thêm vào giỏ hàng
+    UI->>System: (2) Gửi thông tin biến thể sản phẩm
+    System->>System: (3) Kiểm tra tồn kho và thêm vào giỏ hàng
+    System-->>UI: (4) Xác nhận thêm thành công
+    UI-->>User: (5) Hiển thị thông báo thêm thành công

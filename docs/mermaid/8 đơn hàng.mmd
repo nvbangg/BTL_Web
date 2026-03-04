@@ -1,0 +1,10 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    User->>UI: (1) Mở trang Đơn hàng của tôi
+    UI->>System: (2) Yêu cầu danh sách đơn hàng
+    System-->>UI: (3) Trả danh sách đơn hàng
+    UI-->>User: (4) Hiển thị danh sách đơn hàng

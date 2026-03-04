@@ -1,0 +1,11 @@
+sequenceDiagram
+    autonumber
+    actor Guest as Khách
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    Guest->>UI: (1) Chọn sản phẩm
+    UI->>System: (2) Yêu cầu thông tin sản phẩm
+    System->>System: (3) Lấy thông tin chi tiết sản phẩm
+    System-->>UI: (4) Trả dữ liệu sản phẩm
+    UI-->>Guest: (5) Hiển thị trang chi tiết sản phẩm

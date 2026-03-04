@@ -1,0 +1,12 @@
+sequenceDiagram
+    autonumber
+    actor Guest as Khách
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    Guest->>UI: (1) Nhập từ khóa tìm kiếm
+    Guest->>UI: (2) Nhấn nút Tìm kiếm
+    UI->>System: (3) Gửi từ khóa tìm kiếm
+    System->>System: (4) Tìm kiếm sản phẩm phù hợp
+    System-->>UI: (5) Trả danh sách sản phẩm
+    UI-->>Guest: (6) Hiển thị danh sách sản phẩm tìm được
