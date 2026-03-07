@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="#F8FAFC" />
+
+  <g id="Header">
+    <g id="Logo_Header" style="cursor: pointer;">
+      <circle cx="80" cy="40" r="16" fill="#2563EB" />
+      <circle cx="96" cy="40" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="125" y="48" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+
+    <g id="Search_Bar">
+      <rect x="400" y="16" width="640" height="48" rx="24" fill="#FFFFFF" filter="url(#shadow)" />
+      
+      <circle cx="430" cy="40" r="7" stroke="#64748B" stroke-width="2" fill="none" />
+      <path d="M435 45 L441 51" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+      
+      <text x="460" y="46" font-family="Arial, sans-serif" font-size="15" fill="#94A3B8">Tìm kiếm quần áo...</text>
+      
+      <rect x="930" y="20" width="100" height="40" rx="20" fill="#2563EB" style="cursor: pointer;" />
+      <text x="980" y="45" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Tìm kiếm</text>
+    </g>
+
+    <g id="User_Profile" style="cursor: pointer;">
+      <circle cx="1190" cy="40" r="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="1190" cy="35" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M1178 48 C1178 41 1202 41 1202 48" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <text x="1220" y="46" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      <path d="M1305 37 L1312 44 L1319 37" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <text x="220" y="145" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Đơn hàng của bạn</text>
+
+  <g id="Orders_Container" transform="translate(220, 180)">
+    <rect x="0" y="0" width="1000" height="44" rx="8" fill="#FFFFFF" filter="url(#shadow)" />
+    <text x="20" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Mã đơn hàng</text>
+    <text x="260" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày đặt</text>
+    <text x="430" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày cập nhật</text>
+    <text x="620" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Tổng tiền</text>
+    <text x="820" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Trạng thái</text>
+
+    <g id="Order_List" transform="translate(0, 60)">
+      
+      <g id="Order_1" transform="translate(0, 0)">
+        <rect x="0" y="0" width="1000" height="290" rx="16" fill="#FFFFFF" filter="url(#shadow)" />
+        
+        <g id="Order1_Header" transform="translate(0, 0)">
+          <rect x="0" y="0" width="1000" height="60" rx="16" fill="#F8FAFC" />
+          
+          <text x="20" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB">#ORD-0304-001</text>
+          <text x="260" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">04/03/2026</text>
+          <text x="430" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">05/03/2026</text>
+          <text x="620" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">1.297.000đ</text>
+          
+          <g transform="translate(820, 15)">
+            <rect x="0" y="0" width="110" height="30" rx="15" fill="#DBEAFE" />
+            <circle cx="15" cy="15" r="4" fill="#2563EB" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#2563EB">Đang giao</text>
+          </g>
+        </g>
+
+        <text x="30" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Sản phẩm (2)</text>
+        
+        <g id="Order1_Item_1" transform="translate(30, 115)">
+          <rect x="0" y="0" width="48" height="48" rx="8" fill="#FCE7F3" />
+          <text x="65" y="16" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
+          <text x="65" y="40" font-family="Arial, sans-serif" font-size="14" fill="#475569">Phân loại: Đen - M | Số lượng: 1</text>
+          <text x="520" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="end">399.000đ</text>
+        </g>
+
+        <g id="Order1_Item_2" transform="translate(30, 185)">
+          <rect x="0" y="0" width="48" height="48" rx="8" fill="#FFE4E6" />
+          <text x="65" y="16" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Quần Jeans Nam Regular Can Túi</text>
+          <text x="65" y="40" font-family="Arial, sans-serif" font-size="14" fill="#475569">Phân loại: Xanh chàm - 28 | Số lượng: 2</text>
+          <text x="520" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="end">898.000đ</text>
+        </g>
+
+        <line x1="580" y1="80" x2="580" y2="270" stroke="#E2E8F0" stroke-width="1.5" />
+
+        <text x="620" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Thông tin giao hàng</text>
+        
+        <text x="620" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Người nhận:</text>
+        <text x="710" y="130" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Nguyễn Văn Bằng</text>
+
+        <text x="620" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Số ĐT:</text>
+        <text x="710" y="160" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">0987.654.321</text>
+
+        <text x="620" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Địa chỉ:</text>
+        <text x="710" y="190" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Học viện Công nghệ Bưu chính</text>
+        <text x="710" y="210" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Viễn thông, Hà Nội</text>
+      </g>
+      
+      <g id="Order_2" transform="translate(0, 310)">
+        <rect x="0" y="0" width="1000" height="220" rx="16" fill="#FFFFFF" filter="url(#shadow)" />
+        
+        <g id="Order2_Header" transform="translate(0, 0)">
+          <rect x="0" y="0" width="1000" height="60" rx="16" fill="#F8FAFC" />
+          
+          <text x="20" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB">#ORD-0225-089</text>
+          <text x="260" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">25/02/2026</text>
+          <text x="430" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
+          <text x="620" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">550.000đ</text>
+          
+          <g transform="translate(820, 15)">
+            <rect x="0" y="0" width="110" height="30" rx="15" fill="#DCFCE7" />
+            <circle cx="15" cy="15" r="4" fill="#16A34A" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">Đã giao</text>
+          </g>
+        </g>
+
+        <text x="30" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Sản phẩm (1)</text>
+        
+        <g id="Order2_Item_1" transform="translate(30, 115)">
+          <rect x="0" y="0" width="48" height="48" rx="8" fill="#F1F5F9" />
+          <text x="65" y="16" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Áo Khoác Gió Thể Thao Cao Cấp</text>
+          <text x="65" y="40" font-family="Arial, sans-serif" font-size="14" fill="#475569">Phân loại: Trắng - L | Số lượng: 1</text>
+          <text x="520" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="end">550.000đ</text>
+        </g>
+
+        <line x1="580" y1="80" x2="580" y2="200" stroke="#E2E8F0" stroke-width="1.5" />
+
+        <text x="620" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Thông tin giao hàng</text>
+        
+        <text x="620" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Người nhận:</text>
+        <text x="710" y="130" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Nguyễn Văn Bằng</text>
+
+        <text x="620" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Số ĐT:</text>
+        <text x="710" y="160" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">0987.654.321</text>
+
+        <text x="620" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Địa chỉ:</text>
+        <text x="710" y="190" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Ký túc xá B2, Học viện Công nghệ</text>
+        <text x="710" y="210" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Bưu chính Viễn thông...</text>
+      </g>
+
+    </g>
+  </g>
+</svg>

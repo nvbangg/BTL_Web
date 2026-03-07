@@ -1,0 +1,27 @@
+STT,Name,Route,APIs Used,Error Cases,Note,Status
+1,Trang chủ (tìm kiếm + sản phẩm nổi bật),/?keyword=&category=&gender=&size=&minPrice=&maxPrice=&sort=&page=,GET /api/products,API lỗi → hiển thị danh sách rỗng,"Có search, filter, sort",Progress
+2,Trang chi tiết sản phẩm,/products?id={id},"GET /api/products/{id} 
+POST /api/cart",404 — Sản phẩm không tồn tại,,
+3,Trang giỏ hàng và đặt hàng,/cart,"GET /api/cart 
+PUT /api/cart/{itemId} 
+DELETE /api/cart/{itemId}
+POST /api/orders",401 — Chưa đăng nhập,,
+5,Trang Đơn hàng đã đặt,/orders,GET /api/orders,401 — Chưa đăng nhập,,
+6,Trang Xem thống kê (admin),/admin,GET /api/admin/statistics,"401 — Chưa đăng nhập
+403 — Not admin",,
+7,Trang quản lý sản phẩm (admin),/admin?tab=products,"GET /api/admin/products 
+POST /api/admin/products 
+PUT /api/admin/products/{id} 
+DELETE /api/admin/products/{id}","401 — Chưa đăng nhập
+403 — Not admin",Chỉ thống kê doanh thu,
+8,Trang quản lý đơn hàng (admin),/admin?tab=orders,"GET /api/admin/orders 
+PUT /api/admin/orders/{id}","401 — Chưa đăng nhập
+403 — Not admin",,
+9,Trang quản lý danh mục (admin),/admin?tab=categories,"GET /api/admin/categories
+POST /api/admin/categories
+PUT /api/admin/categories/{id}","401 — Chưa đăng nhập
+403 — Not admin",Không có delete,
+9,Popup đăng ký/ đăng nhập,Dạng popup,"POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET  /api/users/me",400 — Sai thông tin,,

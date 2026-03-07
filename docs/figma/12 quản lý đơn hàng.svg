@@ -1,0 +1,276 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <filter id="shadow-sm" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.05"/>
+    </filter>
+    <filter id="shadow-md" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="#F1F5F9" />
+
+  <rect x="0" y="0" width="280" height="1024" fill="#FFFFFF" filter="url(#shadow-md)" />
+  
+  <g id="Logo_Header" style="cursor: pointer;">
+    <circle cx="45" cy="50" r="16" fill="#2563EB" />
+    <circle cx="61" cy="50" r="16" fill="#60A5FA" opacity="0.8" />
+    <text x="90" y="58" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+  </g>
+
+  <g id="Sidebar_Menu" transform="translate(0, 130)">
+    <g id="Nav_Dashboard" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 35 V17 M55 35 V25 M65 35 V13" stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M35 38 H75" stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Xem thống kê</text>
+    </g>
+
+    <g id="Nav_Orders" transform="translate(0, 60)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="#EFF6FF" />
+      <rect x="16" y="10" width="4" height="32" rx="2" fill="#2563EB" />
+      <path d="M40 20 L55 13 L70 20 V32 L55 39 L40 32 Z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <path d="M40 20 L55 27 L70 20 M55 27 V39" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563EB">Quản lý đơn hàng</text>
+      <rect x="230" y="16" width="24" height="20" rx="10" fill="#EF4444" />
+      <text x="242" y="31" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">12</text>
+    </g>
+
+    <g id="Nav_Products" transform="translate(0, 120)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 15 L55 20 L65 15 L70 25 L65 30 V38 H45 V30 L40 25 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý sản phẩm</text>
+    </g>
+
+    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <circle cx="51" cy="24" r="2" fill="#475569" />
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
+    </g>
+  </g>
+
+  <g id="Sidebar_Footer" transform="translate(0, 920)">
+    <line x1="16" y1="0" x2="264" y2="0" stroke="#E2E8F0" stroke-width="1" />
+    <g style="cursor: pointer;" transform="translate(16, 30)">
+      <rect x="0" y="0" width="248" height="52" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+      <path d="M35 26 H15 M15 26 L22 19 M15 26 L22 33" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="55" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Về trang người dùng</text>
+    </g>
+  </g>
+
+  <g id="Top_Header" transform="translate(280, 0)">
+    <rect width="1160" height="80" fill="#FFFFFF" filter="url(#shadow-sm)" />
+    <text x="40" y="48" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Quản lý đơn hàng</text>
+  </g>
+
+  <g id="Dashboard_Content" transform="translate(320, 110)">
+    <g id="Card_Pending">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#FEF3C7" />
+      <circle cx="44" cy="44" r="14" fill="none" stroke="#D97706" stroke-width="2" transform="translate(0, -10)"/>
+      <path d="M44 36 V44 L50 48" stroke="#D97706" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, -10)"/>
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Số đơn hàng đang chờ</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">12</text>
+    </g>
+
+    <g id="Card_Processing" transform="translate(370, 0)">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#DBEAFE" />
+      <path d="M28 48 H52 M28 40 H50 L56 48 V56 H28 Z M32 56 A3 3 0 1 0 32 56.1 M48 56 A3 3 0 1 0 48 56.1" stroke="#2563EB" stroke-width="2" stroke-linecap="round" fill="none" transform="translate(0, -12)"/>
+      <line x1="38" y1="40" x2="38" y2="56" stroke="#2563EB" stroke-width="2" transform="translate(0, -12)"/>
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Số đơn hàng chưa hoàn thành</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">45</text>
+    </g>
+
+    <g id="Card_Total" transform="translate(740, 0)">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#FCE7F3" />
+      <path d="M28 36 L44 28 L60 36 V52 L44 60 L28 52 Z" stroke="#DB2777" stroke-width="2" fill="none" stroke-linejoin="round" transform="translate(0, -12)"/>
+      <path d="M28 36 L44 44 L60 36 M44 44 V60" stroke="#DB2777" stroke-width="2" fill="none" stroke-linejoin="round" transform="translate(0, -12)"/>
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Tổng số đơn hàng</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">1,240</text>
+    </g>
+
+    <g id="Orders_Table_Section" transform="translate(0, 160)">
+      <rect x="0" y="0" width="1080" height="740" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <text x="30" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Danh sách đơn hàng</text>
+      
+      <g id="Table_Toolbar" transform="translate(560, 15)">
+        <rect x="0" y="0" width="300" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <circle cx="18" cy="18" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+        <path d="M23 23 L28 28" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" />
+        <text x="35" y="23" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">Tìm mã đơn, email khách...</text>
+
+        <g style="cursor: pointer;" transform="translate(320, 0)">
+          <rect x="0" y="0" width="160" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="15" y="23" font-family="Arial, sans-serif" font-size="14" fill="#0F172A">Tất cả trạng thái</text>
+          <path d="M135 16 L140 22 L145 16" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </g>
+
+      <rect x="30" y="70" width="1020" height="44" rx="8" fill="#F8FAFC" />
+      <text x="50" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Mã đơn hàng</text>
+      <text x="190" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Khách hàng</text>
+      <text x="420" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày đặt</text>
+      <text x="540" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày cập nhật</text>
+      <text x="680" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Tổng tiền</text>
+      <text x="860" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Trạng thái</text>
+
+      <g id="Table_Rows" transform="translate(0, 114)">
+        
+        <g id="Row_1_Expanded" transform="translate(0, 0)">
+          <rect x="30" y="0" width="1020" height="60" fill="#F8FAFC" style="cursor: pointer;" />
+          
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB">#ORD-0304-001</text>
+          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">nvbangg@gmail.com</text>
+          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">04/03/2026</text>
+          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">05/03/2026</text>
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">1.297.000đ</text>
+          
+          <g style="cursor: pointer;" transform="translate(860, 15)">
+            <rect x="0" y="0" width="140" height="30" rx="15" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" />
+            <circle cx="15" cy="15" r="4" fill="#D97706" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#D97706">Đang chờ</text>
+            <path d="M115 13 L120 18 L125 13" stroke="#D97706" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <rect x="30" y="60" width="1020" height="230" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+          
+          <text x="60" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Sản phẩm (2)</text>
+          
+          <g id="Expanded_Item_1" transform="translate(60, 115)">
+            <rect x="0" y="0" width="48" height="48" rx="8" fill="#FCE7F3" />
+            <text x="65" y="16" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
+            <text x="65" y="40" font-family="Arial, sans-serif" font-size="14" fill="#475569">Phân loại: Đen - M | Số lượng: 1</text>
+            <text x="550" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="end">399.000đ</text>
+          </g>
+
+          <g id="Expanded_Item_2" transform="translate(60, 185)">
+            <rect x="0" y="0" width="48" height="48" rx="8" fill="#FFE4E6" />
+            <text x="65" y="16" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Quần Jeans Nam Regular Can Túi</text>
+            <text x="65" y="40" font-family="Arial, sans-serif" font-size="14" fill="#475569">Phân loại: Xanh chàm - 28 | Số lượng: 2</text>
+            <text x="550" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="end">898.000đ</text>
+          </g>
+
+          <line x1="640" y1="80" x2="640" y2="270" stroke="#E2E8F0" stroke-width="1.5" />
+
+          <text x="670" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Thông tin giao hàng</text>
+          
+          <text x="670" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Người nhận:</text>
+          <text x="760" y="130" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Nguyễn Văn Bằng</text>
+
+          <text x="670" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Số ĐT:</text>
+          <text x="760" y="160" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">0987.654.321</text>
+
+          <text x="670" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Địa chỉ:</text>
+          <text x="760" y="190" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Học viện Công nghệ Bưu chính</text>
+          <text x="760" y="210" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Viễn thông, Hà Nội</text>
+        </g>
+        
+        <g id="Row_2" transform="translate(0, 290)" style="cursor: pointer;">
+          <rect x="30" y="0" width="1020" height="60" fill="transparent" />
+          
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0303-045</text>
+          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">tranb@gmail.com</text>
+          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
+          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">399.000đ</text>
+          
+          <g style="cursor: pointer;" transform="translate(860, 15)">
+            <rect x="0" y="0" width="140" height="30" rx="15" fill="#E0E7FF" stroke="#6366F1" stroke-width="1" />
+            <circle cx="15" cy="15" r="4" fill="#4F46E5" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#4F46E5">Đang xử lý</text>
+            <path d="M115 13 L120 18 L125 13" stroke="#4F46E5" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <line x1="30" y1="60" x2="1050" y2="60" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_3" transform="translate(0, 350)" style="cursor: pointer;">
+          <rect x="30" y="0" width="1020" height="60" fill="transparent" />
+          
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0228-112</text>
+          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">levanc@gmail.com</text>
+          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
+          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">01/03/2026</text>
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">898.000đ</text>
+          
+          <g style="cursor: pointer;" transform="translate(860, 15)">
+            <rect x="0" y="0" width="140" height="30" rx="15" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1" />
+            <circle cx="15" cy="15" r="4" fill="#2563EB" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#2563EB">Đang giao</text>
+            <path d="M115 13 L120 18 L125 13" stroke="#2563EB" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <line x1="30" y1="60" x2="1050" y2="60" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_4" transform="translate(0, 410)" style="cursor: pointer;">
+          <rect x="30" y="0" width="1020" height="60" fill="transparent" />
+          
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0225-089</text>
+          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">phamd@gmail.com</text>
+          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">25/02/2026</text>
+          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">550.000đ</text>
+          
+          <g style="cursor: pointer;" transform="translate(860, 15)">
+            <rect x="0" y="0" width="140" height="30" rx="15" fill="#DCFCE7" stroke="#22C55E" stroke-width="1" />
+            <circle cx="15" cy="15" r="4" fill="#16A34A" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">Đã giao</text>
+            <path d="M115 13 L120 18 L125 13" stroke="#16A34A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <line x1="30" y1="60" x2="1050" y2="60" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_5" transform="translate(0, 470)" style="cursor: pointer;">
+          <rect x="30" y="0" width="1020" height="60" fill="transparent" />
+          
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0220-012</text>
+          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">hoange@gmail.com</text>
+          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
+          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">449.000đ</text>
+          
+          <g style="cursor: pointer;" transform="translate(860, 15)">
+            <rect x="0" y="0" width="140" height="30" rx="15" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1" />
+            <circle cx="15" cy="15" r="4" fill="#64748B" />
+            <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Đã hủy</text>
+            <path d="M115 13 L120 18 L125 13" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <line x1="30" y1="60" x2="1050" y2="60" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+      </g>
+
+      <g id="Pagination" transform="translate(0, 680)">
+        <g style="cursor: pointer;" transform="translate(420, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M21 12 L15 18 L21 24" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        
+        <g style="cursor: pointer;" transform="translate(466, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#2563EB" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+        </g>
+
+        <g style="cursor: pointer;" transform="translate(512, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="middle">2</text>
+        </g>
+
+        <g style="cursor: pointer;" transform="translate(558, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="middle">3</text>
+        </g>
+
+        <text x="616" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#94A3B8" text-anchor="middle">...</text>
+
+        <g style="cursor: pointer;" transform="translate(640, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M15 12 L21 18 L15 24" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </g>
+
+    </g>
+  </g>
+</svg>

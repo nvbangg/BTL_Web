@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor Admin
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    Admin->>UI: (1) Mở tab Quản lý đơn hàng
+    UI->>System: (2) Yêu cầu danh sách đơn hàng
+    System->>System: (3) Truy vấn danh sách đơn hàng
+    System-->>UI: (4) Trả danh sách đơn hàng
+    UI-->>Admin: (5) Hiển thị danh sách đơn hàng
+
+    Admin->>UI: (6) Chọn một đơn hàng
+    UI-->>Admin: (7) Hiển thị chi tiết đơn hàng
+
+    Admin->>UI: (8) Thay đổi trạng thái đơn hàng
+    UI->>System: (9) Gửi yêu cầu cập nhật trạng thái
+    System->>System: (10) Cập nhật trạng thái đơn hàng
+    System-->>UI: (11) Xác nhận cập nhật thành công
+    UI-->>Admin: (12) Cập nhật trạng thái đơn hàng
