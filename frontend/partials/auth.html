@@ -1,0 +1,60 @@
+<div class="auth-overlay">
+  <div class="auth-modal">
+    <button class="auth-modal-close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="auth-step" data-step="email" style="display:block">
+      <h2>Xin chào!</h2>
+      <p class="subtitle">Nhập email để đăng nhập hoặc đăng ký</p>
+      <form id="auth-email-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="Nhập email của bạn..." required>
+          <div class="form-error"></div>
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block btn-lg">Tiếp tục</button>
+      </form>
+    </div>
+
+    <div class="auth-step" data-step="password" style="display:none">
+      <h2>Đăng nhập</h2>
+      <p class="subtitle"><span class="auth-email-display"></span></p>
+      <form id="auth-password-form">
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" name="password" placeholder="Nhập mật khẩu..." required>
+          <div class="form-error"></div>
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block btn-lg">Đăng nhập</button>
+      </form>
+      <p style="text-align:center;margin-top:16px"><button type="button" class="auth-back" style="color:var(--primary);font-size:14px">← Quay lại</button></p>
+    </div>
+
+    <div class="auth-step" data-step="register" style="display:none">
+      <h2>Đăng ký</h2>
+      <p class="subtitle">Tạo tài khoản mới</p>
+      <form id="auth-register-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" readonly style="background:#F1F5F9">
+        </div>
+        <div class="form-group">
+          <label>Tên hiển thị</label>
+          <input type="text" name="displayName" placeholder="Tên hiển thị..." required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" name="password" placeholder="Ít nhất 6 ký tự..." required>
+        </div>
+        <div class="form-group">
+          <label>Xác nhận mật khẩu</label>
+          <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu..." required>
+          <div class="form-error"></div>
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block btn-lg">Đăng ký</button>
+      </form>
+      <p style="text-align:center;margin-top:16px"><button type="button" class="auth-back" style="color:var(--primary);font-size:14px">← Quay lại</button></p>
+    </div>
+  </div>
+</div>

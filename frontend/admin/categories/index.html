@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý danh mục - Fashon Shop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../admin.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Quản lý danh mục</h1>
+        <div class="admin-stats-row" id="category-stats"></div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Danh sách danh mục</h3>
+            <div class="admin-card-tools">
+              <input class="admin-search-input" id="cat-search-input" placeholder="Tìm kiếm danh mục..." style="width:300px">
+              <button class="btn-add-product" id="btn-add-cat">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Thêm danh mục
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="categories-table">
+              <thead>
+                <tr>
+                  <th>Số thứ tự</th>
+                  <th>Tên danh mục</th>
+                  <th>Số sản phẩm</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="categories-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add Category Modal -->
+  <div class="modal-overlay" id="add-cat-modal">
+    <div class="modal" style="width:480px">
+      <div class="modal-header">
+        <h3>Thêm danh mục mới</h3>
+        <button class="filter-close" id="add-cat-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Tên danh mục <span style="color:#EF4444">*</span></label>
+          <input type="text" class="form-input" id="add-cat-name" placeholder="Nhập tên danh mục..." autocomplete="off">
+        </div>
+        <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+          <button class="btn-cancel" id="add-cat-cancel">Hủy</button>
+          <button class="btn-save" id="add-cat-confirm">Thêm danh mục</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="auth"></div>
+
+  <script src="../../js/utils.js"></script>
+  <script src="../../mock/api-responses.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/auth.js"></script>
+  <script src="categories.js"></script>
+</body>
+</html>

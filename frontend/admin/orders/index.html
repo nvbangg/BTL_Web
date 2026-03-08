@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý đơn hàng - Fashon Shop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../admin.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Quản lý đơn hàng</h1>
+        <div class="admin-stats-row" id="order-stats"></div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Danh sách đơn hàng</h3>
+            <div class="admin-card-tools">
+              <input class="admin-search-input" id="order-search" placeholder="Tìm mã đơn, email khách...">
+              <select class="admin-filter-select" id="order-status-filter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Đang chờ</option>
+                <option value="processing">Đang xử lý</option>
+                <option value="shipping">Đang giao</option>
+                <option value="delivered">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="orders-table">
+              <thead>
+                <tr>
+                  <th>Mã đơn hàng</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày đặt</th>
+                  <th>Ngày cập nhật</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="auth"></div>
+
+  <script src="../../js/utils.js"></script>
+  <script src="../../mock/api-responses.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/auth.js"></script>
+  <script src="orders.js"></script>
+</body>
+</html>

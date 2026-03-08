@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashon Shop - Thời trang Online</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="page-body">
+    <div class="container">
+      <!-- Sort & Filter Bar -->
+      <div class="sort-bar">
+        <div class="sort-bar-left">
+          <span class="sort-label">Sắp xếp theo:</span>
+          <div class="sort-pills" id="sort-pills">
+            <button class="sort-pill" data-sort="popular">Nổi bật</button>
+            <button class="sort-pill" data-sort="best-seller">Bán chạy</button>
+            <button class="sort-pill" data-sort="newest">Mới nhất</button>
+            <button class="sort-pill" data-sort="price-asc">Giá <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L5 1L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="sort-bar-right">
+          <button class="btn-filter" id="btn-filter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Lọc
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" id="product-grid"></div>
+
+      <!-- Pagination -->
+      <div id="pagination-area"></div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <h3>Không tìm thấy sản phẩm</h3>
+        <p>Thử thay đổi từ khóa hoặc bộ lọc</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Filter Panel -->
+  <div class="filter-overlay" id="filter-overlay"></div>
+  <div class="filter-panel" id="filter-panel">
+    <div class="filter-header">
+      <h3>Bộ lọc</h3>
+      <button class="filter-close" id="filter-close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="filter-body">
+      <div class="filter-group">
+        <label class="filter-group-title">Danh mục</label>
+        <div class="filter-checkboxes" id="filter-categories"></div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-group-title">Giới tính</label>
+        <div class="filter-checkboxes" id="filter-genders">
+          <label class="checkbox-wrap"><input type="checkbox" name="gender" value="Nam"><span>Nam</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="gender" value="Nữ"><span>Nữ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="gender" value="Unisex"><span>Unisex</span></label>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-group-title">Giá</label>
+        <div class="filter-checkboxes" id="filter-prices">
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="0-99000"><span>Dưới 99.000đ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="100000-199000"><span>100.000đ - 199.000đ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="200000-299000"><span>200.000đ - 299.000đ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="300000-499000"><span>300.000đ - 499.000đ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="500000-1000000"><span>500.000đ - 1.000.000đ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="price" value="1000001-"><span>Trên 1.000.000đ</span></label>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-group-title">Size</label>
+        <div class="filter-sizes" id="filter-sizes">
+          <button class="size-btn" data-size="S">S</button>
+          <button class="size-btn" data-size="M">M</button>
+          <button class="size-btn" data-size="L">L</button>
+          <button class="size-btn" data-size="XL">XL</button>
+          <button class="size-btn" data-size="2XL">2XL</button>
+          <button class="size-btn" data-size="3XL">3XL</button>
+          <button class="size-btn" data-size="4XL">4XL</button>
+          <button class="size-btn" data-size="28">28</button>
+          <button class="size-btn" data-size="29">29</button>
+          <button class="size-btn" data-size="30">30</button>
+          <button class="size-btn" data-size="31">31</button>
+          <button class="size-btn" data-size="32">32</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-ghost" id="filter-reset">Xóa lọc</button>
+      <button class="btn btn-yellow" id="filter-apply">Áp dụng</button>
+    </div>
+  </div>
+
+  <div id="why-choose"></div>
+  <div id="footer"></div>
+  <div id="auth"></div>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="mock/api-responses.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

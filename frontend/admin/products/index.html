@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý sản phẩm - Fashon Shop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../admin.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Quản lý sản phẩm</h1>
+        <div class="admin-stats-row" id="product-stats"></div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Danh sách sản phẩm</h3>
+            <div class="admin-card-tools">
+              <div class="product-search-pill">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input id="product-search" placeholder="Tìm kiếm sản phẩm...">
+              </div>
+              <button class="btn-add-product" id="btn-add-product">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Thêm sản phẩm
+              </button>
+            </div>
+          </div>
+          <div class="product-sort-row">
+            <span class="sort-row-label">Sắp xếp theo:</span>
+            <button class="sort-chip">Nổi bật</button>
+            <button class="sort-chip">Bán chạy</button>
+            <button class="sort-chip">Mới nhất</button>
+            <button class="sort-chip sort-chip-active">Giá <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg></button>
+            <div style="flex:1"></div>
+            <button class="sort-chip filter-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Lọc
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="products-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Danh mục</th>
+                  <th>Giá bán</th>
+                  <th>Tồn kho</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Edit/Add Product Modal -->
+  <div class="modal-overlay" id="edit-product-modal">
+    <div class="modal" style="width:800px;max-height:90vh;overflow-y:auto">
+      <div class="modal-header">
+        <h3 id="edit-product-title">Chỉnh sửa sản phẩm</h3>
+        <button class="filter-close" id="edit-product-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="edit-product-body"></div>
+    </div>
+  </div>
+
+  <!-- Filter Panel (reused from home page) -->
+  <div class="filter-overlay" id="filter-overlay"></div>
+  <div class="filter-panel" id="admin-filter-panel">
+    <div class="filter-header">
+      <h3>Bộ lọc</h3>
+      <button class="filter-close" id="admin-filter-close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="filter-body">
+      <div class="filter-group">
+        <label class="filter-group-title">Danh mục</label>
+        <div class="filter-checkboxes" id="admin-filter-categories"></div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-group-title">Giới tính</label>
+        <div class="filter-checkboxes">
+          <label class="checkbox-wrap"><input type="checkbox" name="af-gender" value="Nam"><span>Nam</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="af-gender" value="Nữ"><span>Nữ</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="af-gender" value="Unisex"><span>Unisex</span></label>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-group-title">Trạng thái</label>
+        <div class="filter-checkboxes">
+          <label class="checkbox-wrap"><input type="checkbox" name="af-status" value="active"><span>Đang bán</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="af-status" value="oos"><span>Hết hàng</span></label>
+          <label class="checkbox-wrap"><input type="checkbox" name="af-status" value="inactive"><span>Tạm ẩn</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-ghost" id="admin-filter-reset">Xóa lọc</button>
+      <button class="btn btn-yellow" id="admin-filter-apply">Áp dụng</button>
+    </div>
+  </div>
+
+  <div id="auth"></div>
+
+  <script src="../../js/utils.js"></script>
+  <script src="../../mock/api-responses.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/auth.js"></script>
+  <script src="products.js"></script>
+</body>
+</html>

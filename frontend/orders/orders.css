@@ -1,0 +1,100 @@
+.orders-title { font-size: 24px; font-weight: 700; color: #0F172A; margin-bottom: 20px; }
+
+/* Tiêu đề bảng cột */
+.orders-table-header {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  padding: 12px 24px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748B;
+}
+
+/* Order card */
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.order-card-header {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 16px 24px;
+  background: #F8FAFC;
+  border-radius: 16px 16px 0 0;
+}
+.order-card-id { font-size: 14px; font-weight: 700; color: #2563EB; }
+.order-card-date { font-size: 14px; color: #475569; }
+.order-card-total { font-size: 14px; font-weight: 700; color: #EF4444; }
+
+/* Status badges */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 14px; border-radius: 15px;
+  font-size: 13px; font-weight: 700; width: fit-content;
+}
+.status-badge::before {
+  content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
+}
+.status-badge.pending { background: #FEF3C7; color: #D97706; }
+.status-badge.pending::before { background: #D97706; }
+.status-badge.processing { background: #E0E7FF; color: #4F46E5; }
+.status-badge.processing::before { background: #4F46E5; }
+.status-badge.shipping { background: #DBEAFE; color: #2563EB; }
+.status-badge.shipping::before { background: #2563EB; }
+.status-badge.delivered { background: #DCFCE7; color: #16A34A; }
+.status-badge.delivered::before { background: #16A34A; }
+.status-badge.cancelled { background: #F1F5F9; color: #64748B; }
+.status-badge.cancelled::before { background: #94A3B8; }
+
+/* Nội dung đơn hàng: 2 cột (Sản phẩm | Thông tin giao hàng) */
+.order-card-body {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  padding: 20px 24px;
+  border-top: 1px solid #E2E8F0;
+}
+.order-section-title { font-size: 16px; font-weight: 700; color: #0F172A; margin-bottom: 12px; }
+
+.order-item {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  align-items: center;
+}
+.order-item + .order-item { border-top: 1px solid #F1F5F9; }
+.order-item-img {
+  width: 48px; height: 48px; border-radius: 8px;
+  object-fit: cover; background: #F1F5F9; flex-shrink: 0;
+}
+.order-item-info { flex: 1; min-width: 0; }
+.order-item-name { font-size: 15px; font-weight: 700; color: #0F172A; }
+.order-item-variant { font-size: 14px; color: #475569; }
+.order-item-price { font-size: 15px; font-weight: 700; color: #0F172A; text-align: right; white-space: nowrap; }
+
+/* Thông tin giao hàng */
+.order-card-delivery { border-left: 1px solid #E2E8F0; padding-left: 24px; }
+.order-delivery-row { font-size: 15px; color: #0F172A; margin-bottom: 8px; }
+.order-delivery-label { font-size: 14px; font-weight: 700; color: #475569; }
+
+/* Footer (nút hủy) */
+.order-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 24px;
+  border-top: 1px solid #E2E8F0;
+}
+
+@media (max-width: 768px) {
+  .orders-table-header { display: none; }
+  .order-card-header { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .order-card-body { grid-template-columns: 1fr; }
+  .order-card-delivery { border-left: none; padding-left: 0; border-top: 1px solid #E2E8F0; padding-top: 16px; }
+}
