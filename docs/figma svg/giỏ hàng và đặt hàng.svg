@@ -111,10 +111,9 @@
     <rect x="990" y="405" width="290" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#softShadow)" />
     <text x="1005" y="430" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Học viện Công nghệ Bưu chính...</text>
 
-    <g id="Save_Default_Checkbox" style="cursor: pointer;" transform="translate(0, 465)">
-      <rect x="990" y="0" width="18" height="18" rx="4" fill="none" stroke="#94A3B8" stroke-width="1.5" />
-      <path d="M994 9 L998 13 L1005 6" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1018" y="14" font-family="Arial, sans-serif" font-size="14" fill="#475569">Lưu làm mặc định</text>
+    <g id="Button_Save_Default" style="cursor: pointer;" transform="translate(0, 460)">
+      <rect x="990" y="0" width="160" height="36" rx="18" fill="#2563EB" />
+      <text x="1070" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Lưu làm mặc định</text>
     </g>
 
     <line x1="990" y1="510" x2="1280" y2="510" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4" />

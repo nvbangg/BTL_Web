@@ -58,14 +58,49 @@
       <circle cx="51" cy="24" r="2" fill="#64748B" />
       <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
     </g>
+
+    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <circle cx="55" cy="20" r="6" stroke="#64748B" stroke-width="2" fill="none"/>
+      <path d="M43 36 C43 30 67 30 67 36" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý người dùng</text>
+    </g>
+  </g>
+
+  <g id="User_Dropup_Menu">
+    <rect x="16" y="750" width="248" height="155" rx="12" fill="#FFFFFF" filter="url(#shadow-md)" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_User_Page" style="cursor: pointer;">
+      <rect x="26" y="760" width="228" height="40" rx="8" fill="#F8FAFC" />
+      <path d="M55 780 H35 M35 780 L42 773 M35 780 L42 787" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="785" font-family="Arial, sans-serif" font-size="16" fill="#0F172A">Trang người dùng</text>
+    </g>
+    
+    <g id="Menu_Item_Change_Password" style="cursor: pointer;">
+      <rect x="26" y="800" width="228" height="40" rx="8" fill="none" />
+      <path d="M41 815 V812 A 4 4 0 0 1 49 812 V815" stroke="#475569" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="39" y="815" width="12" height="10" rx="2" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <circle cx="45" cy="820" r="1.5" fill="#475569" />
+      <text x="66" y="825" font-family="Arial, sans-serif" font-size="16" fill="#475569">Đổi mật khẩu</text>
+    </g>
+
+    <path d="M16 845 L264 845" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_Logout" style="cursor: pointer;">
+      <rect x="26" y="850" width="228" height="40" rx="8" fill="none" />
+      <path d="M47 863 H41 V877 H47 M50 866 L54 870 L50 874 M44 870 H54" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="875" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#EF4444">Đăng xuất</text>
+    </g>
   </g>
 
   <g id="Sidebar_Footer" transform="translate(0, 920)">
     <line x1="16" y1="0" x2="264" y2="0" stroke="#E2E8F0" stroke-width="1" />
-    <g style="cursor: pointer;" transform="translate(16, 30)">
-      <rect x="0" y="0" width="248" height="52" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-      <path d="M35 26 H15 M15 26 L22 19 M15 26 L22 33" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="55" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Về trang người dùng</text>
+    <g id="User_Profile" style="cursor: pointer;" transform="translate(16, 20)">
+      <circle cx="30" cy="30" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="30" cy="25" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M18 38 C18 31 42 31 42 38" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <text x="60" y="36" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      <path d="M220 34 L227 27 L234 34" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
     </g>
   </g>
 

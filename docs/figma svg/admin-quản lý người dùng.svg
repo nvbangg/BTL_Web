@@ -1,0 +1,292 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1024" width="1440" height="1024">
+  <defs>
+    <filter id="shadow-sm" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.05"/>
+    </filter>
+    <filter id="shadow-md" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="#F1F5F9" />
+
+  <rect x="0" y="0" width="280" height="1024" fill="#FFFFFF" filter="url(#shadow-md)" />
+  
+  <g id="Logo_Header" style="cursor: pointer;" transform="translate(14, 0)">
+    <circle cx="50" cy="50" r="16" fill="#2563EB" />
+    <circle cx="66" cy="50" r="16" fill="#60A5FA" opacity="0.8" />
+    <text x="95" y="58" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+  </g>
+
+  <g id="Sidebar_Menu" transform="translate(0, 130)">
+    <g id="Nav_Dashboard" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 35 V17 M55 35 V25 M65 35 V13" stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M35 38 H75" stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Xem thống kê</text>
+    </g>
+
+    <g id="Nav_Orders" transform="translate(0, 60)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M40 20 L55 13 L70 20 V32 L55 39 L40 32 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <path d="M40 20 L55 27 L70 20 M55 27 V39" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý đơn hàng</text>
+      <rect x="230" y="16" width="24" height="20" rx="10" fill="#EF4444" />
+      <text x="242" y="31" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">12</text>
+    </g>
+
+    <g id="Nav_Products" transform="translate(0, 120)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 15 L55 20 L65 15 L70 25 L65 30 V38 H45 V30 L40 25 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý sản phẩm</text>
+    </g>
+
+    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
+      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <circle cx="51" cy="24" r="2" fill="#475569" />
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
+    </g>
+
+    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+      <rect x="16" y="0" width="248" height="52" rx="12" fill="#EFF6FF" />
+      <rect x="16" y="10" width="4" height="32" rx="2" fill="#2563EB" />
+      <circle cx="55" cy="22" r="7" fill="none" stroke="#2563EB" stroke-width="2" />
+      <path d="M42 40 C42 33 68 33 68 40" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" />
+      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563EB">Quản lý người dùng</text>
+    </g>
+  </g>
+
+  <g id="User_Dropup_Menu">
+    <rect x="16" y="750" width="248" height="155" rx="12" fill="#FFFFFF" filter="url(#shadow-md)" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_User_Page" style="cursor: pointer;">
+      <rect x="26" y="760" width="228" height="40" rx="8" fill="#F8FAFC" />
+      <path d="M55 780 H35 M35 780 L42 773 M35 780 L42 787" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="785" font-family="Arial, sans-serif" font-size="16" fill="#0F172A">Trang người dùng</text>
+    </g>
+    
+    <g id="Menu_Item_Change_Password" style="cursor: pointer;">
+      <rect x="26" y="800" width="228" height="40" rx="8" fill="none" />
+      <path d="M41 815 V812 A 4 4 0 0 1 49 812 V815" stroke="#475569" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="39" y="815" width="12" height="10" rx="2" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <circle cx="45" cy="820" r="1.5" fill="#475569" />
+      <text x="66" y="825" font-family="Arial, sans-serif" font-size="16" fill="#475569">Đổi mật khẩu</text>
+    </g>
+
+    <path d="M16 845 L264 845" stroke="#E2E8F0" stroke-width="1" />
+    
+    <g id="Menu_Item_Logout" style="cursor: pointer;">
+      <rect x="26" y="850" width="228" height="40" rx="8" fill="none" />
+      <path d="M47 863 H41 V877 H47 M50 866 L54 870 L50 874 M44 870 H54" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="875" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#EF4444">Đăng xuất</text>
+    </g>
+  </g>
+
+  <g id="Sidebar_Footer" transform="translate(0, 920)">
+    <line x1="16" y1="0" x2="264" y2="0" stroke="#E2E8F0" stroke-width="1" />
+    <g id="User_Profile" style="cursor: pointer;" transform="translate(16, 20)">
+      <circle cx="30" cy="30" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="30" cy="25" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <path d="M18 38 C18 31 42 31 42 38" stroke="#94A3B8" stroke-width="1.5" fill="none" />
+      <text x="60" y="36" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
+      <path d="M220 34 L227 27 L234 34" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <g id="Top_Header" transform="translate(280, 0)">
+    <rect width="1160" height="80" fill="#FFFFFF" filter="url(#shadow-sm)" />
+    <text x="40" y="48" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Quản lý người dùng</text>
+  </g>
+
+  <g id="Dashboard_Content" transform="translate(320, 110)">
+    
+    <g id="Card_Total_Users">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#F1F5F9" />
+      <circle cx="44" cy="38" r="8" fill="none" stroke="#64748B" stroke-width="2" transform="translate(0, -5)"/>
+      <path d="M32 58 C32 50 56 50 56 58" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" transform="translate(0, -5)"/>
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Tổng số người dùng</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">2,450</text>
+    </g>
+
+    <g id="Card_Customers" transform="translate(370, 0)">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#DCFCE7" />
+      <circle cx="44" cy="38" r="8" fill="none" stroke="#16A34A" stroke-width="2" transform="translate(0, -5)"/>
+      <path d="M32 58 C32 50 56 50 56 58" stroke="#16A34A" stroke-width="2" fill="none" stroke-linecap="round" transform="translate(0, -5)"/>
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Người dùng đã mua hàng</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">2,445</text>
+    </g>
+
+    <g id="Card_Admins" transform="translate(740, 0)">
+      <rect x="0" y="0" width="340" height="130" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      <rect x="20" y="20" width="48" height="48" rx="12" fill="#FEF3C7" />
+      <circle cx="44" cy="38" r="8" fill="none" stroke="#D97706" stroke-width="2" transform="translate(0, -5)"/>
+      <path d="M32 58 C32 50 56 50 56 58" stroke="#D97706" stroke-width="2" fill="none" stroke-linecap="round" transform="translate(0, -5)"/>
+      <polygon points="44,22 47,27 52,27 48,31 49,36 44,33 39,36 40,31 36,27 41,27" fill="#D97706" transform="translate(10, -5)" />
+      <text x="85" y="40" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Quản trị viên (Admin)</text>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0F172A">5</text>
+    </g>
+
+    <g id="Users_Table_Section" transform="translate(0, 160)">
+      <rect x="0" y="0" width="1080" height="600" rx="16" fill="#FFFFFF" filter="url(#shadow-md)" />
+      
+      <text x="30" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Danh sách người dùng</text>
+      
+      <g id="Search_Bar" transform="translate(420, 14)">
+        <rect x="0" y="0" width="450" height="38" rx="19" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <circle cx="20" cy="19" r="6" stroke="#64748B" stroke-width="2" fill="none" />
+        <path d="M25 24 L31 30" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+        <text x="40" y="24" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">Tìm kiếm tên, email, SĐT...</text>
+      </g>
+
+      <g style="cursor: pointer;" transform="translate(890, 14)">
+        <rect x="0" y="0" width="160" height="38" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="15" y="24" font-family="Arial, sans-serif" font-size="14" fill="#0F172A">Tất cả vai trò</text>
+        <path d="M135 17 L140 23 L145 17" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <rect x="30" y="80" width="1020" height="44" rx="8" fill="#F8FAFC" />
+      <text x="50" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">STT</text>
+      <text x="120" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Khách hàng</text>
+      <text x="380" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Liên hệ</text>
+      <text x="680" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày tham gia</text>
+      <text x="840" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Vai trò</text>
+      <text x="980" y="107" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B" text-anchor="middle">Thao tác</text>
+
+      <g id="Table_Rows" transform="translate(0, 130)">
+        
+        <g id="Row_1" transform="translate(0, 0)">
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">1</text>
+          
+          <text x="120" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Nguyễn Văn Bằng</text>
+          <text x="120" y="45" font-family="Arial, sans-serif" font-size="13" fill="#64748B">nvbangg@gmail.com</text>
+          
+          <text x="380" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">0987.654.321</text>
+          <text x="380" y="45" font-family="Arial, sans-serif" font-size="13" fill="#475569">Học viện Bưu chính Viễn thông, Hà Nội</text>
+          
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="15" fill="#475569">01/01/2026</text>
+          
+          <g style="cursor: pointer;" transform="translate(840, 15)">
+            <rect x="0" y="0" width="110" height="32" rx="16" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" />
+            <circle cx="15" cy="16" r="4" fill="#D97706" />
+            <text x="28" y="21" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#D97706">Admin</text>
+            <path d="M85 14 L90 19 L95 14" stroke="#D97706" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          
+          <g style="cursor: pointer;" transform="translate(970, 20)">
+            <path d="M5 2 V0 C5 -2 7 -2 7 -2 H11 C11 -2 13 -2 13 0 V2 M3 2 H15 M5 2 V14 C5 16 13 16 13 14 V2" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          
+          <line x1="30" y1="65" x2="1050" y2="65" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_2" transform="translate(0, 75)">
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">2</text>
+          
+          <text x="120" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Trần Thị B</text>
+          <text x="120" y="45" font-family="Arial, sans-serif" font-size="13" fill="#64748B">tranthib@gmail.com</text>
+          
+          <text x="380" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">0912.345.678</text>
+          <text x="380" y="45" font-family="Arial, sans-serif" font-size="13" fill="#475569">Quận 1, TP. Hồ Chí Minh</text>
+          
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="15" fill="#475569">15/02/2026</text>
+          
+          <g style="cursor: pointer;" transform="translate(840, 15)">
+            <rect x="0" y="0" width="110" height="32" rx="16" fill="#DCFCE7" stroke="#22C55E" stroke-width="1" />
+            <circle cx="15" cy="16" r="4" fill="#16A34A" />
+            <text x="28" y="21" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">User</text>
+            <path d="M85 14 L90 19 L95 14" stroke="#16A34A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          
+          <g style="cursor: pointer;" transform="translate(970, 20)">
+            <path d="M5 2 V0 C5 -2 7 -2 7 -2 H11 C11 -2 13 -2 13 0 V2 M3 2 H15 M5 2 V14 C5 16 13 16 13 14 V2" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          
+          <line x1="30" y1="65" x2="1050" y2="65" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_3" transform="translate(0, 150)">
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">3</text>
+          
+          <text x="120" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Lê Văn C</text>
+          <text x="120" y="45" font-family="Arial, sans-serif" font-size="13" fill="#64748B">levanc@gmail.com</text>
+          
+          <text x="380" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">0933.111.222</text>
+          <text x="380" y="45" font-family="Arial, sans-serif" font-size="13" fill="#475569">Sơn Trà, Đà Nẵng</text>
+          
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="15" fill="#475569">20/02/2026</text>
+          
+          <g style="cursor: pointer;" transform="translate(840, 15)">
+            <rect x="0" y="0" width="110" height="32" rx="16" fill="#DCFCE7" stroke="#22C55E" stroke-width="1" />
+            <circle cx="15" cy="16" r="4" fill="#16A34A" />
+            <text x="28" y="21" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">User</text>
+            <path d="M85 14 L90 19 L95 14" stroke="#16A34A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          
+          <g style="cursor: pointer;" transform="translate(970, 20)">
+            <path d="M5 2 V0 C5 -2 7 -2 7 -2 H11 C11 -2 13 -2 13 0 V2 M3 2 H15 M5 2 V14 C5 16 13 16 13 14 V2" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          
+          <line x1="30" y1="65" x2="1050" y2="65" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+
+        <g id="Row_4" transform="translate(0, 225)">
+          <text x="50" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">4</text>
+          
+          <text x="120" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A">Phạm Thị D</text>
+          <text x="120" y="45" font-family="Arial, sans-serif" font-size="13" fill="#64748B">phamd@gmail.com</text>
+          
+          <text x="380" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">0888.999.000</text>
+          <text x="380" y="45" font-family="Arial, sans-serif" font-size="13" fill="#475569">Ninh Kiều, Cần Thơ</text>
+          
+          <text x="680" y="35" font-family="Arial, sans-serif" font-size="15" fill="#475569">01/03/2026</text>
+          
+          <g style="cursor: pointer;" transform="translate(840, 15)">
+            <rect x="0" y="0" width="110" height="32" rx="16" fill="#DCFCE7" stroke="#22C55E" stroke-width="1" />
+            <circle cx="15" cy="16" r="4" fill="#16A34A" />
+            <text x="28" y="21" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">User</text>
+            <path d="M85 14 L90 19 L95 14" stroke="#16A34A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          
+          <g style="cursor: pointer;" transform="translate(970, 20)">
+            <path d="M5 2 V0 C5 -2 7 -2 7 -2 H11 C11 -2 13 -2 13 0 V2 M3 2 H15 M5 2 V14 C5 16 13 16 13 14 V2" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          
+          <line x1="30" y1="65" x2="1050" y2="65" stroke="#E2E8F0" stroke-width="1" />
+        </g>
+      </g>
+
+      <g id="Pagination" transform="translate(0, 450)">
+        <g style="cursor: pointer;" transform="translate(420, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M21 12 L15 18 L21 24" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        
+        <g style="cursor: pointer;" transform="translate(466, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#2563EB" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+        </g>
+
+        <g style="cursor: pointer;" transform="translate(512, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="middle">2</text>
+        </g>
+
+        <g style="cursor: pointer;" transform="translate(558, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="18" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="middle">3</text>
+        </g>
+
+        <text x="616" y="23" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#94A3B8" text-anchor="middle">...</text>
+
+        <g style="cursor: pointer;" transform="translate(640, 0)">
+          <rect x="0" y="0" width="36" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <path d="M15 12 L21 18 L15 24" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </g>
+
+    </g>
+  </g>
+</svg>

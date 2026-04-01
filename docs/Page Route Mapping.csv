@@ -1,0 +1,29 @@
+STT,Name,Route,APIs Used,Note,Status
+1,Popup đăng ký/đăng nhập,(popup),"POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/users/me",Hiển thị username (không có phần @domain) trên nút account navbar,
+2,Popup đổi mật khẩu,(popup),PUT /api/users/password,User only,
+3,Trang chủ (tìm kiếm + sản phẩm),/?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=&page=1&pageSize=16,"GET /api/products
+GET /api/products/filters",,
+4,Trang chi tiết sản phẩm,/products/{id},"GET /api/products/{id}
+POST /api/cart",Chọn variant (size + color),
+5,Trang giỏ hàng + đặt hàng,/cart?page=1&pageSize=10,"GET /api/cart
+PUT /api/cart/{itemId}
+DELETE /api/cart/{itemId}
+POST /api/orders","User only, Cart + Checkout cùng trang",
+6,Trang đơn hàng đã đặt,/orders?page=1&pageSize=10,GET /api/orders,User only,
+7,Trang Xem thống kê (admin),/admin,GET /api/admin/statistics,Admin only,
+8,Trang quản lý sản phẩm (admin),/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=&isActive=&page=1&pageSize=10,GET /api/admin/products,Admin only,
+9,"Popup thêm, sửa sản phẩm (admin)",(popup) trên trang /admin/products,"GET /api/admin/products/{id}
+PUT /api/admin/products/{id}
+DELETE /api/admin/products/{id}
+POST /api/admin/products",Admin only,
+10,Trang quản lý đơn hàng (admin),/admin/orders?keyword=&status=&page=1&pageSize=10,"GET /api/admin/orders
+PUT /api/admin/orders/{id}",Admin only,
+11,Trang quản lý danh mục (admin),/admin/categories?keyword=&page=1&pageSize=10,"GET /api/admin/categories
+POST /api/admin/categories
+PUT /api/admin/categories/{id}","Admin only, Không có delete danh mục",
+12,Trang quản lý người dùng (admin),/admin/users?keyword=&role=&page=1&pageSize=10,"GET /api/admin/users
+PUT /api/admin/users/{id}
+DELETE /api/admin/users/{id}",Admin only,

@@ -1,0 +1,303 @@
+STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
+1,Đăng ký tài khoản,POST /api/auth/register,"{
+  ""email"": ""user@gmail.com"",
+  ""password"": ""12345678"",
+  ""name"": ""Nguyen Van A""
+}","{
+  ""id"": 1,
+  ""email"": ""user@gmail.com"",
+  ""name"": ""Nguyen Van A"",
+  ""role"": ""user"",
+  ""createdAt"": ""2026-04-01T10:00:00Z""
+}","409 — Email đã tồn tại
+400 — Password không hợp lệ",,
+2,Đăng nhập,POST /api/auth/login,"{
+  ""email"": ""user@gmail.com"",
+  ""password"": ""12345678""
+}","{
+  ""accessToken"": ""jwt_token_here"",
+  ""user"": {
+    ""id"": 1,
+    ""email"": ""user@gmail.com"",
+    ""name"": ""Nguyen Van A"",
+    ""role"": ""user""
+  }
+}",401 — Sai email hoặc password,,
+3,Đăng xuất,POST /api/auth/logout,{},"{
+  ""message"": ""Logout successful""
+}",401 — Chưa đăng nhập,,
+4,Đổi mật khẩu,PUT /api/users/password,"{
+  ""currentPassword"": ""12345678"",
+  ""newPassword"": ""newpassword123""
+}","{
+  ""message"": ""Password updated successfully""
+}","401 — Chưa đăng nhập
+400 — Mật khẩu hiện tại sai
+400 — Mật khẩu mới không hợp lệ",,
+5,Lấy thông tin bản thân,GET /api/users/me,,"{
+  ""id"": 1,
+  ""email"": ""user@gmail.com"",
+  ""name"": ""Nguyen Van A"",
+  ""phone"": ""0123456789"",
+  ""address"": ""Hanoi"",
+  ""role"": ""user""
+}",401 — Chưa đăng nhập,Dùng Hiển thị username (không có phần @domain) trên nút account navbar,
+6,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""name"": ""Áo thun"",
+      ""thumbnail"": ""url"",
+      ""price"": 200000,
+      ""gender"": ""unisex"",
+      ""categoryId"": 1
+    }
+  ],
+  ""page"": 1,
+  ""pageSize"": 16,
+  ""total"": 100
+}",400 — Giá trị filter không hợp lệ,"Không trả sản phẩm isActive=false.
+Sort: best_selling, newest, price_asc, price_desc; ",
+7,Lấy bộ lọc sản phẩm,GET /api/products/filters,,"{
+  ""categories"": [
+    { ""id"": 1, ""name"": ""Áo"" }
+  ],
+  ""colors"": [""red"", ""blue""],
+  ""sizes"": [""S"", ""M"", ""L""],
+  ""genders"": [""male"", ""female"", ""unisex""]
+}",,dùng để lấy giá trị lựa chọn cho bộ lọc,
+8,Lấy chi tiết sản phẩm,GET /api/products/{id},,"{
+  ""id"": 1,
+  ""name"": ""Áo thun"",
+  ""description"": ""Mô tả"",
+  ""thumbnail"": ""url"",
+  ""price"": 200000,
+  ""gender"": ""unisex"",
+  ""images"": [
+    { ""id"": 1, ""image"": ""url1"", ""sortOrder"": 0 }
+  ],
+  ""variants"": [
+    {
+      ""id"": 10,
+      ""size"": ""M"",
+      ""color"": ""red"",
+      ""stock"": 10,
+      ""priceOverride"": null
+    }
+  ]
+}",404 — Không tồn tại hoặc bị ẩn,Bao gồm variants + images,
+9,Thêm vào giỏ hàng,POST /api/cart,"{
+  ""productVariantId"": 10,
+  ""quantity"": 2
+}","{
+  ""message"": ""Added to cart""
+}","401 — Chưa đăng nhập
+400 — Quantity <= 0
+400 — Vượt quá stock
+404 — Variant không tồn tại",,
+10,Lấy giỏ hàng,GET /api/cart?page=1&pageSize=10,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""quantity"": 2,
+      ""variant"": {
+        ""id"": 10,
+        ""size"": ""M"",
+        ""color"": ""red"",
+        ""price"": 200000,
+        ""stock"": 10
+      },
+      ""product"": {
+        ""id"": 1,
+        ""name"": ""Áo thun"",
+        ""thumbnail"": ""url""
+      }
+    }
+  ],
+  ""totalPrice"": 400000
+}",401 — Chưa đăng nhập,,
+11,Cập nhật giỏ hàng,PUT /api/cart/{itemId},"{
+  ""quantity"": 3
+}","{
+  ""message"": ""Cart updated""
+}","401 — Chưa đăng nhập
+404 — Item không tồn tại
+400 — Quantity <= 0
+400 — Vượt quá stock",,
+12,Xóa item giỏ hàng,DELETE /api/cart/{itemId},,"{
+  ""message"": ""Item removed""
+}","401 — Chưa đăng nhập
+404 — Item không tồn tại",,
+13,Tạo đơn hàng,POST /api/orders,"{
+  ""shippingName"": ""Nguyen Van A"",
+  ""shippingPhone"": ""0123456789"",
+  ""shippingAddress"": ""Hanoi""
+}","{
+  ""id"": 1,
+  ""totalPrice"": 400000,
+  ""status"": ""pending"",
+  ""createdAt"": ""2026-04-01T10:00:00Z""
+}","401 — Chưa đăng nhập
+400 — Giỏ hàng rỗng
+400 — Sản phẩm hết hàng
+400 — Variant không hợp lệ hoặc đã bị xóa",Checkout ngay tại cart,
+14,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""totalPrice"": 400000,
+      ""status"": ""pending"",
+      ""createdAt"": ""2026-04-01T10:00:00Z""
+    }
+  ],
+  ""page"": 1,
+  ""pageSize"": 10,
+  ""total"": 5
+}",401 — Chưa đăng nhập,,
+15,Xem thống kê,GET /api/admin/statistics,,"{
+  ""totalRevenue"": 10000000,
+  ""totalOrders"": 200,
+  ""totalUsers"": 500,
+  ""revenueByMonth"": [
+    { ""month"": ""2026-03"", ""revenue"": 2000000 }
+  ]
+}","401 — Chưa đăng nhập
+403 — Không có quyền",,
+16,Lấy sản phẩm (admin),GET /api/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&isActive=&page=1&pageSize=10,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""name"": ""Áo thun"",
+      ""price"": 200000,
+      ""isActive"": true
+    }
+  ],
+  ""total"": 100
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+400 — Filter không hợp lệ",như /api/products nhưng có thêm lọc theo isActive,
+17,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},,"{
+  ""id"": 1,
+  ""name"": ""Áo thun"",
+  ""description"": ""Mô tả"",
+  ""categoryId"": 1,
+  ""price"": 200000,
+  ""isActive"": true,
+  ""images"": [],
+  ""variants"": []
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại",,
+18,Tạo sản phẩm (admin),POST /api/admin/products,"{
+  ""name"": ""Áo mới"",
+  ""categoryId"": 1,
+  ""description"": ""Mô tả"",
+  ""thumbnail"": ""url"",
+  ""gender"": ""unisex"",
+  ""price"": 200000,
+  ""isActive"": true,
+  ""images"": [
+    { ""image"": ""url"", ""sortOrder"": 0 }
+  ],
+  ""variants"": [
+    {
+      ""size"": ""M"",
+      ""color"": ""red"",
+      ""stock"": 10,
+      ""priceOverride"": null
+    }
+  ]
+}","{
+  ""id"": 10,
+  ""message"": ""Product created""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+400 — Dữ liệu không hợp lệ",Bao gồm variants + images,
+19,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},"{
+  ""name"": ""Áo updated"",
+  ""categoryId"": 1,
+  ""price"": 250000,
+  ""isActive"": true,
+  ""images"": [],
+  ""variants"": []
+}","{
+  ""message"": ""Product updated""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại
+400 — Dữ liệu không hợp lệ",,
+20,Xóa sản phẩm (admin),DELETE /api/admin/products/{id},,"{
+  ""message"": ""Product deleted""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại",,
+21,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""userId"": 1,
+      ""status"": ""pending"",
+      ""totalPrice"": 400000
+    }
+  ],
+  ""total"": 10
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+400 — Status không hợp lệ",,
+22,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},"{
+  ""status"": ""shipped""
+}","{
+  ""message"": ""Order status updated""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại
+400 — Status không hợp lệ",,
+23,Lấy danh mục (admin),GET /api/admin/categories?keyword=&page=1&pageSize=10,,"{
+  ""items"": [
+    { ""id"": 1, ""name"": ""Áo"" }
+  ],
+  ""total"": 5
+}","401 — Chưa đăng nhập
+403 — Không có quyền",,
+24,Tạo danh mục (admin),POST /api/admin/categories,"{
+  ""name"": ""Quần""
+}","{
+  ""id"": 2,
+  ""name"": ""Quần""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+409 — Trùng tên",,
+25,Cập nhật danh mục (admin),PUT /api/admin/categories/{id},"{
+  ""name"": ""Áo mới""
+}","{
+  ""message"": ""Category updated""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại
+409 — Trùng tên",,
+26,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,,"{
+  ""items"": [
+    {
+      ""id"": 1,
+      ""email"": ""user@gmail.com"",
+      ""role"": ""user""
+    }
+  ],
+  ""total"": 100
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+400 — Role không hợp lệ",,
+27,Cập nhật role user (admin),PUT /api/admin/users/{id},"{
+  ""role"": ""admin""
+}","{
+  ""message"": ""User updated""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại
+400 — Role không hợp lệ",,
+28,Xóa user (admin),DELETE /api/admin/users/{id},,"{
+  ""message"": ""User deleted""
+}","401 — Chưa đăng nhập
+403 — Không có quyền
+404 — Không tồn tại
+400 — Không thể xóa chính mình",,

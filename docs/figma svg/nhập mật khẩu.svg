@@ -9,8 +9,8 @@
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2563EB" flood-opacity="0.15"/>
     </filter>
-    <filter id="toastShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#10B981" flood-opacity="0.2"/>
+    <filter id="popupShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.15"/>
     </filter>
   </defs>
 
@@ -42,13 +42,11 @@
       <text x="980" y="45" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Tìm kiếm</text>
     </g>
 
-    <g id="User_Profile" style="cursor: pointer;">
-      <circle cx="1181" cy="40" r="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
-      <circle cx="1181" cy="35" r="6" stroke="#94A3B8" stroke-width="1.5" fill="none" />
-      <path d="M1169 48 C1169 41 1193 41 1193 48" stroke="#94A3B8" stroke-width="1.5" fill="none" />
-      
-      <text x="1211" y="46" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#0F172A">nvbangg</text>
-      <path d="M1296 37 L1303 44 L1310 37" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <g id="Button_Login" style="cursor: pointer;">
+      <circle cx="1230" cy="40" r="14" stroke="#0F172A" stroke-width="2" fill="none" />
+      <circle cx="1230" cy="35" r="5" stroke="#0F172A" stroke-width="2" fill="none" />
+      <path d="M1220.5 48.5 C1220.5 43.5 1239.5 43.5 1239.5 48.5" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      <text x="1255" y="47" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#004085">Đăng nhập</text>
     </g>
   </g>
 
@@ -57,25 +55,24 @@
     <g id="Sorting_And_Filters_Row">
       <text x="130" y="140" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Sắp xếp theo:</text>
       
-      <g id="Sort_Popular" style="cursor: pointer;">
-        <rect x="270" y="115" width="90" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-        <text x="315" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Nổi bật</text>
-      </g>
-      
       <g id="Sort_BestSeller" style="cursor: pointer;">
-        <rect x="375" y="115" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-        <text x="425" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Bán chạy</text>
+        <rect x="270" y="115" width="140" height="36" rx="18" fill="#F1F5F9" />
+        <text x="340" y="138" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">Bán chạy nhất</text>
       </g>
 
       <g id="Sort_Newest" style="cursor: pointer;">
-        <rect x="490" y="115" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-        <text x="540" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Mới nhất</text>
+        <rect x="425" y="115" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="475" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Mới nhất</text>
       </g>
 
-      <g id="Sort_Price" style="cursor: pointer;">
-        <rect x="605" y="115" width="80" height="36" rx="18" fill="#F1F5F9" />
-        <text x="635" y="138" font-family="Arial, sans-serif" font-size="15" fill="#0F172A" text-anchor="middle">Giá</text>
-        <path d="M652 138 L657 133 L662 138" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="Sort_Price_Asc" style="cursor: pointer;">
+        <rect x="540" y="115" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="590" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Giá tăng</text>
+      </g>
+
+      <g id="Sort_Price_Desc" style="cursor: pointer;">
+        <rect x="655" y="115" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+        <text x="705" y="138" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Giá giảm</text>
       </g>
 
       <g id="Button_Filter" style="cursor: pointer;">
@@ -119,10 +116,31 @@
     </g>
   </g>
 
-  <g id="Toast_Success">
-    <rect x="1080" y="920" width="320" height="64" rx="12" fill="#FFFFFF" filter="url(#toastShadow)" stroke="#10B981" stroke-width="1.5" />
-    <circle cx="1120" cy="952" r="14" fill="#10B981" />
-    <path d="M1114 952 L1118 957 L1126 947" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="1145" y="958" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Đăng nhập thành công</text>
+  <rect width="1440" height="1024" fill="#0F172A" opacity="0.6" />
+
+  <g id="Popup_Login_Password">
+    <rect x="440" y="240" width="560" height="460" rx="24" fill="#FFFFFF" filter="url(#popupShadow)" />
+    <g id="Close_Button" style="cursor: pointer;">
+      <circle cx="960" cy="280" r="16" fill="#F1F5F9" />
+      <path d="M954 274 L966 286 M966 274 L954 286" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+    </g>
+    <g id="Logo_Popup">
+      <circle cx="625" cy="300" r="16" fill="#2563EB" />
+      <circle cx="641" cy="300" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="670" y="308" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+    </g>
+    <text x="720" y="380" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0F172A" text-anchor="middle">Đăng nhập</text>
+    <text x="720" y="420" font-family="Arial, sans-serif" font-size="16" fill="#475569" text-anchor="middle">Nhập mật khẩu để đăng nhập.</text>
+    <g id="Input_Password">
+      <rect x="490" y="460" width="460" height="60" rx="30" fill="none" stroke="#2563EB" stroke-width="1.5" />
+      <text x="520" y="496" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập mật khẩu</text>
+      <path d="M895 490 C903 482 917 482 925 490 C917 498 903 498 895 490 Z" fill="none" stroke="#94A3B8" stroke-width="2"/>
+      <circle cx="910" cy="490" r="3" fill="#94A3B8"/>
+    </g>
+    <g id="Button_Continue" style="cursor: pointer;">
+      <rect x="490" y="560" width="460" height="60" rx="30" fill="#FFC83D" />
+      <text x="680" y="596" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A" text-anchor="middle">Tiếp tục</text>
+      <path d="M760 584 L768 590 L760 596 M748 590 L767 590" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
   </g>
 </svg>
