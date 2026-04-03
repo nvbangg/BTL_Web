@@ -361,5 +361,43 @@ const MOCK_DATA = {
     2: [
       { itemId: 3, productId: 8, variantId: 801, quantity: 1 }
     ]
-  }
+  },
+
+  users: [
+    { id: 1, email: 'nvbangg@gmail.com', name: 'Nguyễn Văn Bằng', role: 'admin', createdAt: '2026-01-10', phone: '0987654321', address: 'Ký túc xá B2' },
+    { id: 2, email: 'john.doe@gmail.com', name: 'John Doe', role: 'user', createdAt: '2026-01-15', phone: '0912345678', address: '123 Main St' },
+    { id: 3, email: 'jane.smith@gmail.com', name: 'Jane Smith', role: 'user', createdAt: '2026-01-20', phone: '0934567890', address: '456 Oak Ave' },
+    { id: 4, email: 'admin@fashonshop.com', name: 'Admin Shop', role: 'admin', createdAt: '2025-12-01', phone: '0932112341', address: 'Head Office, HCM' },
+    { id: 5, email: 'customer1@email.com', name: 'Trần Thị Hương', role: 'user', createdAt: '2026-02-01', phone: '0923456789', address: 'District 1, HCMC' },
+    { id: 6, email: 'customer2@email.com', name: 'Phạm Minh Tuấn', role: 'user', createdAt: '2026-02-05', phone: '0945678901', address: 'District 3, HCMC' },
+    { id: 7, email: 'customer3@email.com', name: 'Lê Quốc Huy', role: 'user', createdAt: '2026-02-10', phone: '0956789012', address: 'District 5, HCMC' },
+    { id: 8, email: 'test.user@gmail.com', name: 'Test User', role: 'user', createdAt: '2026-02-15', phone: '0967890123', address: 'District 7, HCMC' }
+  ]
 };
+
+// Mock helper functions
+function mockGetUsers() {
+  return MOCK_DATA.users;
+}
+
+function mockGetUserById(id) {
+  return MOCK_DATA.users.find(u => u.id === id);
+}
+
+function mockUpdateUserRole(id, role) {
+  const user = MOCK_DATA.users.find(u => u.id === id);
+  if (user) {
+    user.role = role;
+    return user;
+  }
+  return null;
+}
+
+function mockDeleteUser(id) {
+  const index = MOCK_DATA.users.findIndex(u => u.id === id);
+  if (index !== -1) {
+    MOCK_DATA.users.splice(index, 1);
+    return true;
+  }
+  return false;
+}

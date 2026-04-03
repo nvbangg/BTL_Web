@@ -1,14 +1,20 @@
-﻿/* ===== HOME PAGE (VIEW ONLY) ===== */
+﻿/* ===== HOME PAGE (API CALLS) ===== */
 let HOME_PAGE = 1;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await initPage();
 
-  const categories = mockGetCategories();
-  const catContainer = document.getElementById('filter-categories');
-  categories.forEach((c) => {
-    catContainer.innerHTML += `<label class="checkbox-wrap"><input type="checkbox" name="category" value="${c.id}"><span>${c.name}</span></label>`;
-  });
+  try {
+    const filters = await apiGetProductFilters();
+    const catContainer = document.getElementById('filter-categories');
+    if (filters.categories) {
+      filters.categories.forEach((c) => {
+        catContainer.innerHTML += `<label class="checkbox-wrap"><input type="checkbox" name="category" value="${c.id}"><span>${c.name}</span></label>`;
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load categories', error);
+  }
 
   document.querySelectorAll('.sort-pill').forEach((pill) => {
     pill.addEventListener('click', () => {
@@ -48,30 +54,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadProducts();
 });
 
-function loadProducts() {
+async function loadProducts() {
   const grid = document.getElementById('product-grid');
   const empty = document.getElementById('empty-state');
   const paginationArea = document.getElementById('pagination-area');
 
-  const keyword = (getParam('keyword') || '').trim().toLowerCase();
-  const allProducts = mockGetProducts();
+  const keyword = (getParam('keyword') || '').trim();
+  const sortBtn = document.querySelector('.sort-pill.active');
+  const sortMap = { popular: 'best_selling', 'best-seller': 'best_selling', newest: 'newest', 'price-asc': 'price_asc' };
+  const sort = sortMap[sortBtn?.dataset.sort] || 'best_selling';
 
-  if (keyword) {
-    const filtered = allProducts.filter((p) => String(p.name || '').toLowerCase().includes(keyword));
-    const pageSize = 12;
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    HOME_PAGE = Math.min(Math.max(1, HOME_PAGE), totalPages);
-    const start = (HOME_PAGE - 1) * pageSize;
-    renderResult(filtered.slice(start, start + pageSize), HOME_PAGE, totalPages);
-    return;
-  }
+  const params = {
+    keyword: keyword || undefined,
+    sort,
+    page: HOME_PAGE,
+    pageSize: 16
+  };
 
-  const totalPages = mockGetTotalPages();
-  HOME_PAGE = Math.min(Math.max(1, HOME_PAGE), totalPages);
-  const products = mockGetProductsByPage(HOME_PAGE);
-  renderResult(products, HOME_PAGE, totalPages);
+  try {
+    const response = await apiGetProducts(params);
+    const products = response.items || [];
+    const page = response.page || HOME_PAGE;
+    const total = response.total || 0;
+    const pageSize = response.pageSize || 16;
+    const totalPages = Math.ceil(total / pageSize) || 1;
 
-  function renderResult(products, page, pages) {
     if (!products.length) {
       grid.innerHTML = '';
       empty.style.display = 'flex';
@@ -81,11 +88,16 @@ function loadProducts() {
 
     empty.style.display = 'none';
     grid.innerHTML = products.map((p) => renderProductCard(p)).join('');
-    paginationArea.innerHTML = renderPagination(page, pages);
+    paginationArea.innerHTML = renderPagination(page, totalPages);
     bindPagination(paginationArea, (nextPage) => {
       HOME_PAGE = nextPage;
       loadProducts();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  } catch (error) {
+    console.error('Failed to load products', error);
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    paginationArea.innerHTML = '';
   }
 }

@@ -11,15 +11,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   const id = getParam('id');
   if (!id) return (window.location.href = '../');
 
-  const categories = mockGetCategories();
-  product = mockGetProducts().find((p) => String(p.id) === String(id)) || null;
-  categoryMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
+  try {
+    const data = await apiGetProductDetail(id);
+    product = data;
 
-  if (!product) return (window.location.href = '../');
+    const filtersResp = await apiGetProductFilters();
+    if (filtersResp.categories) {
+      categoryMap = Object.fromEntries(filtersResp.categories.map((c) => [c.id, c.name]));
+    }
 
-  document.title = product.name + ' - Fashon Shop';
-  document.getElementById('breadcrumb-name').textContent = product.name;
-  renderDetail();
+    if (!product) return (window.location.href = '../');
+
+    document.title = product.name + ' - Fashon Shop';
+    document.getElementById('breadcrumb-name').textContent = product.name;
+    renderDetail();
+  } catch (error) {
+    console.error('Failed to load product', error);
+    window.location.href = '../';
+  }
 });
 
 function renderDetail() {
@@ -28,17 +37,18 @@ function renderDetail() {
   selectedQty = 1;
   const totalStock = getTotalStock(product);
   const categoryName = categoryMap[product.categoryId] || '';
+  const productImages = product.images || [];
 
   const container = document.getElementById('product-detail');
   container.innerHTML = `
     <div class="pd-gallery">
-      <img class="pd-main-img" id="main-img" src="../${product.images[0]}" alt="${product.name}">
+      <img class="pd-main-img" id="main-img" src="../${productImages[0]?.image || product.thumbnail}" alt="${product.name}">
       <div class="pd-thumbs-wrap">
         <button class="pd-thumb-arrow" id="thumb-prev">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div class="pd-thumbs">
-          ${product.images.map((img, i) => `<img class="pd-thumb ${i === 0 ? 'active' : ''}" src="../${img}" data-idx="${i}" alt="">`).join('')}
+          ${productImages.map((img, i) => `<img class="pd-thumb ${i === 0 ? 'active' : ''}" src="../${img.image}" data-idx="${i}" alt="">`).join('')}
         </div>
         <button class="pd-thumb-arrow" id="thumb-next">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -48,8 +58,8 @@ function renderDetail() {
     <div class="pd-info">
       <h1 class="pd-name">${product.name}</h1>
       <div class="pd-price-row">
-        <div class="pd-price" id="pd-price">${formatPrice(product.basePrice)}</div>
-        <div class="pd-sold">Đã bán: ${product.soldCount >= 1000 ? (product.soldCount / 1000).toFixed(1) + 'k' : product.soldCount}</div>
+        <div class="pd-price" id="pd-price">${formatPrice(product.price)}</div>
+        <div class="pd-sold">Đã bán: ${product.soldCount >= 1000 ? (product.soldCount / 1000).toFixed(1) + 'k' : product.soldCount || 0}</div>
       </div>
       <div class="pd-separator"></div>
 
@@ -129,7 +139,7 @@ function renderDetail() {
   });
 
   // Add to cart
-  document.getElementById('btn-add-cart')?.addEventListener('click', () => {
+  document.getElementById('btn-add-cart')?.addEventListener('click', async () => {
     if (!selectedSize) {
       showToast('Vui lòng chọn size trước khi thêm vào giỏ hàng', 'warning');
       return;
@@ -139,7 +149,20 @@ function renderDetail() {
       showToast('Sản phẩm đã hết hàng', 'error');
       return;
     }
-    showToast(`Đã thêm ${selectedQty} "${product.name}" (${selectedColor}/${selectedSize}) vào giỏ hàng`, 'success');
+    
+    const user = getCurrentUser();
+    if (!user) {
+      showToast('Vui lòng đăng nhập trước', 'warning');
+      openAuth();
+      return;
+    }
+
+    try {
+      await apiAddToCart(variant.id, selectedQty);
+      showToast(`Đã thêm ${selectedQty} "${product.name}" (${selectedColor}/${selectedSize}) vào giỏ hàng`, 'success');
+    } catch (error) {
+      showToast('Lỗi khi thêm vào giỏ hàng', 'error');
+    }
   });
 
   renderSizes();

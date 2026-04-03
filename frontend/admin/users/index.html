@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý người dùng - Fashon Shop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../admin.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Quản lý người dùng</h1>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Danh sách người dùng</h3>
+            <div class="admin-card-tools">
+              <input class="admin-search-input" id="user-search" placeholder="Tìm email người dùng..." style="width:300px">
+              <select class="admin-filter-select" id="user-role-filter">
+                <option value="">Tất cả vai trò</option>
+                <option value="user">Người dùng</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="users-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Tên</th>
+                  <th>Vai trò</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="auth"></div>
+
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../mock/api-responses.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/auth.js"></script>
+  <script src="users.js"></script>
+</body>
+</html>

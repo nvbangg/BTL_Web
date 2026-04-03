@@ -1,11 +1,7 @@
-﻿/* ===== AUTH (DIRECT MOCK CHECK) ===== */
-const AUTH_STORAGE_KEY = 'mockCurrentUser';
+﻿/* ===== AUTH (JWT TOKEN) ===== */
+const AUTH_STORAGE_KEY = 'currentUser';
+const USER_INFO_KEY = 'userInfo';
 let authPendingEmail = '';
-
-function getMockUsersDirectly() {
-  if (typeof MOCK_DATA === 'undefined' || !MOCK_DATA) return [];
-  return Array.isArray(MOCK_DATA.users) ? MOCK_DATA.users : [];
-}
 
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
@@ -13,7 +9,7 @@ function normalizeEmail(email) {
 
 function getCurrentUser() {
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    const raw = localStorage.getItem(USER_INFO_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -21,11 +17,13 @@ function getCurrentUser() {
 }
 
 function setCurrentUser(user) {
-  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+  localStorage.setItem(USER_INFO_KEY, JSON.stringify(user));
 }
 
 function clearCurrentUser() {
-  localStorage.removeItem(AUTH_STORAGE_KEY);
+  localStorage.removeItem(USER_INFO_KEY);
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('refresh_token');
 }
 
 function applyAuthUiState() {
@@ -38,7 +36,7 @@ function applyAuthUiState() {
   if (user) {
     if (loginArea) loginArea.style.display = 'none';
     if (userArea) userArea.style.display = 'flex';
-    if (userName) userName.textContent = user.displayName || user.email;
+    if (userName) userName.textContent = user.name || user.email;
     if (adminLink) adminLink.style.display = user.role === 'admin' ? 'flex' : 'none';
   } else {
     if (loginArea) loginArea.style.display = 'flex';
@@ -69,11 +67,12 @@ function setupHeaderUserMenu() {
   }
 
   if (logoutBtn) {
-    logoutBtn.onclick = () => {
+    logoutBtn.onclick = async () => {
+      await apiLogout();
       clearCurrentUser();
       if (dropdown) dropdown.classList.remove('show');
       applyAuthUiState();
-      showToast('Da dang xuat', 'success');
+      showToast('Đã đăng xuất', 'success');
     };
   }
 
@@ -103,7 +102,7 @@ function setupAuthForms() {
     btn.onclick = () => showAuthStep('email');
   });
 
-  emailForm.onsubmit = (e) => {
+  emailForm.onsubmit = async (e) => {
     e.preventDefault();
     clearFormError(emailForm);
 
@@ -111,38 +110,39 @@ function setupAuthForms() {
     if (!email) return;
 
     authPendingEmail = email;
-    const existingUser = getMockUsersDirectly().find((u) => normalizeEmail(u.email) === email);
-
-    if (existingUser) {
-      const emailDisplay = document.querySelector('.auth-email-display');
-      if (emailDisplay) emailDisplay.textContent = email;
-      showAuthStep('password');
-      passwordForm.reset();
-      return;
-    }
-
-    registerForm.email.value = email;
-    showAuthStep('register');
+    
+    // Try login first (user exists)
+    const emailDisplay = document.querySelector('.auth-email-display');
+    if (emailDisplay) emailDisplay.textContent = email;
+    showAuthStep('password');
+    passwordForm.reset();
   };
 
-  passwordForm.onsubmit = (e) => {
+  passwordForm.onsubmit = async (e) => {
     e.preventDefault();
     clearFormError(passwordForm);
 
     const password = String(passwordForm.password.value || '');
-    const matchedUser = getMockUsersDirectly().find((u) => (
-      normalizeEmail(u.email) === authPendingEmail && String(u.password) === password
-    ));
+    if (!password) return;
 
-    if (!matchedUser) {
-      showFormError(passwordForm, 'Sai mat khau, vui long thu lai.');
-      return;
+    try {
+      passwordForm.querySelector('button').disabled = true;
+      const response = await apiLogin(authPendingEmail, password);
+      const user = {
+        id: response.user.id,
+        email: response.user.email,
+        name: response.user.name,
+        role: response.user.role
+      };
+      onLoginSuccess(user);
+    } catch (error) {
+      showFormError(passwordForm, 'Sai mật khẩu, vui lòng thử lại.');
+    } finally {
+      passwordForm.querySelector('button').disabled = false;
     }
-
-    onLoginSuccess(matchedUser);
   };
 
-  registerForm.onsubmit = (e) => {
+  registerForm.onsubmit = async (e) => {
     e.preventDefault();
     clearFormError(registerForm);
 
@@ -151,19 +151,34 @@ function setupAuthForms() {
     const confirm = String(registerForm.confirmPassword.value || '');
 
     if (!displayName) {
-      showFormError(registerForm, 'Vui long nhap ten hien thi.');
+      showFormError(registerForm, 'Vui lòng nhập tên hiển thị.');
       return;
     }
     if (password.length < 6) {
-      showFormError(registerForm, 'Mat khau toi thieu 6 ky tu.');
+      showFormError(registerForm, 'Mật khẩu tối thiểu 6 ký tự.');
       return;
     }
     if (password !== confirm) {
-      showFormError(registerForm, 'Mat khau xac nhan khong khop.');
+      showFormError(registerForm, 'Mật khẩu xác nhận không khớp.');
       return;
     }
 
-    showFormError(registerForm, 'Email chua ton tai trong mock users. Hay dung tai khoan co san trong api-responses.js');
+    try {
+      registerForm.querySelector('button').disabled = true;
+      const response = await apiRegister(authPendingEmail, password, displayName);
+      const user = {
+        id: response.id,
+        email: response.email,
+        name: response.name,
+        role: response.role
+      };
+      onLoginSuccess(user);
+    } catch (error) {
+      const msg = error.message.includes('Email') ? 'Email đã tồn tại.' : 'Đăng ký thất bại.';
+      showFormError(registerForm, msg);
+    } finally {
+      registerForm.querySelector('button').disabled = false;
+    }
   };
 }
 
@@ -204,11 +219,11 @@ function onLoginSuccess(user) {
   const safeUser = {
     id: user.id,
     email: user.email,
-    displayName: user.displayName,
+    name: user.name,
     role: user.role || 'user'
   };
   setCurrentUser(safeUser);
   closeAuth();
   applyAuthUiState();
-  showToast(`Xin chao, ${safeUser.displayName || safeUser.email}`, 'success');
+  showToast(`Xin chào, ${safeUser.name || safeUser.email}`, 'success');
 }

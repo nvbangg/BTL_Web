@@ -4,69 +4,37 @@ let isOrderPanelExpanded = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await initPage();
+  
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = '../';
+    return;
+  }
+  
   loadCart();
   bindCartEvents();
   bindOrderEvents();
 });
 
-function loadCart() {
-  cartItems = resolveCartItemsDirectly().map((item) => ({
-    ...item,
-    checked: true
-  }));
+async function loadCart() {
+  try {
+    const response = await apiGetCart(1, 100);
+    cartItems = (response.items || []).map((item) => ({
+      ...item,
+      checked: true
+    }));
+  } catch (error) {
+    console.error('Failed to load cart', error);
+    cartItems = [];
+  }
   renderCartPage();
 }
 
-function getCurrentMockUserId() {
-  try {
-    const raw = localStorage.getItem('mockCurrentUser');
-    const user = raw ? JSON.parse(raw) : null;
-    if (user && user.id) return Number(user.id);
-  } catch {
-    // Fallback below.
-  }
-  const data = typeof MOCK_DATA !== 'undefined' ? MOCK_DATA : null;
-  const cartKeys = Object.keys((data && data.cart) || {});
-  return Number(cartKeys[0] || 0);
-}
-
-function resolveCartItemsDirectly() {
-  const data = (typeof MOCK_DATA !== 'undefined' && MOCK_DATA) ? MOCK_DATA : null;
-  if (!data) return [];
-
-  const userId = getCurrentMockUserId();
-  if (!userId) return [];
-
-  const rawItems = Array.isArray(data.cart?.[userId]) ? data.cart[userId] : [];
-  if (!rawItems.length) return [];
-
-  const allProducts = [
-    ...(Array.isArray(data.productsPage1) ? data.productsPage1 : []),
-    ...(Array.isArray(data.productsPage2) ? data.productsPage2 : [])
-  ];
-
-  return rawItems
-    .map((item) => {
-      const product = allProducts.find((p) => Number(p.id) === Number(item.productId));
-      if (!product) return null;
-
-      const variant = (product.variants || []).find((v) => Number(v.id) === Number(item.variantId));
-      if (!variant) return null;
-
-      return {
-        itemId: Number(item.itemId),
-        product,
-        variant,
-        quantity: Math.max(1, Number(item.quantity) || 1)
-      };
-    })
-    .filter(Boolean);
-}
-
 function getItemPrice(item) {
-  const variantPrice = Number(item?.variant?.price);
-  if (Number.isFinite(variantPrice) && variantPrice > 0) return variantPrice;
-  return Number(item?.product?.basePrice) || 0;
+  if (typeof item.variant?.priceOverride === 'number' && item.variant.priceOverride > 0) {
+    return item.variant.priceOverride;
+  }
+  return Number(item.product?.price) || 0;
 }
 
 function formatVnd(value) {
@@ -111,16 +79,17 @@ function renderCartItems() {
   list.innerHTML = cartItems.map((item) => {
     const price = getItemPrice(item);
     const subtotal = price * item.quantity;
+    const imgUrl = item.product?.images?.[0]?.image || item.product?.thumbnail || '';
     return `
-      <div class="cart-item" data-item-id="${item.itemId}">
+      <div class="cart-item" data-item-id="${item.id}">
         <div class="cart-item-check">
-          <input type="checkbox" class="item-check" data-item-id="${item.itemId}" ${item.checked ? 'checked' : ''}>
+          <input type="checkbox" class="item-check" data-item-id="${item.id}" ${item.checked ? 'checked' : ''}>
         </div>
-        <img class="cart-item-img" src="../${item.product.images[0]}" alt="${item.product.name}">
+        <img class="cart-item-img" src="../${imgUrl}" alt="${item.product?.name}">
         <div class="cart-item-info">
           <div class="cart-item-top">
-            <div class="cart-item-name">${item.product.name}</div>
-            <button type="button" class="cart-item-remove" data-remove-id="${item.itemId}" aria-label="Xóa sản phẩm">
+            <div class="cart-item-name">${item.product?.name}</div>
+            <button type="button" class="cart-item-remove" data-remove-id="${item.id}" aria-label="Xóa sản phẩm">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 3h6"></path>
                 <path d="M10 7v10"></path>
@@ -130,15 +99,15 @@ function renderCartItems() {
               </svg>
             </button>
           </div>
-          <div class="cart-item-variant">Màu sắc: ${item.variant.color} - Size: ${item.variant.size}</div>
+          <div class="cart-item-variant">Màu sắc: ${item.variant?.color} - Size: ${item.variant?.size}</div>
           <div class="cart-item-unit-price">Đơn giá: <strong>${formatVnd(price)}</strong></div>
           <div class="cart-item-bottom">
             <div class="cart-qty-row">
               <div class="cart-qty-label">Số lượng:</div>
               <div class="qty-control">
-                <button type="button" class="qty-minus" data-qty-id="${item.itemId}">-</button>
+                <button type="button" class="qty-minus" data-qty-id="${item.id}">-</button>
                 <span>${item.quantity}</span>
-                <button type="button" class="qty-plus" data-qty-id="${item.itemId}">+</button>
+                <button type="button" class="qty-plus" data-qty-id="${item.id}">+</button>
               </div>
             </div>
             <div class="cart-item-subtotal">Số tiền: ${formatVnd(subtotal)}</div>
@@ -199,16 +168,21 @@ function bindCartEvents() {
     const check = e.target.closest('.item-check');
     if (!check) return;
     const id = Number(check.dataset.itemId);
-    cartItems = cartItems.map((item) => (item.itemId === id ? { ...item, checked: check.checked } : item));
+    cartItems = cartItems.map((item) => (item.id === id ? { ...item, checked: check.checked } : item));
     refreshCartView();
   });
 
-  list.addEventListener('click', (e) => {
+  list.addEventListener('click', async (e) => {
     const removeBtn = e.target.closest('[data-remove-id]');
     if (removeBtn) {
       const removeId = Number(removeBtn.dataset.removeId);
-      cartItems = cartItems.filter((item) => item.itemId !== removeId);
-      refreshCartView();
+      try {
+        await apiDeleteCartItem(removeId);
+        cartItems = cartItems.filter((item) => item.id !== removeId);
+        refreshCartView();
+      } catch (error) {
+        showToast('Lỗi khi xóa sản phẩm', 'error');
+      }
       return;
     }
 
@@ -216,12 +190,17 @@ function bindCartEvents() {
     if (!qtyBtn) return;
     const itemId = Number(qtyBtn.dataset.qtyId);
     const isPlus = qtyBtn.classList.contains('qty-plus');
-    cartItems = cartItems.map((item) => {
-      if (item.itemId !== itemId) return item;
-      const nextQty = isPlus ? item.quantity + 1 : Math.max(1, item.quantity - 1);
-      return { ...item, quantity: nextQty };
-    });
-    refreshCartView();
+    const item = cartItems.find(item => item.id === itemId);
+    if (!item) return;
+    
+    const nextQty = isPlus ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+    try {
+      await apiUpdateCartItem(itemId, nextQty);
+      cartItems = cartItems.map((item) => (item.id !== itemId) ? item : { ...item, quantity: nextQty });
+      refreshCartView();
+    } catch (error) {
+      showToast('Lỗi khi cập nhật giỏ hàng', 'error');
+    }
   });
 }
 
@@ -248,7 +227,7 @@ function bindOrderEvents() {
     form.requestSubmit();
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(form);
     const recipientName = String(fd.get('recipientName') || '').trim();
@@ -260,28 +239,35 @@ function bindOrderEvents() {
       return;
     }
 
-    const selectedIds = new Set(getSelectedItems().map((item) => item.itemId));
-    cartItems = cartItems.filter((item) => !selectedIds.has(item.itemId));
+    try {
+      form.querySelector('button[type="submit"]').disabled = true;
+      await apiCreateOrder(recipientName, phone, address);
+      
+      const selectedIds = new Set(getSelectedItems().map((item) => item.id));
+      cartItems = cartItems.filter((item) => !selectedIds.has(item.id));
 
-    isOrderPanelExpanded = false;
-    refreshCartView();
-    showToast('Đặt hàng thành công', 'success');
-    form.reset();
+      isOrderPanelExpanded = false;
+      refreshCartView();
+      showToast('Đặt hàng thành công', 'success');
+      form.reset();
+      
+      // Redirect to orders page after 1s
+      setTimeout(() => {
+        window.location.href = '../orders/';
+      }, 1000);
+    } catch (error) {
+      showToast('Lỗi khi đặt hàng', 'error');
+    } finally {
+      form.querySelector('button[type="submit"]').disabled = false;
+    }
   });
 }
 
-function prefillOrderForm(form) {
-  let user = null;
-  try {
-    const raw = localStorage.getItem('mockCurrentUser');
-    user = raw ? JSON.parse(raw) : null;
-  } catch {
-    user = null;
+async function prefillOrderForm(form) {
+  const user = getCurrentUser();
+  if (user) {
+    form.recipientName.value = user.name || '';
+    form.phone.value = user.phone || '';
+    form.address.value = user.address || '';
   }
-
-  const users = (typeof MOCK_DATA !== 'undefined' && Array.isArray(MOCK_DATA.users)) ? MOCK_DATA.users : [];
-  const profile = users.find((u) => Number(u.id) === Number(user?.id)) || users[0] || {};
-  form.recipientName.value = profile.displayName || '';
-  form.phone.value = profile.phone || '';
-  form.address.value = profile.address || '';
 }

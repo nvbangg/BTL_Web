@@ -149,15 +149,18 @@ function mockGetCartCount() {
 
 function renderProductCard(product) {
   const base = getBasePath();
-  const totalStock = getTotalStock(product);
+  // Use thumbnail from API if available, else fall back to images[0]
+  const imgUrl = product.thumbnail || (product.images && product.images[0]) || '';
+  const price = product.price || product.basePrice || 0;
+  const totalStock = product.totalStock !== undefined ? product.totalStock : getTotalStock(product);
   let badge = '';
-  if (totalStock === 0) badge = '<span class="product-card-badge out-of-stock">Het hang</span>';
+  if (totalStock === 0) badge = '<span class="product-card-badge out-of-stock">Hết hàng</span>';
   return `
     <a href="${base}products/?id=${product.id}" class="product-card">
       ${badge}
-      <img class="product-card-img" src="${base}${product.images[0]}" alt="${product.name}" loading="lazy">
+      <img class="product-card-img" src="${base}${imgUrl}" alt="${product.name}" loading="lazy">
       <div class="product-card-body">
-        <div class="product-card-price">${formatPrice(product.basePrice)}</div>
+        <div class="product-card-price">${formatPrice(price)}</div>
         <div class="product-card-name">${product.name}</div>
       </div>
     </a>`;

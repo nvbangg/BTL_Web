@@ -85,6 +85,7 @@ function initAdminSidebar(activeTab) {
     orders: adminBase + 'orders/',
     products: adminBase + 'products/',
     categories: adminBase + 'categories/',
+    users: adminBase + 'users/',
     home: base
   };
 

@@ -1,58 +1,54 @@
-﻿/* ===== TRANG ĐƠN HÀNG ===== */
+﻿/* ===== ORDERS PAGE ===== */
 document.addEventListener('DOMContentLoaded', async () => {
   await initPage();
+
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = '../';
+    return;
+  }
+
   loadOrders();
 });
 
 function formatDateVN(isoStr) {
   if (!isoStr) return '';
-  const parts = isoStr.split('-');
-  if (parts.length !== 3) return isoStr;
-  return parts[2] + '/' + parts[1] + '/' + parts[0];
+  try {
+    const date = new Date(isoStr);
+    return date.toLocaleDateString('vi-VN');
+  } catch {
+    return isoStr;
+  }
 }
 
-function loadOrders() {
-  const orders = mockGetOrders();
+async function loadOrders() {
   const list = document.getElementById('orders-list');
   const empty = document.getElementById('orders-empty');
 
-  if (!orders.length) {
+  try {
+    const response = await apiGetOrders(1, 100);
+    const orders = response.items || [];
+
+    if (!orders.length) {
+      list.innerHTML = '';
+      empty.style.display = 'flex';
+      return;
+    }
+
+    empty.style.display = 'none';
+    list.innerHTML = orders.map((order) => `
+      <div class="order-card">
+        <div class="order-card-header">
+          <span class="order-card-id">#${order.id}</span>
+          <span class="order-card-date">${formatDateVN(order.createdAt)}</span>
+          <span class="order-card-total">${formatPrice(order.totalPrice)}</span>
+          <span class="status-badge ${order.status}">${getStatusText(order.status)}</span>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Failed to load orders', error);
     list.innerHTML = '';
     empty.style.display = 'flex';
-    return;
   }
-
-  empty.style.display = 'none';
-  list.innerHTML = orders.map((order) => `
-    <div class="order-card">
-      <div class="order-card-header">
-        <span class="order-card-id">#${order.id}</span>
-        <span class="order-card-date">${formatDateVN(order.createdAt)}</span>
-        <span class="order-card-date">${formatDateVN(order.updatedAt)}</span>
-        <span class="order-card-total">${formatPrice(order.total)}</span>
-        <span class="status-badge ${order.status}">${getStatusText(order.status)}</span>
-      </div>
-      <div class="order-card-body">
-        <div class="order-card-products">
-          <div class="order-section-title">Sản phẩm (${order.items.length})</div>
-          ${order.items.map((item) => `
-            <div class="order-item">
-              <img class="order-item-img" src="../${item.image}" alt="${item.name}">
-              <div class="order-item-info">
-                <div class="order-item-name">${item.name}</div>
-                <div class="order-item-variant">Phân loại: ${item.color} - ${item.size} | Số lượng: ${item.quantity}</div>
-              </div>
-              <div class="order-item-price">${formatPrice(item.price * item.quantity)}</div>
-            </div>
-          `).join('')}
-        </div>
-        <div class="order-card-delivery">
-          <div class="order-section-title">Thông tin giao hàng</div>
-          <div class="order-delivery-row"><span class="order-delivery-label">Người nhận:</span> <span>${order.recipientName}</span></div>
-          <div class="order-delivery-row"><span class="order-delivery-label">Số ĐT:</span> <span>${order.phone}</span></div>
-          <div class="order-delivery-row"><span class="order-delivery-label">Địa chỉ:</span> <span>${order.address}</span></div>
-        </div>
-      </div>
-    </div>
-  `).join('');
 }
