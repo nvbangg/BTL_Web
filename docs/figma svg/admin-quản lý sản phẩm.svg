@@ -42,14 +42,7 @@
       <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563EB">Quản lý sản phẩm</text>
     </g>
 
-    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
-      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
-      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      <circle cx="51" cy="24" r="2" fill="#475569" />
-      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
-    </g>
-
-    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+    <g id="Nav_Users" transform="translate(0, 180)" style="cursor: pointer;">
       <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
       <circle cx="55" cy="20" r="6" stroke="#64748B" stroke-width="2" fill="none"/>
       <path d="M43 36 C43 30 67 30 67 36" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -149,29 +142,28 @@
       <g id="Sorting_And_Filters_Row" transform="translate(30, 80)">
         <text x="0" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Sắp xếp theo:</text>
         
-        <g id="Sort_Popular" style="cursor: pointer;">
-          <rect x="130" y="0" width="90" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-          <text x="175" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Nổi bật</text>
-        </g>
-        
         <g id="Sort_BestSeller" style="cursor: pointer;">
-          <rect x="235" y="0" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-          <text x="285" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Bán chạy</text>
+          <rect x="130" y="0" width="140" height="36" rx="18" fill="#F1F5F9" />
+          <text x="200" y="23" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">Bán chạy nhất</text>
         </g>
 
         <g id="Sort_Newest" style="cursor: pointer;">
-          <rect x="350" y="0" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
-          <text x="400" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Mới nhất</text>
+          <rect x="285" y="0" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="335" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Mới nhất</text>
         </g>
 
-        <g id="Sort_Price" style="cursor: pointer;">
-          <rect x="465" y="0" width="80" height="36" rx="18" fill="#F1F5F9" />
-          <text x="495" y="23" font-family="Arial, sans-serif" font-size="15" fill="#0F172A" text-anchor="middle">Giá</text>
-          <path d="M512 23 L517 18 L522 23" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="Sort_Price_Asc" style="cursor: pointer;">
+          <rect x="400" y="0" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="450" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Giá tăng</text>
+        </g>
+
+        <g id="Sort_Price_Desc" style="cursor: pointer;">
+          <rect x="515" y="0" width="100" height="36" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+          <text x="565" y="23" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">Giá giảm</text>
         </g>
 
         <g id="Button_Filter" style="cursor: pointer;" transform="translate(900, -5)">
-          <rect x="0" y="0" width="120" height="46" rx="23" fill="#FFFFFF" filter="url(#shadow-sm)" stroke="#CBD5E1" stroke-width="1" />
+          <rect x="0" y="0" width="120" height="46" rx="23" fill="#FFFFFF" filter="url(#shadow-md)" />
           <path d="M25 15 L45 15 L37 25 L37 33 L33 30 L33 25 Z" stroke="#0F172A" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
           <text x="65" y="28" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#0F172A" text-anchor="middle">Lọc</text>
         </g>
@@ -179,8 +171,8 @@
 
       <rect x="30" y="140" width="1020" height="44" rx="8" fill="#F8FAFC" />
       <text x="50" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Sản phẩm</text>
-      <text x="550" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Danh mục</text>
-      <text x="700" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Giá bán</text>
+      <text x="550" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Giá bán</text>
+      <text x="700" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Đã bán</text>
       <text x="840" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Tồn kho</text>
       <text x="960" y="167" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Thao tác</text>
 
@@ -190,8 +182,8 @@
           <rect x="50" y="0" width="44" height="44" rx="6" fill="#FCE7F3" />
           <text x="105" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
           
-          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">Áo sơ mi</text>
-          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">399.000đ</text>
+          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">399.000đ</text>
+          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">124</text>
           <text x="840" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#16A34A">150</text>
           
           <g style="cursor: pointer;" transform="translate(970, 12)">
@@ -205,8 +197,8 @@
           <rect x="50" y="0" width="44" height="44" rx="6" fill="#FFE4E6" />
           <text x="105" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">Quần Jeans Nam Regular Can Túi</text>
           
-          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">Quần dài</text>
-          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">449.000đ</text>
+          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">449.000đ</text>
+          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">340</text>
           <text x="840" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#16A34A">85</text>
 
           <g style="cursor: pointer;" transform="translate(970, 12)">
@@ -220,8 +212,8 @@
           <rect x="50" y="0" width="44" height="44" rx="6" fill="#FBCFE8" />
           <text x="105" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">Áo Không Tay Thêu Hoa Collection</text>
           
-          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">Áo thun</text>
-          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">349.000đ</text>
+          <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">349.000đ</text>
+          <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">89</text>
           <text x="840" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">0</text>
           
           <g style="cursor: pointer;" transform="translate(970, 12)">
@@ -236,8 +228,8 @@
             <rect x="50" y="0" width="44" height="44" rx="6" fill="#F1F5F9" />
             <text x="105" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">Áo Khoác Gió Thể Thao Cao Cấp</text>
             
-            <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">Áo khoác</text>
-            <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">550.000đ</text>
+            <text x="550" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">550.000đ</text>
+            <text x="700" y="27" font-family="Arial, sans-serif" font-size="14" fill="#475569">215</text>
             <text x="840" y="27" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">40</text>
           </g>
 

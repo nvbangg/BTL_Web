@@ -43,14 +43,7 @@
       <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý sản phẩm</text>
     </g>
 
-    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
-      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
-      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      <circle cx="51" cy="24" r="2" fill="#475569" />
-      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
-    </g>
-
-    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+    <g id="Nav_Users" transform="translate(0, 180)" style="cursor: pointer;">
       <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
       <circle cx="55" cy="20" r="6" stroke="#64748B" stroke-width="2" fill="none"/>
       <path d="M43 36 C43 30 67 30 67 36" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -147,11 +140,10 @@
 
       <rect x="30" y="70" width="1020" height="44" rx="8" fill="#F8FAFC" />
       <text x="50" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Mã đơn hàng</text>
-      <text x="190" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Khách hàng</text>
-      <text x="420" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày đặt</text>
-      <text x="540" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày cập nhật</text>
-      <text x="680" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Tổng tiền</text>
-      <text x="860" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Trạng thái</text>
+      <text x="250" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày đặt</text>
+      <text x="450" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Ngày cập nhật</text>
+      <text x="650" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Tổng tiền</text>
+      <text x="850" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#64748B">Trạng thái</text>
 
       <g id="Table_Rows" transform="translate(0, 114)">
         
@@ -159,12 +151,11 @@
           <rect x="30" y="0" width="1020" height="60" fill="#F8FAFC" style="cursor: pointer;" />
           
           <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB">#ORD-0304-001</text>
-          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">nvbangg@gmail.com</text>
-          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">04/03/2026</text>
-          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">05/03/2026</text>
-          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">1.297.000đ</text>
+          <text x="250" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">04/03/2026</text>
+          <text x="450" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">05/03/2026</text>
+          <text x="650" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">1.297.000đ</text>
           
-          <g style="cursor: pointer;" transform="translate(860, 15)">
+          <g style="cursor: pointer;" transform="translate(850, 15)">
             <rect x="0" y="0" width="140" height="30" rx="15" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" />
             <circle cx="15" cy="15" r="4" fill="#D97706" />
             <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#D97706">Đang chờ</text>
@@ -191,29 +182,31 @@
 
           <line x1="640" y1="80" x2="640" y2="270" stroke="#E2E8F0" stroke-width="1.5" />
 
-          <text x="670" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Thông tin giao hàng</text>
+          <text x="670" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Khách hàng:</text>
+          <text x="775" y="95" font-family="Arial, sans-serif" font-size="16" fill="#0F172A">nvbangg@gmail.com</text>
+
+          <text x="670" y="135" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0F172A">Thông tin giao hàng</text>
           
-          <text x="670" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Người nhận:</text>
-          <text x="760" y="130" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Nguyễn Văn Bằng</text>
+          <text x="670" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Người nhận:</text>
+          <text x="760" y="165" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Nguyễn Văn Bằng</text>
 
-          <text x="670" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Số ĐT:</text>
-          <text x="760" y="160" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">0987.654.321</text>
+          <text x="670" y="195" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Số ĐT:</text>
+          <text x="760" y="195" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">0987.654.321</text>
 
-          <text x="670" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Địa chỉ:</text>
-          <text x="760" y="190" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Học viện Công nghệ Bưu chính</text>
-          <text x="760" y="210" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Viễn thông, Hà Nội</text>
+          <text x="670" y="225" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Địa chỉ:</text>
+          <text x="760" y="225" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Học viện Công nghệ Bưu chính</text>
+          <text x="760" y="245" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Viễn thông, Hà Nội</text>
         </g>
         
         <g id="Row_2" transform="translate(0, 290)" style="cursor: pointer;">
           <rect x="30" y="0" width="1020" height="60" fill="transparent" />
           
           <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0303-045</text>
-          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">tranb@gmail.com</text>
-          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
-          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
-          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">399.000đ</text>
+          <text x="250" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
+          <text x="450" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">03/03/2026</text>
+          <text x="650" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">399.000đ</text>
           
-          <g style="cursor: pointer;" transform="translate(860, 15)">
+          <g style="cursor: pointer;" transform="translate(850, 15)">
             <rect x="0" y="0" width="140" height="30" rx="15" fill="#E0E7FF" stroke="#6366F1" stroke-width="1" />
             <circle cx="15" cy="15" r="4" fill="#4F46E5" />
             <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#4F46E5">Đang xử lý</text>
@@ -226,12 +219,11 @@
           <rect x="30" y="0" width="1020" height="60" fill="transparent" />
           
           <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0228-112</text>
-          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">levanc@gmail.com</text>
-          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
-          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">01/03/2026</text>
-          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">898.000đ</text>
+          <text x="250" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
+          <text x="450" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">01/03/2026</text>
+          <text x="650" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">898.000đ</text>
           
-          <g style="cursor: pointer;" transform="translate(860, 15)">
+          <g style="cursor: pointer;" transform="translate(850, 15)">
             <rect x="0" y="0" width="140" height="30" rx="15" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1" />
             <circle cx="15" cy="15" r="4" fill="#2563EB" />
             <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#2563EB">Đang giao</text>
@@ -244,12 +236,11 @@
           <rect x="30" y="0" width="1020" height="60" fill="transparent" />
           
           <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0225-089</text>
-          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">phamd@gmail.com</text>
-          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">25/02/2026</text>
-          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
-          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">550.000đ</text>
+          <text x="250" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">25/02/2026</text>
+          <text x="450" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">28/02/2026</text>
+          <text x="650" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">550.000đ</text>
           
-          <g style="cursor: pointer;" transform="translate(860, 15)">
+          <g style="cursor: pointer;" transform="translate(850, 15)">
             <rect x="0" y="0" width="140" height="30" rx="15" fill="#DCFCE7" stroke="#22C55E" stroke-width="1" />
             <circle cx="15" cy="15" r="4" fill="#16A34A" />
             <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#16A34A">Đã giao</text>
@@ -262,12 +253,11 @@
           <rect x="30" y="0" width="1020" height="60" fill="transparent" />
           
           <text x="50" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">#ORD-0220-012</text>
-          <text x="190" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">hoange@gmail.com</text>
-          <text x="420" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
-          <text x="540" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
-          <text x="680" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0F172A">449.000đ</text>
+          <text x="250" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
+          <text x="450" y="35" font-family="Arial, sans-serif" font-size="14" fill="#475569">20/02/2026</text>
+          <text x="650" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">449.000đ</text>
           
-          <g style="cursor: pointer;" transform="translate(860, 15)">
+          <g style="cursor: pointer;" transform="translate(850, 15)">
             <rect x="0" y="0" width="140" height="30" rx="15" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1" />
             <circle cx="15" cy="15" r="4" fill="#64748B" />
             <text x="28" y="20" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Đã hủy</text>

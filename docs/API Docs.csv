@@ -4,300 +4,709 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
   ""password"": ""12345678"",
   ""name"": ""Nguyen Van A""
 }","{
-  ""id"": 1,
-  ""email"": ""user@gmail.com"",
-  ""name"": ""Nguyen Van A"",
-  ""role"": ""user"",
-  ""createdAt"": ""2026-04-01T10:00:00Z""
-}","409 — Email đã tồn tại
-400 — Password không hợp lệ",,
+  ""success"": true,
+  ""message"": ""Đăng ký thành công"",
+  ""data"": {
+    ""id"": 1,
+    ""email"": ""user@gmail.com"",
+    ""name"": ""Nguyen Van A"",
+    ""role"": ""user"",
+    ""createdAt"": ""2026-04-01T10:00:00Z""
+  },
+  ""errors"": []
+}","409 Conflict
+{
+  ""success"": false,
+  ""message"": ""Đăng ký thất bại"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""email"",
+      ""message"": ""Email này đã tồn tại trong hệ thống""
+    }
+  ]
+}
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu đầu vào không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
+    { ""field"": ""password"", ""message"": ""Mật khẩu phải có ít nhất 6 ký tự"" },
+    { ""field"": ""name"", ""message"": ""Tên hiển thị không được để trống"" }
+  ]
+}","mật khẩu >= 6 kí tự là đủ. cả email, password và name đều bắt buộc",Progress
 2,Đăng nhập,POST /api/auth/login,"{
   ""email"": ""user@gmail.com"",
   ""password"": ""12345678""
 }","{
-  ""accessToken"": ""jwt_token_here"",
-  ""user"": {
-    ""id"": 1,
-    ""email"": ""user@gmail.com"",
-    ""name"": ""Nguyen Van A"",
-    ""role"": ""user""
-  }
-}",401 — Sai email hoặc password,,
-3,Đăng xuất,POST /api/auth/logout,{},"{
-  ""message"": ""Logout successful""
-}",401 — Chưa đăng nhập,,
+  ""success"": true,
+  ""message"": ""Đăng nhập thành công"",
+  ""data"": {
+    ""accessToken"": ""jwt_token_here"",
+    ""user"": {
+      ""id"": 1,
+      ""email"": ""user@gmail.com"",
+      ""name"": ""Nguyen Van A"",
+      ""role"": ""user""
+    }
+  },
+  ""errors"": []
+}","401 Unauthorized
+{
+  ""success"": false,
+  ""message"": ""Đăng nhập thất bại"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": null,
+      ""message"": ""Sai email hoặc mật khẩu""
+    }
+  ]
+}
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Thiếu thông tin đăng nhập"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""email"", ""message"": ""Email là bắt buộc"" },
+    { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" }
+  ]
+}",hạn accessToken = 3 ngày,Progress
+3,Đăng xuất,POST /api/auth/logout,,"{
+  ""success"": true,
+  ""message"": ""Đăng xuất thành công"",
+  ""data"": null,
+  ""errors"": []
+}",,chỉ trả thông báo để fe xử lý xóa token,Progress
 4,Đổi mật khẩu,PUT /api/users/password,"{
   ""currentPassword"": ""12345678"",
   ""newPassword"": ""newpassword123""
 }","{
-  ""message"": ""Password updated successfully""
-}","401 — Chưa đăng nhập
-400 — Mật khẩu hiện tại sai
-400 — Mật khẩu mới không hợp lệ",,
-5,Lấy thông tin bản thân,GET /api/users/me,,"{
-  ""id"": 1,
-  ""email"": ""user@gmail.com"",
-  ""name"": ""Nguyen Van A"",
-  ""phone"": ""0123456789"",
-  ""address"": ""Hanoi"",
-  ""role"": ""user""
-}",401 — Chưa đăng nhập,Dùng Hiển thị username (không có phần @domain) trên nút account navbar,
-6,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,,"{
-  ""items"": [
+  ""success"": true,
+  ""message"": ""Cập nhật mật khẩu thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized (mẫu này dùng chung trừ trường hợp cụ thể)
+{
+  ""success"": false,
+  ""message"": ""Chưa xác thực hoặc phiên đăng nhập hết hạn"",
+  ""data"": null,
+  ""errors"": [
     {
-      ""id"": 1,
-      ""name"": ""Áo thun"",
-      ""thumbnail"": ""url"",
-      ""price"": 200000,
-      ""gender"": ""unisex"",
-      ""categoryId"": 1
-    }
-  ],
-  ""page"": 1,
-  ""pageSize"": 16,
-  ""total"": 100
-}",400 — Giá trị filter không hợp lệ,"Không trả sản phẩm isActive=false.
-Sort: best_selling, newest, price_asc, price_desc; ",
-7,Lấy bộ lọc sản phẩm,GET /api/products/filters,,"{
-  ""categories"": [
-    { ""id"": 1, ""name"": ""Áo"" }
-  ],
-  ""colors"": [""red"", ""blue""],
-  ""sizes"": [""S"", ""M"", ""L""],
-  ""genders"": [""male"", ""female"", ""unisex""]
-}",,dùng để lấy giá trị lựa chọn cho bộ lọc,
-8,Lấy chi tiết sản phẩm,GET /api/products/{id},,"{
-  ""id"": 1,
-  ""name"": ""Áo thun"",
-  ""description"": ""Mô tả"",
-  ""thumbnail"": ""url"",
-  ""price"": 200000,
-  ""gender"": ""unisex"",
-  ""images"": [
-    { ""id"": 1, ""image"": ""url1"", ""sortOrder"": 0 }
-  ],
-  ""variants"": [
-    {
-      ""id"": 10,
-      ""size"": ""M"",
-      ""color"": ""red"",
-      ""stock"": 10,
-      ""priceOverride"": null
+      ""field"": ""authorization"",
+      ""message"": ""Vui lòng đăng nhập để thực hiện chức năng này""
     }
   ]
-}",404 — Không tồn tại hoặc bị ẩn,Bao gồm variants + images,
-9,Thêm vào giỏ hàng,POST /api/cart,"{
+}
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Đổi mật khẩu thất bại"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""currentPassword"",
+      ""message"": ""Mật khẩu hiện tại không chính xác""
+    },
+    {
+      ""field"": ""newPassword"",
+      ""message"": ""Mật khẩu mới không được trùng với mật khẩu cũ và phải >= 6 ký tự""
+    }
+  ]
+}",,Progress
+5,Lấy thông tin bản thân,GET /api/users/me,,"{
+  ""success"": true,
+  ""message"": ""Lấy thông tin thành công"",
+  ""data"": {
+    ""id"": 1,
+    ""email"": ""user@gmail.com"",
+    ""name"": ""Nguyễn Văn A"",
+    ""phone"": ""0123456789"",
+    ""address"": ""123 Đường ABC, Quận X"",
+    ""role"": ""user""
+  },
+  ""errors"": []
+}",401 Unauthorized,Dùng Hiển thị username (không có phần @domain) trên nút account navbar,Progress
+6,Cập nhật thông tin bản thân (khi ở trang giỏ hàng),PUT /api/users/me,"{
+  ""name"": ""Nguyen Van A"",
+  ""phone"": ""0123456789"",
+  ""address"": ""Hanoi""
+}","{
+  ""success"": true,
+  ""message"": ""Cập nhật thông tin thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""name"", ""message"": ""Tên người dùng không được để trống"" },
+    { ""field"": ""phone"", ""message"": ""Số điện thoại không đúng định dạng"" },
+    { ""field"": ""address"", ""message"": ""Địa chỉ không được để trống"" }
+  ]
+}",,Progress
+7,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,,"{
+  ""success"": true,
+  ""message"": ""Lấy danh sách sản phẩm thành công"",
+  ""data"": {
+    ""items"": [
+      {
+        ""id"": 1,
+        ""name"": ""Áo thun"",
+        ""thumbnail"": ""url"",
+        ""price"": 200000
+      }
+    ],
+    ""page"": 1,
+    ""pageSize"": 16,
+    ""total"": 1
+  },
+  ""errors"": []
+}","400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu truy vấn không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""minPrice"",
+      ""message"": ""Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0""
+    },
+    {
+      ""field"": ""maxPrice"",
+      ""message"": ""Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice""
+    },
+    {
+      ""field"": ""gender"",
+      ""message"": ""Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)""
+    },
+    {
+      ""field"": ""sort"",
+      ""message"": ""Giá trị sắp xếp (sort) không được hỗ trợ (chỉ hỗ trợ: best_selling, newest, price_asc, price_desc)""
+    }
+  ]
+}",Không trả sản phẩm isActive=false.,Progress
+8,Lấy bộ lọc sản phẩm,GET /api/products/filters,,"{
+  ""success"": true,
+  ""message"": ""Lấy dữ liệu bộ lọc thành công"",
+  ""data"": {
+    ""categories"": [""Áo phông"", ""Áo sơ mi"", ""Quần dài""],
+    ""genders"": [""male"", ""female"", ""unisex""],
+    ""colors"": [""Xanh ngọc"", ""Đen"", ""Trắng""],
+    ""sizes"": [""S"", ""M"", ""L"", ""XL"", ""XXL""]
+  },
+  ""errors"": []
+}","500 Internal Server Error
+{
+  ""success"": false,
+  ""message"": ""Lỗi hệ thống"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""server"",
+      ""message"": ""Không thể tải bộ lọc lúc này""
+    }
+  ]
+}","dùng để lấy giá trị lựa chọn cho bộ lọc, genders cố định: ""male"", ""female"", ""unisex""
+các dữ liệu khác sắp xếp theo abc",Progress
+9,Lấy chi tiết sản phẩm,GET /api/products/{id},,"{
+  ""success"": true,
+  ""message"": ""Lấy chi tiết sản phẩm thành công"",
+  ""data"": {
+    ""id"": 1,
+    ""name"": ""Áo thun"",
+    ""description"": ""Mô tả"",
+    ""thumbnail"": ""url"",
+    ""category"": ""Áo"",
+    ""gender"": ""unisex"",
+    ""price"": 200000,
+    ""soldCount"": 1200,
+    ""images"": [
+      {
+        ""id"": 1,
+        ""image"": ""url1"",
+        ""sortOrder"": 0
+      }
+    ],
+    ""variants"": [
+      {
+        ""id"": 10,
+        ""color"": ""red"",
+        ""size"": ""M"",
+        ""stock"": 10,
+        ""priceOverride"": null
+      }
+    ]
+  },
+  ""errors"": []
+}","404 Not Found (mẫu này dùng chung trừ trường hợp cụ thể)
+{
+  ""success"": false,
+  ""message"": ""Không tìm thấy dữ liệu yêu cầu"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""id"",
+      ""message"": ""Dữ liệu không tồn tại trong hệ thống hoặc đã bị ẩn/xóa""
+    }
+  ]
+}","số lượng đã bán là tính số  order có sản phẩm đẩy đang ""delivered""",Progress
+10,Thêm vào giỏ hàng,POST /api/cart,"{
   ""productVariantId"": 10,
   ""quantity"": 2
 }","{
-  ""message"": ""Added to cart""
-}","401 — Chưa đăng nhập
-400 — Quantity <= 0
-400 — Vượt quá stock
-404 — Variant không tồn tại",,
-10,Lấy giỏ hàng,GET /api/cart?page=1&pageSize=10,,"{
-  ""items"": [
-    {
-      ""id"": 1,
-      ""quantity"": 2,
-      ""variant"": {
-        ""id"": 10,
-        ""size"": ""M"",
+  ""success"": true,
+  ""message"": ""Đã thêm vào giỏ hàng"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+{
+  ""success"": false,
+  ""message"": ""Thao tác thất bại"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""authorization"", ""message"": ""Vui lòng đăng nhập để thêm vào giỏ hàng"" }
+  ]
+}
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""productVariantId"", ""message"": ""ID phân loại sản phẩm là bắt buộc và phải là số dương"" },
+    { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
+  ]
+}
+404 Not Found","Khi user bấm thêm vào giỏ một sản phẩm đã có sẵn trong giỏ, Backend không được báo lỗi và cũng không được Insert dòng mới. Backend phải bắt được trường hợp này và thực hiện lệnh Cộng dồn số lượng",Progress
+11,Lấy danh sách giỏ hàng,GET /api/cart,,"{
+  ""success"": true,
+  ""message"": ""Lấy thông tin giỏ hàng thành công"",
+  ""data"": {
+    ""items"": [
+      {
+        ""id"": 1,
+        ""productId"": 1,
+        ""variantId"": 10,
+        ""productName"": ""Áo thun"",
+        ""thumbnail"": ""url"",
         ""color"": ""red"",
+        ""size"": ""M"",
+        ""quantity"": 2,
         ""price"": 200000,
         ""stock"": 10
-      },
-      ""product"": {
-        ""id"": 1,
-        ""name"": ""Áo thun"",
-        ""thumbnail"": ""url""
       }
-    }
-  ],
-  ""totalPrice"": 400000
-}",401 — Chưa đăng nhập,,
-11,Cập nhật giỏ hàng,PUT /api/cart/{itemId},"{
+    ],
+    ""totalPrice"": 400000
+  },
+  ""errors"": []
+}",401 Unauthorized,"mặc định sắp xếp theo ngày tạo, không có phân trang",Progress
+12,Cập nhật giỏ hàng,PUT /api/cart/{itemId},"{
   ""quantity"": 3
 }","{
-  ""message"": ""Cart updated""
-}","401 — Chưa đăng nhập
-404 — Item không tồn tại
-400 — Quantity <= 0
-400 — Vượt quá stock",,
-12,Xóa item giỏ hàng,DELETE /api/cart/{itemId},,"{
-  ""message"": ""Item removed""
-}","401 — Chưa đăng nhập
-404 — Item không tồn tại",,
-13,Tạo đơn hàng,POST /api/orders,"{
+  ""success"": true,
+  ""message"": ""Cập nhật giỏ hàng thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Cập nhật thất bại"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
+  ]
+}
+404 Not Found",chỉ sửa được quantity,Progress
+13,Xóa item giỏ hàng,DELETE /api/cart/{itemId},,"{
+  ""success"": true,
+  ""message"": ""Đã xóa sản phẩm khỏi giỏ hàng"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+404 Not Found",,Progress
+14,Tạo đơn hàng,POST /api/orders,"{
+  ""cartItemIds"": [1, 3], 
   ""shippingName"": ""Nguyen Van A"",
   ""shippingPhone"": ""0123456789"",
   ""shippingAddress"": ""Hanoi""
 }","{
-  ""id"": 1,
-  ""totalPrice"": 400000,
-  ""status"": ""pending"",
-  ""createdAt"": ""2026-04-01T10:00:00Z""
-}","401 — Chưa đăng nhập
-400 — Giỏ hàng rỗng
-400 — Sản phẩm hết hàng
-400 — Variant không hợp lệ hoặc đã bị xóa",Checkout ngay tại cart,
-14,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,,"{
-  ""items"": [
-    {
-      ""id"": 1,
-      ""totalPrice"": 400000,
-      ""status"": ""pending"",
-      ""createdAt"": ""2026-04-01T10:00:00Z""
-    }
-  ],
-  ""page"": 1,
-  ""pageSize"": 10,
-  ""total"": 5
-}",401 — Chưa đăng nhập,,
-15,Xem thống kê,GET /api/admin/statistics,,"{
-  ""totalRevenue"": 10000000,
-  ""totalOrders"": 200,
-  ""totalUsers"": 500,
-  ""revenueByMonth"": [
-    { ""month"": ""2026-03"", ""revenue"": 2000000 }
+  ""success"": true,
+  ""message"": ""Đặt hàng thành công"",
+  ""data"": {
+    ""id"": 50,
+    ""totalPrice"": 800000,
+    ""status"": ""pending"",
+    ""createdAt"": ""2026-04-01T10:00:00Z""
+  },
+  ""errors"": []
+}","401 Unauthorized
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Tạo đơn hàng thất bại"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""shippingName"", ""message"": ""Họ và tên người nhận không được để trống"" },
+    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại không được để trống"" },
+    { ""field"": ""shippingAddress"", ""message"": ""Địa chỉ nhận hàng không được để trống"" },
+    { ""field"": ""cartItemIds"", ""message"": ""Một số sản phẩm trong giỏ đã hết hàng"" },
+    { ""field"": ""cartItemIds"", ""message"": ""Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa"" },
+    { ""field"": ""cartItemIds"", ""message"": ""Danh sách sản phẩm không được để trống"" }
   ]
-}","401 — Chưa đăng nhập
-403 — Không có quyền",,
-16,Lấy sản phẩm (admin),GET /api/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&isActive=&page=1&pageSize=10,,"{
-  ""items"": [
+}",Checkout ngay tại trang giỏ hàng.,Progress
+15,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,,"{
+  ""success"": true,
+  ""message"": ""Lấy danh sách đơn hàng thành công"",
+  ""data"": {
+    ""items"": [
+      {
+        ""id"": 50,
+        ""shippingName"": ""Nguyen Van A"",
+        ""shippingPhone"": ""0123456789"",
+        ""shippingAddress"": ""Hanoi"",
+        ""totalPrice"": 800000,
+        ""status"": ""pending"",
+        ""createdAt"": ""2026-04-01T10:00:00Z"",
+        ""updatedAt"": ""2026-04-01T10:00:00Z"",
+        ""orderDetails"": [
+          {
+            ""id"": 101,
+            ""productId"": 1,
+            ""variantId"": 10,
+            ""productName"": ""Áo thun"",
+            ""thumbnail"": ""url"",
+            ""color"": ""red"",
+            ""size"": ""M"",
+            ""quantity"": 2,
+            ""price"": 200000
+          }
+        ]
+      }
+    ],
+    ""page"": 1,
+    ""pageSize"": 10,
+    ""total"": 1
+  },
+  ""errors"": []
+}",401 Unauthorized,mặc định sắp xếp theo ngày cập nhật,Progress
+16,Xem thống kê,GET /api/admin/statistics,,"{
+  ""success"": true,
+  ""message"": ""Lấy dữ liệu thống kê thành công"",
+  ""data"": {
+    ""revenueThisMonth"": 2000000,
+    ""revenueYear"": 8000000,
+    ""revenueAllTime"": 10000000,
+    ""revenueByMonth"": [
+      {
+        ""month"": ""2026-01"",
+        ""revenue"": 1000000
+      },
+      {
+        ""month"": ""2026-02"",
+        ""revenue"": 1500000
+      },
+      {
+        ""month"": ""2026-03"",
+        ""revenue"": 2000000
+      }
+    ]
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden (mẫu này dùng chung trừ trường hợp cụ thể)
+{
+  ""success"": false,
+  ""message"": ""Không có quyền truy cập"",
+  ""data"": null,
+  ""errors"": [
     {
-      ""id"": 1,
-      ""name"": ""Áo thun"",
-      ""price"": 200000,
-      ""isActive"": true
-    }
-  ],
-  ""total"": 100
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-400 — Filter không hợp lệ",như /api/products nhưng có thêm lọc theo isActive,
-17,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},,"{
-  ""id"": 1,
-  ""name"": ""Áo thun"",
-  ""description"": ""Mô tả"",
-  ""categoryId"": 1,
-  ""price"": 200000,
-  ""isActive"": true,
-  ""images"": [],
-  ""variants"": []
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại",,
-18,Tạo sản phẩm (admin),POST /api/admin/products,"{
-  ""name"": ""Áo mới"",
-  ""categoryId"": 1,
-  ""description"": ""Mô tả"",
-  ""thumbnail"": ""url"",
-  ""gender"": ""unisex"",
-  ""price"": 200000,
-  ""isActive"": true,
-  ""images"": [
-    { ""image"": ""url"", ""sortOrder"": 0 }
-  ],
-  ""variants"": [
-    {
-      ""size"": ""M"",
-      ""color"": ""red"",
-      ""stock"": 10,
-      ""priceOverride"": null
+      ""field"": ""role"",
+      ""message"": ""Tài khoản của bạn không có quyền thực hiện thao tác này""
     }
   ]
-}","{
-  ""id"": 10,
-  ""message"": ""Product created""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-400 — Dữ liệu không hợp lệ",Bao gồm variants + images,
-19,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},"{
-  ""name"": ""Áo updated"",
-  ""categoryId"": 1,
-  ""price"": 250000,
-  ""isActive"": true,
-  ""images"": [],
-  ""variants"": []
-}","{
-  ""message"": ""Product updated""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại
-400 — Dữ liệu không hợp lệ",,
-20,Xóa sản phẩm (admin),DELETE /api/admin/products/{id},,"{
-  ""message"": ""Product deleted""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại",,
-21,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,,"{
-  ""items"": [
-    {
-      ""id"": 1,
-      ""userId"": 1,
-      ""status"": ""pending"",
-      ""totalPrice"": 400000
-    }
-  ],
-  ""total"": 10
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-400 — Status không hợp lệ",,
-22,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},"{
+}",,Progress
+17,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,,"{
+  ""success"": true,
+  ""message"": ""Lấy danh sách đơn hàng thành công"",
+  ""data"": {
+    ""totalPendingOrders"": 15,
+    ""totalIncompleteOrders"": 45,
+    ""items"": [
+      {
+        ""id"": 50,
+        ""userId"": 1,
+        ""email"": ""user@example.com"",
+        ""shippingName"": ""Nguyen Van A"",
+        ""shippingPhone"": ""0123456789"",
+        ""shippingAddress"": ""Hanoi"",
+        ""totalPrice"": 800000,
+        ""status"": ""pending"",
+        ""createdAt"": ""2026-04-01T10:00:00Z"",
+        ""updatedAt"": ""2026-04-01T10:00:00Z"",
+        ""orderDetails"": [
+          {
+            ""id"": 101,
+            ""productId"": 1,
+            ""variantId"": 10,
+            ""productName"": ""Áo thun"",
+            ""thumbnail"": ""url"",
+            ""color"": ""red"",
+            ""size"": ""M"",
+            ""quantity"": 2,
+            ""price"": 200000
+          }
+        ]
+      }
+    ],
+    ""page"": 1,
+    ""pageSize"": 10,
+    ""total"": 100
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Lỗi truy vấn danh sách"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
+  ]
+}",,Progress
+18,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},"{
   ""status"": ""shipped""
 }","{
-  ""message"": ""Order status updated""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại
-400 — Status không hợp lệ",,
-23,Lấy danh mục (admin),GET /api/admin/categories?keyword=&page=1&pageSize=10,,"{
-  ""items"": [
-    { ""id"": 1, ""name"": ""Áo"" }
-  ],
-  ""total"": 5
-}","401 — Chưa đăng nhập
-403 — Không có quyền",,
-24,Tạo danh mục (admin),POST /api/admin/categories,"{
-  ""name"": ""Quần""
-}","{
-  ""id"": 2,
-  ""name"": ""Quần""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-409 — Trùng tên",,
-25,Cập nhật danh mục (admin),PUT /api/admin/categories/{id},"{
-  ""name"": ""Áo mới""
-}","{
-  ""message"": ""Category updated""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại
-409 — Trùng tên",,
-26,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,,"{
-  ""items"": [
-    {
-      ""id"": 1,
-      ""email"": ""user@gmail.com"",
-      ""role"": ""user""
-    }
-  ],
-  ""total"": 100
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-400 — Role không hợp lệ",,
-27,Cập nhật role user (admin),PUT /api/admin/users/{id},"{
+  ""success"": true,
+  ""message"": ""Cập nhật trạng thái đơn hàng thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Cập nhật thất bại"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""status"", ""message"": ""Trạng thái cập nhật không hợp lệ"" }
+  ]
+}
+404 Not Found",có thể thay đổi status tự do,Progress
+19,Lấy danh sách sản phẩm (admin),GET /api/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=newest&isActive=&page=1&pageSize=10,,"{
+  ""success"": true,
+  ""message"": ""Lấy danh sách sản phẩm thành công"",
+  ""data"": {
+    ""totalActiveProducts"": 45,
+    ""totalOutOfStockProducts"": 5,
+    ""items"": [
+      {
+        ""id"": 1,
+        ""thumbnail"": ""url"",
+        ""name"": ""Áo thun"",
+        ""price"": 200000,
+        ""soldCount"": 1200,
+        ""totalStock"": 350,
+        ""isActive"": true
+      }
+    ],
+    ""page"": 1,
+    ""pageSize"": 10,
+    ""total"": 1
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Lỗi truy vấn"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""minPrice"", ""message"": ""Giá trị khoảng giá không hợp lệ"" }
+  ]
+}",,Progress
+20,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},,"{
+  ""success"": true,
+  ""message"": ""Lấy chi tiết sản phẩm thành công"",
+  ""data"": {
+    ""id"": 1,
+    ""name"": ""Áo thun"",
+    ""description"": ""Mô tả"",
+    ""thumbnail"": ""url"",
+    ""category"": ""Áo"",
+    ""gender"": ""unisex"",
+    ""price"": 200000,
+    ""isActive"": true,
+    ""images"": [
+      {
+        ""id"": 1,
+        ""image"": ""url1"",
+        ""sortOrder"": 0
+      }
+    ],
+    ""variants"": [
+      {
+        ""id"": 10,
+        ""color"": ""red"",
+        ""size"": ""M"",
+        ""stock"": 10,
+        ""priceOverride"": null
+      }
+    ]
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+404 Not Found",,Progress
+21,Tạo sản phẩm (admin),POST /api/admin/products,"{
+    ""name"": ""Áo thun"",
+    ""description"": ""Mô tả"",
+    ""thumbnail"": ""url"",
+    ""category"": ""Áo"",
+    ""gender"": ""unisex"",
+    ""price"": 200000,
+    ""isActive"": true,
+    ""images"": [
+      {
+        ""image"": ""url1"",
+        ""sortOrder"": 0
+      }
+    ],
+    ""variants"": [
+      {
+        ""color"": ""red"",
+        ""size"": ""M"",
+        ""stock"": 10,
+        ""priceOverride"": 10000
+      }
+    ]
+  },","{
+  ""success"": true,
+  ""message"": ""Tạo sản phẩm thành công"",
+  ""data"": {
+    ""id"": 10
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu sản phẩm không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""name"", ""message"": ""Tên sản phẩm không được để trống"" },
+    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm không được để trống"" },
+    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm không được để trống"" },
+    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
+    { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
+    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
+  ]
+}",Bao gồm variants + images,Progress
+22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},"{
+    ""name"": ""Áo thun"",
+    ""description"": ""Mô tả"",
+    ""thumbnail"": ""url"",
+    ""category"": ""Áo"",
+    ""gender"": ""unisex"",
+    ""price"": 200000,
+    ""isActive"": true,
+    ""images"": [
+      {
+        ""id"": 1,
+        ""image"": ""url1"",
+        ""sortOrder"": 0
+      }
+    ],
+    ""variants"": [
+      {
+        ""id"": 10,
+        ""color"": ""red"",
+        ""size"": ""M"",
+        ""stock"": 10,
+        ""priceOverride"": 10000
+      }
+    ]
+  },","{
+  ""success"": true,
+  ""message"": ""Cập nhật sản phẩm thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+404 Not Found
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu cập nhật không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""name"", ""message"": ""Tên sản phẩm không được để trống"" },
+    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm không được để trống"" },
+    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm không được để trống"" },
+    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
+    { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
+    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
+  ]
+}",,Progress
+23,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,,"{
+  ""success"": true,
+  ""message"": ""Lấy danh sách người dùng thành công"",
+  ""data"": {
+    ""totalPurchasedUsers"": 120,
+    ""totalAdmins"": 1,
+    ""items"": [
+      {
+        ""id"": 1,
+        ""name"": ""Nguyễn Văn A"",
+        ""email"": ""user@gmail.com"",
+        ""phone"": ""0987654321"",
+        ""address"": ""Số 1, Đường Hà Nội, Việt Nam"",
+        ""role"": ""admin"",
+        ""createdAt"": ""2026-04-01T10:00:00Z""
+      }
+    ],
+    ""page"": 1,
+    ""pageSize"": 10,
+    ""total"": 100
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Lỗi truy vấn"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""role"", ""message"": ""Bộ lọc vai trò (role) không hợp lệ"" }
+  ]
+}",,Progress
+24,Cập nhật role user (admin),PUT /api/admin/users/{id},"{
   ""role"": ""admin""
 }","{
-  ""message"": ""User updated""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại
-400 — Role không hợp lệ",,
-28,Xóa user (admin),DELETE /api/admin/users/{id},,"{
-  ""message"": ""User deleted""
-}","401 — Chưa đăng nhập
-403 — Không có quyền
-404 — Không tồn tại
-400 — Không thể xóa chính mình",,
+  ""success"": true,
+  ""message"": ""Cập nhật vai trò thành công"",
+  ""data"": null,
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+404 Not Found
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Cập nhật thất bại"",
+  ""data"": null,
+  ""errors"": [
+    { ""field"": ""role"", ""message"": ""Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân"" }
+  ]
+}",,Progress

@@ -52,14 +52,7 @@
       <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý sản phẩm</text>
     </g>
 
-    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
-      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
-      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#64748B" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      <circle cx="51" cy="24" r="2" fill="#64748B" />
-      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
-    </g>
-
-    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+    <g id="Nav_Users" transform="translate(0, 180)" style="cursor: pointer;">
       <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
       <circle cx="55" cy="20" r="6" stroke="#64748B" stroke-width="2" fill="none"/>
       <path d="M43 36 C43 30 67 30 67 36" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round"/>

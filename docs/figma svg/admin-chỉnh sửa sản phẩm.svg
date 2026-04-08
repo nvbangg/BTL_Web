@@ -45,14 +45,7 @@
       <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563EB">Quản lý sản phẩm</text>
     </g>
 
-    <g id="Nav_Categories" transform="translate(0, 180)" style="cursor: pointer;">
-      <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
-      <path d="M45 18 H55 L68 31 C70 33 70 36 68 38 L65 41 C63 43 60 43 58 41 L45 28 V18 Z" stroke="#475569" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      <circle cx="51" cy="24" r="2" fill="#475569" />
-      <text x="90" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#475569">Quản lý danh mục</text>
-    </g>
-
-    <g id="Nav_Users" transform="translate(0, 240)" style="cursor: pointer;">
+    <g id="Nav_Users" transform="translate(0, 180)" style="cursor: pointer;">
       <rect x="16" y="0" width="248" height="52" rx="12" fill="transparent" />
       <circle cx="55" cy="20" r="6" stroke="#64748B" stroke-width="2" fill="none"/>
       <path d="M43 36 C43 30 67 30 67 36" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -173,10 +166,10 @@
     <text x="375" y="202" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Áo Sơ-mi Ngắn Tay Asymmetrical</text>
 
     <text x="360" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Danh mục *</text>
-    <g style="cursor: pointer;">
+    <g style="cursor: text;">
       <rect x="360" y="255" width="340" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
       <text x="375" y="282" font-family="Arial, sans-serif" font-size="15" fill="#0F172A">Áo sơ mi</text>
-      <path d="M670 270 L676 276 L682 270" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="445" y1="266" x2="445" y2="284" stroke="#0F172A" stroke-width="1.5" />
     </g>
 
     <text x="740" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Giới tính</text>
@@ -227,53 +220,43 @@
     
     <rect x="360" y="665" width="720" height="36" fill="#F8FAFC" />
     <line x1="360" y1="701" x2="1080" y2="701" stroke="#E2E8F0" stroke-width="1" />
+    
     <text x="380" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Màu sắc</text>
-    <text x="500" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Size</text>
-    <text x="640" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Tồn kho</text>
-    <text x="760" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Giá tùy chỉnh</text>
-    <text x="1010" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Xóa</text>
+    <text x="540" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Size</text>
+    <text x="700" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Tồn kho</text>
+    <text x="860" y="688" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#64748B">Giá tùy chỉnh</text>
 
     <g transform="translate(0, 715)">
-      <rect x="380" y="0" width="100" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="390" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">Đen</text>
+      <rect x="380" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="395" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">Đen</text>
 
-      <rect x="500" y="0" width="120" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="510" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">M</text>
+      <rect x="540" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="555" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">M</text>
 
-      <rect x="640" y="0" width="100" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="650" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">100</text>
+      <rect x="700" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="715" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">100</text>
 
-      <rect x="760" y="0" width="180" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="770" y="20" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8">(Để trống lấy giá cơ bản)</text>
-
-      <path d="M1020 10 V8 C1020 7 1021 6 1022 6 H1024 C1025 6 1026 7 1026 8 V10 M1018 10 H1028 M1020 10 V22 C1020 23 1026 23 1026 22 V10" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linejoin="round" style="cursor: pointer;" />
+      <rect x="860" y="0" width="200" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="875" y="20" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8">(Để trống lấy giá cơ bản)</text>
     </g>
 
     <g transform="translate(0, 760)">
-      <rect x="380" y="0" width="100" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="390" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">Đen</text>
+      <rect x="380" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="395" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">Đen</text>
 
-      <rect x="500" y="0" width="120" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="510" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">L</text>
+      <rect x="540" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="555" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">L</text>
 
-      <rect x="640" y="0" width="100" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="650" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">50</text>
+      <rect x="700" y="0" width="140" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="715" y="20" font-family="Arial, sans-serif" font-size="13" fill="#0F172A">50</text>
 
-      <rect x="760" y="0" width="180" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
-      <text x="770" y="20" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8">(Để trống lấy giá cơ bản)</text>
-
-      <path d="M1020 10 V8 C1020 7 1021 6 1022 6 H1024 C1025 6 1026 7 1026 8 V10 M1018 10 H1028 M1020 10 V22 C1020 23 1026 23 1026 22 V10" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linejoin="round" style="cursor: pointer;" />
+      <rect x="860" y="0" width="200" height="32" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <text x="875" y="20" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8">(Để trống lấy giá cơ bản)</text>
     </g>
 
     <text x="380" y="835" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB" style="cursor: pointer;">+ Thêm phân loại</text>
 
     <line x1="320" y1="870" x2="1120" y2="870" stroke="#E2E8F0" stroke-width="1.5" />
-
-    <g id="Button_Delete_Product" style="cursor: pointer;">
-      <rect x="360" y="885" width="160" height="44" rx="8" fill="#FEE2E2" />
-      <path d="M375 905 V903 C375 901 377 901 377 901 H381 C381 901 383 901 383 903 V905 M373 905 H385 M375 905 V917 C375 919 383 919 383 917 V905" stroke="#EF4444" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="395" y="912" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#EF4444">Xóa sản phẩm</text>
-    </g>
 
     <g id="Button_Cancel" style="cursor: pointer;">
       <rect x="820" y="885" width="110" height="44" rx="8" fill="#F1F5F9" />

@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant UI as Giao diện
+    participant System as Hệ thống
+
+    User->>UI: (1) Chọn mục Đổi mật khẩu
+    UI-->>User: (2) Hiển thị form Đổi mật khẩu
+    
+    User->>UI: (3) Nhập mật khẩu hiện tại, mật khẩu mới và nhấn Xác nhận
+    UI->>System: (4) Gửi thông tin đổi mật khẩu
+    
+    System->>System: (5) Kiểm tra mật khẩu hiện tại và lưu mật khẩu mới
+    System-->>UI: (6) Xác nhận đổi mật khẩu thành công
+    
+    UI-->>User: (7) Hiển thị thông báo đổi mật khẩu thành công
