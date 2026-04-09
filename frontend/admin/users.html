@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Nguoi dung</title>
+    <link rel="stylesheet" href="../css/app.css" />
+  </head>
+  <body data-base-path="../">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <a class="brand" href="../index.html">
+          <img src="../assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <nav class="admin-nav">
+          <a class="admin-link" href="./index.html">Xem thong ke</a>
+          <a class="admin-link" href="./orders.html">Quan ly don hang</a>
+          <a class="admin-link" href="./products.html">Quan ly san pham</a>
+          <a class="admin-link active" href="./users.html">Quan ly nguoi dung</a>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-topbar">
+          <h1 style="margin: 0">Quan ly nguoi dung</h1>
+          <div class="account-wrap">
+            <button id="account-trigger" class="account-trigger">Dang nhap</button>
+            <div id="account-menu" class="account-menu hidden"></div>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-title">Tong nguoi dung</p>
+            <p id="users-total" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Nguoi da mua hang</p>
+            <p id="users-purchased" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Admin</p>
+            <p id="users-admin" class="stat-value">0</p>
+          </article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="inline-controls" style="margin-bottom: 10px">
+            <input id="admin-user-keyword" class="form-control" type="text" placeholder="Tim theo ten hoac email" style="flex: 1; min-width: 220px" />
+            <select id="admin-user-role" class="form-control" style="max-width: 150px">
+              <option value="">Tat ca vai tro</option>
+              <option value="user">user</option>
+              <option value="admin">admin</option>
+            </select>
+            <button id="admin-user-search" class="btn btn-primary" type="button">Tim kiem</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ten</th>
+                  <th>Email</th>
+                  <th>Lien he</th>
+                  <th>Ngay tao</th>
+                  <th>Vai tro</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-table"></tbody>
+            </table>
+          </div>
+
+          <div id="admin-users-pagination" class="pagination"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="../js/pages/admin-users.js"></script>
+  </body>
+</html>

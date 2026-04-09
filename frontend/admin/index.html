@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Thong ke</title>
+    <link rel="stylesheet" href="../css/app.css" />
+  </head>
+  <body data-base-path="../">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <a class="brand" href="../index.html">
+          <img src="../assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <nav class="admin-nav">
+          <a class="admin-link active" href="./index.html">Xem thong ke</a>
+          <a class="admin-link" href="./orders.html">Quan ly don hang</a>
+          <a class="admin-link" href="./products.html">Quan ly san pham</a>
+          <a class="admin-link" href="./users.html">Quan ly nguoi dung</a>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-topbar">
+          <h1 style="margin: 0">Tong quan thong ke</h1>
+          <div class="account-wrap">
+            <button id="account-trigger" class="account-trigger">Dang nhap</button>
+            <div id="account-menu" class="account-menu hidden"></div>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-title">Doanh thu thang nay</p>
+            <p id="stat-month" class="stat-value">0đ</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Doanh thu nam nay</p>
+            <p id="stat-year" class="stat-value">0đ</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Tong doanh thu</p>
+            <p id="stat-all" class="stat-value">0đ</p>
+          </article>
+        </section>
+
+        <section class="chart-wrap">
+          <div class="inline-controls" style="justify-content: space-between">
+            <h3 style="margin: 0">Bieu do doanh thu theo thang</h3>
+            <select id="chart-year" class="form-control" style="max-width: 140px"></select>
+          </div>
+          <div id="stats-chart" class="chart-bars"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="../js/pages/admin-stats.js"></script>
+  </body>
+</html>

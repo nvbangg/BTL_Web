@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Don hang - Fashon Shop</title>
+    <link rel="stylesheet" href="./css/app.css" />
+  </head>
+  <body data-base-path="./">
+    <div class="page-wrap">
+      <header class="public-header">
+        <a class="brand" href="./index.html">
+          <img src="./assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <div></div>
+
+        <div class="account-wrap">
+          <button id="account-trigger" class="account-trigger">Dang nhap</button>
+          <div id="account-menu" class="account-menu hidden"></div>
+        </div>
+      </header>
+
+      <main>
+        <h1 class="section-title" style="font-size: 34px">Don hang cua ban</h1>
+        <section id="orders-list"></section>
+        <div id="orders-pagination" class="pagination"></div>
+      </main>
+    </div>
+
+    <script type="module" src="./js/pages/orders.js"></script>
+  </body>
+</html>

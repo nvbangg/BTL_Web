@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Don hang</title>
+    <link rel="stylesheet" href="../css/app.css" />
+  </head>
+  <body data-base-path="../">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <a class="brand" href="../index.html">
+          <img src="../assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <nav class="admin-nav">
+          <a class="admin-link" href="./index.html">Xem thong ke</a>
+          <a class="admin-link active" href="./orders.html">Quan ly don hang</a>
+          <a class="admin-link" href="./products.html">Quan ly san pham</a>
+          <a class="admin-link" href="./users.html">Quan ly nguoi dung</a>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-topbar">
+          <h1 style="margin: 0">Quan ly don hang</h1>
+          <div class="account-wrap">
+            <button id="account-trigger" class="account-trigger">Dang nhap</button>
+            <div id="account-menu" class="account-menu hidden"></div>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-title">Don dang cho</p>
+            <p id="order-pending" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Don chua hoan thanh</p>
+            <p id="order-incomplete" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Tong don</p>
+            <p id="order-total" class="stat-value">0</p>
+          </article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="inline-controls" style="margin-bottom: 10px">
+            <input id="admin-order-keyword" class="form-control" type="text" placeholder="Tim don theo ma hoac email" style="flex: 1; min-width: 220px" />
+            <select id="admin-order-status" class="form-control" style="max-width: 180px">
+              <option value="">Tat ca trang thai</option>
+              <option value="pending">pending</option>
+              <option value="processing">processing</option>
+              <option value="shipped">shipped</option>
+              <option value="delivered">delivered</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+            <button id="admin-order-search" class="btn btn-primary" type="button">Tim kiem</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ma don</th>
+                  <th>Khach hang</th>
+                  <th>Tong tien</th>
+                  <th>Cap nhat</th>
+                  <th>Trang thai</th>
+                  <th>Hanh dong</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table"></tbody>
+            </table>
+          </div>
+
+          <div id="admin-orders-pagination" class="pagination"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="../js/pages/admin-orders.js"></script>
+  </body>
+</html>

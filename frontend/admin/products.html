@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - San pham</title>
+    <link rel="stylesheet" href="../css/app.css" />
+  </head>
+  <body data-base-path="../">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <a class="brand" href="../index.html">
+          <img src="../assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <nav class="admin-nav">
+          <a class="admin-link" href="./index.html">Xem thong ke</a>
+          <a class="admin-link" href="./orders.html">Quan ly don hang</a>
+          <a class="admin-link active" href="./products.html">Quan ly san pham</a>
+          <a class="admin-link" href="./users.html">Quan ly nguoi dung</a>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-topbar">
+          <h1 style="margin: 0">Quan ly san pham</h1>
+          <div class="account-wrap">
+            <button id="account-trigger" class="account-trigger">Dang nhap</button>
+            <div id="account-menu" class="account-menu hidden"></div>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-title">Tong san pham</p>
+            <p id="product-total" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Dang kinh doanh</p>
+            <p id="product-active" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-title">Het hang</p>
+            <p id="product-out-stock" class="stat-value">0</p>
+          </article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="inline-controls" style="margin-bottom: 10px">
+            <input id="admin-product-keyword" class="form-control" type="text" placeholder="Tim ten san pham" style="flex: 1; min-width: 220px" />
+            <select id="admin-product-category" class="form-control" style="max-width: 150px"><option value="">Danh muc</option></select>
+            <select id="admin-product-gender" class="form-control" style="max-width: 130px"><option value="">Gioi tinh</option></select>
+            <select id="admin-product-is-active" class="form-control" style="max-width: 130px">
+              <option value="">Trang thai</option>
+              <option value="true">Dang ban</option>
+              <option value="false">An</option>
+            </select>
+            <select id="admin-product-sort" class="form-control" style="max-width: 130px">
+              <option value="newest">Moi nhat</option>
+              <option value="best_selling">Ban chay</option>
+              <option value="price_asc">Gia tang</option>
+              <option value="price_desc">Gia giam</option>
+            </select>
+            <button id="admin-product-search" class="btn btn-primary" type="button">Tim</button>
+            <button id="admin-product-add" class="btn btn-accent" type="button">Them san pham</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>San pham</th>
+                  <th>Gia</th>
+                  <th>Da ban</th>
+                  <th>Ton kho</th>
+                  <th>Trang thai</th>
+                  <th>Thao tac</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-table"></tbody>
+            </table>
+          </div>
+
+          <div id="admin-products-pagination" class="pagination"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="../js/pages/admin-products.js"></script>
+  </body>
+</html>

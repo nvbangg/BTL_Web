@@ -1,0 +1,41 @@
+package com.nvbangg.fashonshop.controller;
+
+import com.nvbangg.fashonshop.common.dto.ApiResponse;
+import com.nvbangg.fashonshop.dto.request.LoginRequest;
+import com.nvbangg.fashonshop.dto.request.RegisterRequest;
+import com.nvbangg.fashonshop.dto.response.AuthResponse;
+import com.nvbangg.fashonshop.dto.response.RegisterAuthResponse;
+import com.nvbangg.fashonshop.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/register")
+    public ApiResponse<RegisterAuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        RegisterAuthResponse data = authService.register(request);
+        return ApiResponse.success("Đăng ký thành công", data);
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        AuthResponse data = authService.login(request);
+        return ApiResponse.success("Đăng nhập thành công", data);
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout() {
+        return ApiResponse.success("Đăng xuất thành công");
+    }
+}

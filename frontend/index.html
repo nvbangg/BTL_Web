@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fashon Shop</title>
+    <link rel="stylesheet" href="./css/app.css" />
+  </head>
+  <body data-base-path="./">
+    <div class="page-wrap">
+      <header class="public-header">
+        <a class="brand" href="./index.html">
+          <img src="./assets/logo.svg" alt="logo" />
+          <span>Fashon Shop</span>
+        </a>
+
+        <form class="search-form" id="search-form">
+          <input id="search-input" type="text" placeholder="Tim kiem quan ao..." />
+          <button class="btn btn-primary" type="submit">Tim kiem</button>
+        </form>
+
+        <div class="account-wrap">
+          <button id="account-trigger" class="account-trigger">Dang nhap</button>
+          <div id="account-menu" class="account-menu hidden"></div>
+        </div>
+      </header>
+
+      <main>
+        <div class="toolbar">
+          <div class="sort-group" id="sort-group">
+            <button class="sort-chip active" data-sort="best_selling">Ban chay nhat</button>
+            <button class="sort-chip" data-sort="newest">Moi nhat</button>
+            <button class="sort-chip" data-sort="price_asc">Gia tang</button>
+            <button class="sort-chip" data-sort="price_desc">Gia giam</button>
+          </div>
+          <button id="open-filter-btn" class="btn btn-outline" type="button">Loc</button>
+        </div>
+
+        <section id="home-products" class="product-grid"></section>
+        <div id="home-pagination" class="pagination"></div>
+
+        <section class="section-card" style="margin-top: 24px">
+          <h2 style="margin-top: 0">Tai sao chon Fashon Shop?</h2>
+          <p style="margin: 0; color: #647390">
+            San pham duoc lua chon ky luong, giao hang toan quoc, doi tra linh hoat va chat luong vai duoc uu tien.
+          </p>
+        </section>
+      </main>
+
+      <footer class="footer-block">
+        <strong>Fashon Shop</strong>
+        <div>Ho tro mua sam local voi backend Spring Boot + MySQL.</div>
+      </footer>
+    </div>
+
+    <aside id="filter-drawer" class="filter-drawer">
+      <div class="filter-head">
+        <h3 style="margin: 0">Bo loc</h3>
+        <button id="close-filter-btn" class="btn btn-outline" type="button">Dong</button>
+      </div>
+      <div class="filter-body">
+        <div class="form-group">
+          <label for="filter-category">Danh muc</label>
+          <select id="filter-category" class="form-control">
+            <option value="">Tat ca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-gender">Gioi tinh</label>
+          <select id="filter-gender" class="form-control">
+            <option value="">Tat ca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-color">Mau sac</label>
+          <select id="filter-color" class="form-control">
+            <option value="">Tat ca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-size">Size</label>
+          <select id="filter-size" class="form-control">
+            <option value="">Tat ca</option>
+          </select>
+        </div>
+        <div class="inline-controls">
+          <div class="form-group" style="flex: 1">
+            <label for="filter-min-price">Gia tu</label>
+            <input id="filter-min-price" class="form-control" type="number" min="0" placeholder="0" />
+          </div>
+          <div class="form-group" style="flex: 1">
+            <label for="filter-max-price">Gia den</label>
+            <input id="filter-max-price" class="form-control" type="number" min="0" placeholder="0" />
+          </div>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button id="clear-filter-btn" class="btn btn-outline" type="button">Xoa loc</button>
+        <button id="apply-filter-btn" class="btn btn-accent" type="button">Ap dung</button>
+      </div>
+    </aside>
+
+    <script type="module" src="./js/pages/home.js"></script>
+  </body>
+</html>
