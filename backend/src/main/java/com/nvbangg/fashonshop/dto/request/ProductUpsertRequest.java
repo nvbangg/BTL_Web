@@ -14,21 +14,21 @@ import java.util.List;
 @Setter
 public class ProductUpsertRequest {
 
-    @NotBlank(message = "Tên sản phẩm không được để trống")
+    @NotBlank(message = "Tên sản phẩm là bắt buộc")
     private String name;
 
     private String description;
 
-    @NotBlank(message = "Ảnh sản phẩm không được để trống")
+    @NotBlank(message = "Ảnh sản phẩm là bắt buộc")
     private String thumbnail;
 
-    @NotBlank(message = "Danh mục sản phẩm không được để trống")
+    @NotBlank(message = "Danh mục sản phẩm là bắt buộc")
     private String category;
 
-    @NotBlank(message = "Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)")
+    @NotBlank(message = "Giới tính là bắt buộc")
     private String gender;
 
-    @NotNull(message = "Giá sản phẩm phải là số nguyên dương")
+    @NotNull(message = "Giá sản phẩm là bắt buộc")
     @Min(value = 1, message = "Giá sản phẩm phải là số nguyên dương")
     private Long price;
 
@@ -37,7 +37,7 @@ public class ProductUpsertRequest {
     @Valid
     private List<ProductImageRequest> images;
 
-    @NotEmpty(message = "Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)")
+    @NotEmpty(message = "Sản phẩm phải có ít nhất một phân loại")
     @Valid
     private List<ProductVariantRequest> variants;
 }

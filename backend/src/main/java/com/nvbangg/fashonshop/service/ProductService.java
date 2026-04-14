@@ -459,7 +459,7 @@ public class ProductService {
     private void validateImageFilename(String field, String filename) {
         if (filename == null || filename.isBlank()) {
             throw new BadRequestException("Dữ liệu đầu vào không hợp lệ",
-                    List.of(new ErrorDetail(field, "Ảnh sản phẩm không được để trống")));
+                    List.of(new ErrorDetail(field, "Ảnh sản phẩm là bắt buộc")));
         }
     }
 

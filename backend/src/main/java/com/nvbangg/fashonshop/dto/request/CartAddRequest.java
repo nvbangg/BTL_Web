@@ -2,7 +2,6 @@ package com.nvbangg.fashonshop.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,11 +9,10 @@ import lombok.Setter;
 @Setter
 public class CartAddRequest {
 
-    @NotNull(message = "ID phân loại sản phẩm là bắt buộc và phải là số dương")
-    @Positive(message = "ID phân loại sản phẩm là bắt buộc và phải là số dương")
+    @NotNull(message = "Phân loại sản phẩm là bắt buộc")
     private Long productVariantId;
 
-    @NotNull(message = "Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ")
-    @Min(value = 1, message = "Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ")
+    @NotNull(message = "Số lượng là bắt buộc")
+    @Min(value = 1, message = "Số lượng yêu cầu không hợp lệ")
     private Integer quantity;
 }

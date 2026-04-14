@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class AdminUpdateOrderStatusRequest {
 
-    @NotBlank(message = "status là bắt buộc")
+    @NotBlank(message = "Trạng thái đơn hàng là bắt buộc")
     private String status;
 }

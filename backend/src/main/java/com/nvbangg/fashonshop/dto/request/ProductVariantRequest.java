@@ -12,16 +12,16 @@ public class ProductVariantRequest {
 
     private Long id;
 
-    @NotBlank(message = "color là bắt buộc")
+    @NotBlank(message = "Màu phân loại là bắt buộc")
     private String color;
 
-    @NotBlank(message = "size là bắt buộc")
+    @NotBlank(message = "Size phân loại là bắt buộc")
     private String size;
 
-    @NotNull(message = "stock là bắt buộc")
-    @Min(value = 0, message = "stock phải lớn hơn hoặc bằng 0")
+    @NotNull(message = "Số lượng tồn kho phân loại là bắt buộc")
+    @Min(value = 0, message = "Tồn kho phải là số nguyên >= 0")
     private Integer stock;
 
-    @Min(value = 0, message = "priceOverride phải lớn hơn hoặc bằng 0")
+    @Min(value = 0, message = "Giá tùy chỉnh phải là số nguyên >= 0")
     private Long priceOverride;
 }

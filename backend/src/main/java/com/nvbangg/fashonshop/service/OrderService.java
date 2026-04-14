@@ -38,9 +38,9 @@ public class OrderService {
         Long userId = SecurityUtils.getCurrentUser().getId();
         List<Long> cartItemIds = normalizeCartItemIds(request.getCartItemIds());
 
-        String shippingName = requireShippingValue(request.getShippingName(), "shippingName", "Họ và tên người nhận không được để trống");
-        String shippingPhone = requireShippingValue(request.getShippingPhone(), "shippingPhone", "Số điện thoại không được để trống");
-        String shippingAddress = requireShippingValue(request.getShippingAddress(), "shippingAddress", "Địa chỉ nhận hàng không được để trống");
+        String shippingName = requireShippingValue(request.getShippingName(), "shippingName", "Họ và tên người nhận là bắt buộc");
+        String shippingPhone = requireShippingValue(request.getShippingPhone(), "shippingPhone", "Số điện thoại là bắt buộc");
+        String shippingAddress = requireShippingValue(request.getShippingAddress(), "shippingAddress", "Địa chỉ nhận hàng là bắt buộc");
 
         String placeholders = buildPlaceholders(cartItemIds.size());
         String cartSql =
@@ -360,14 +360,14 @@ public class OrderService {
     private List<Long> normalizeCartItemIds(List<Long> cartItemIds) {
         if (cartItemIds == null || cartItemIds.isEmpty()) {
             throw new BadRequestException("Tạo đơn hàng thất bại",
-                    List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm không được để trống")));
+                    List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
         }
 
         LinkedHashSet<Long> uniqueIds = new LinkedHashSet<>();
         for (Long itemId : cartItemIds) {
             if (itemId == null || itemId <= 0) {
                 throw new BadRequestException("Tạo đơn hàng thất bại",
-                        List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm không được để trống")));
+                        List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
             }
             uniqueIds.add(itemId);
         }

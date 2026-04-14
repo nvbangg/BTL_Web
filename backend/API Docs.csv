@@ -32,14 +32,16 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Dữ liệu đầu vào không hợp lệ"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
+    { ""field"": ""email"", ""message"": ""Email là bắt buộc"" },
     { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
+    { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu phải có ít nhất 6 ký tự"" },
-    { ""field"": ""name"", ""message"": ""Tên hiển thị không được để trống"" }
+    { ""field"": ""name"", ""message"": ""Tên hiển thị là bắt buộc"" }
   ]
-}","mật khẩu >= 6 kí tự là đủ. cả email, password và name đều bắt buộc",Progress
+}",,Progress
 2,Đăng nhập,POST /api/auth/login,"{
   ""email"": ""user@gmail.com"",
   ""password"": ""12345678""
@@ -71,13 +73,14 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Thiếu thông tin đăng nhập"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
     { ""field"": ""email"", ""message"": ""Email là bắt buộc"" },
+    { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" }
   ]
-}",hạn accessToken = 3 ngày,Progress
+}",hạn accessToken = 7 ngày,Progress
 3,Đăng xuất,POST /api/auth/logout,,"{
   ""success"": true,
   ""message"": ""Đăng xuất thành công"",
@@ -107,17 +110,17 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Đổi mật khẩu thất bại"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    {
-      ""field"": ""currentPassword"",
-      ""message"": ""Mật khẩu hiện tại không chính xác""
-    },
+    { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại là bắt buộc"" },
+    { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới là bắt buộc"" },
     {
       ""field"": ""newPassword"",
-      ""message"": ""Mật khẩu mới không được trùng với mật khẩu cũ và phải >= 6 ký tự""
-    }
+      ""message"": ""Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự""
+    },
+
+    { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại không chính xác"" },
   ]
 }",,Progress
 5,Lấy thông tin bản thân,GET /api/users/me,,"{
@@ -149,9 +152,10 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""name"", ""message"": ""Tên người dùng không được để trống"" },
+    { ""field"": ""name"", ""message"": ""Tên người dùng là bắt buộc"" },
+    { ""field"": ""phone"", ""message"": ""Số điện thoại là bắt buộc"" },
     { ""field"": ""phone"", ""message"": ""Số điện thoại không đúng định dạng"" },
-    { ""field"": ""address"", ""message"": ""Địa chỉ không được để trống"" }
+    { ""field"": ""address"", ""message"": ""Địa chỉ là bắt buộc"" }
   ]
 }",,Progress
 7,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,,"{
@@ -174,7 +178,7 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
 }","400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Dữ liệu truy vấn không hợp lệ"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
     {
@@ -283,8 +287,9 @@ các dữ liệu khác sắp xếp theo abc",Progress
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""productVariantId"", ""message"": ""ID phân loại sản phẩm là bắt buộc và phải là số dương"" },
-    { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
+    { ""field"": ""productVariantId"", ""message"": ""Phân loại sản phẩm là bắt buộc"" },
+    { ""field"": ""quantity"", ""message"": ""Số lượng là bắt buộc"" },
+    { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu không hợp lệ"" },
   ]
 }
 404 Not Found","Khi user bấm thêm vào giỏ một sản phẩm đã có sẵn trong giỏ, Backend không được báo lỗi và cũng không được Insert dòng mới. Backend phải bắt được trường hợp này và thực hiện lệnh Cộng dồn số lượng",Progress
@@ -321,10 +326,11 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Cập nhật thất bại"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
+     { ""field"": ""quantity"", ""message"": ""Số lượng là bắt buộc"" },
+     { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu không hợp lệ"" }
   ]
 }
 404 Not Found",chỉ sửa được quantity,Progress
@@ -354,15 +360,18 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Tạo đơn hàng thất bại"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""shippingName"", ""message"": ""Họ và tên người nhận không được để trống"" },
-    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại không được để trống"" },
-    { ""field"": ""shippingAddress"", ""message"": ""Địa chỉ nhận hàng không được để trống"" },
+    { ""field"": ""shippingName"", ""message"": ""Họ và tên người nhận là bắt buộc"" },
+    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại là bắt buộc"" },
+    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại không đúng định dạng"" },
+    { ""field"": ""shippingAddress"", ""message"": ""Địa chỉ nhận hàng là bắt buộc"" },
+    { ""field"": ""cartItemIds"", ""message"": ""Danh sách sản phẩm là bắt buộc"" },
+
     { ""field"": ""cartItemIds"", ""message"": ""Một số sản phẩm trong giỏ đã hết hàng"" },
-    { ""field"": ""cartItemIds"", ""message"": ""Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa"" },
-    { ""field"": ""cartItemIds"", ""message"": ""Danh sách sản phẩm không được để trống"" }
+    { ""field"": ""cartItemIds"", ""message"": ""Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa"" }
+    
   ]
 }",Checkout ngay tại trang giỏ hàng.,Progress
 15,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,,"{
@@ -479,7 +488,7 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Lỗi truy vấn danh sách"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
     { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
@@ -497,10 +506,12 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Cập nhật thất bại"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""status"", ""message"": ""Trạng thái cập nhật không hợp lệ"" }
+    { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng là bắt buộc"" },
+
+    { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
   ]
 }
 404 Not Found",có thể thay đổi status tự do,Progress
@@ -531,7 +542,7 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Lỗi truy vấn"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
     { ""field"": ""minPrice"", ""message"": ""Giá trị khoảng giá không hợp lệ"" }
@@ -604,12 +615,12 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Dữ liệu sản phẩm không hợp lệ"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""name"", ""message"": ""Tên sản phẩm không được để trống"" },
-    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm không được để trống"" },
-    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm không được để trống"" },
+    { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
+    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
@@ -650,12 +661,12 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Dữ liệu cập nhật không hợp lệ"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""name"", ""message"": ""Tên sản phẩm không được để trống"" },
-    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm không được để trống"" },
-    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm không được để trống"" },
+    { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
+    { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
@@ -688,7 +699,7 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Lỗi truy vấn"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
     { ""field"": ""role"", ""message"": ""Bộ lọc vai trò (role) không hợp lệ"" }
@@ -707,9 +718,10 @@ các dữ liệu khác sắp xếp theo abc",Progress
 400 Bad Request
 {
   ""success"": false,
-  ""message"": ""Cập nhật thất bại"",
+  ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
+    { ""field"": ""role"", ""message"": ""Vai trò tài khoản là bắt buộc"" },
     { ""field"": ""role"", ""message"": ""Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân"" }
   ]
 }",,Progress

@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class AdminUpdateUserRoleRequest {
 
-    @NotBlank(message = "role là bắt buộc")
+    @NotBlank(message = "Vai trò tài khoản là bắt buộc")
     private String role;
 }

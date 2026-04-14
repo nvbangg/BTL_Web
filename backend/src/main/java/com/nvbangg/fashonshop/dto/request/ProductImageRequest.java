@@ -10,7 +10,7 @@ public class ProductImageRequest {
 
     private Long id;
 
-    @NotBlank(message = "image là bắt buộc")
+    @NotBlank(message = "Ảnh sản phẩm là bắt buộc")
     private String image;
 
     private Integer sortOrder;

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CartUpdateRequest {
 
-    @NotNull(message = "Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ")
-    @Min(value = 1, message = "Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ")
+    @NotNull(message = "Số lượng là bắt buộc")
+    @Min(value = 1, message = "Số lượng yêu cầu không hợp lệ")
     private Integer quantity;
 }

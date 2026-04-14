@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 public class UpdateProfileRequest {
 
-    @NotBlank(message = "Tên người dùng không được để trống")
+    @NotBlank(message = "Tên người dùng là bắt buộc")
     private String name;
 
-    @NotBlank(message = "Số điện thoại không được để trống")
+    @NotBlank(message = "Số điện thoại là bắt buộc")
     @Pattern(regexp = "^[0-9]{9,11}$", message = "Số điện thoại không đúng định dạng")
     private String phone;
 
-    @NotBlank(message = "Địa chỉ không được để trống")
+    @NotBlank(message = "Địa chỉ là bắt buộc")
     private String address;
 }

@@ -18,6 +18,6 @@ public class RegisterRequest {
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
     private String password;
 
-    @NotBlank(message = "Tên hiển thị không được để trống")
+    @NotBlank(message = "Tên hiển thị là bắt buộc")
     private String name;
 }
