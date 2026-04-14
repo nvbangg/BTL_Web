@@ -3,6 +3,14 @@ package com.nvbangg.fashonshop.service;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import com.nvbangg.fashonshop.dto.request.AdminUpdateOrderStatusRequest;
 import com.nvbangg.fashonshop.dto.request.CreateOrderRequest;
+import com.nvbangg.fashonshop.dto.response.AdminOrderListResponse;
+import com.nvbangg.fashonshop.dto.response.AdminOrderSummaryResponse;
+import com.nvbangg.fashonshop.dto.response.CreateOrderResponse;
+import com.nvbangg.fashonshop.dto.response.OrderItemResponse;
+import com.nvbangg.fashonshop.dto.response.OrderListResponse;
+import com.nvbangg.fashonshop.dto.response.OrderSummaryResponse;
+import com.nvbangg.fashonshop.dto.response.RevenueByMonthResponse;
+import com.nvbangg.fashonshop.dto.response.StatisticsResponse;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.security.SecurityUtils;
@@ -15,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -34,7 +41,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Map<String, Object> createOrder(CreateOrderRequest request) {
+    public CreateOrderResponse createOrder(CreateOrderRequest request) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         List<Long> cartItemIds = normalizeCartItemIds(request.getCartItemIds());
 
@@ -140,22 +147,66 @@ public class OrderService {
                 orderId
         );
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("id", orderId);
-        data.put("totalPrice", totalPrice);
-        data.put("status", "pending");
-        data.put("createdAt", createdAt);
-        return data;
+        return new CreateOrderResponse(
+                orderId,
+                totalPrice,
+                "pending",
+                createdAt == null ? null : createdAt.toLocalDateTime()
+        );
     }
 
-    public Map<String, Object> getMyOrders(String page, String pageSize) {
+    public OrderListResponse getMyOrders(String page, String pageSize) {
         Long userId = SecurityUtils.getCurrentUser().getId();
-        return getOrdersInternal(false, userId, null, null, page, pageSize);
+        OrderSearchResult result = getOrdersInternal(false, userId, null, null, page, pageSize);
+        List<OrderSummaryResponse> items = result.items.stream()
+            .map(item -> new OrderSummaryResponse(
+                item.id,
+                item.shippingName,
+                item.shippingPhone,
+                item.shippingAddress,
+                item.totalPrice,
+                item.status,
+                item.createdAt,
+                item.updatedAt,
+                item.orderDetails
+            ))
+            .toList();
+
+        return new OrderListResponse(
+            items,
+            result.page,
+            result.pageSize,
+            result.total
+        );
     }
 
-    public Map<String, Object> getAdminOrders(String keyword, String status, String page, String pageSize) {
+    public AdminOrderListResponse getAdminOrders(String keyword, String status, String page, String pageSize) {
         validateOrderStatusIfPresent(status);
-        return getOrdersInternal(true, null, keyword, status, page, pageSize);
+        OrderSearchResult result = getOrdersInternal(true, null, keyword, status, page, pageSize);
+        List<AdminOrderSummaryResponse> items = result.items.stream()
+            .map(item -> new AdminOrderSummaryResponse(
+                item.id,
+                item.userId,
+                item.email,
+                item.shippingName,
+                item.shippingPhone,
+                item.shippingAddress,
+                item.totalPrice,
+                item.status,
+                item.createdAt,
+                item.updatedAt,
+                item.orderDetails
+            ))
+            .toList();
+
+        return new AdminOrderListResponse(
+            result.totalPendingOrders,
+            result.totalIncompleteOrders,
+            items,
+            result.page,
+            result.pageSize,
+            result.total
+        );
     }
 
     public void updateOrderStatus(Long id, AdminUpdateOrderStatusRequest request) {
@@ -171,7 +222,7 @@ public class OrderService {
         }
     }
 
-    public Map<String, Object> getStatistics() {
+    public StatisticsResponse getStatistics() {
         Long revenueThisMonth = jdbcTemplate.queryForObject(
                 """
                 SELECT COALESCE(SUM(total_price), 0)
@@ -198,7 +249,7 @@ public class OrderService {
                 Long.class
         );
 
-        List<Map<String, Object>> revenueByMonth = jdbcTemplate.query(
+        List<RevenueByMonthResponse> revenueByMonth = jdbcTemplate.query(
                 """
                 SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
                        COALESCE(SUM(total_price), 0) AS revenue
@@ -207,28 +258,26 @@ public class OrderService {
                 GROUP BY DATE_FORMAT(created_at, '%Y-%m')
                 ORDER BY month
                 """,
-                (rs, rowNum) -> {
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("month", rs.getString("month"));
-                    row.put("revenue", rs.getLong("revenue"));
-                    return row;
-                }
+                (rs, rowNum) -> new RevenueByMonthResponse(
+                        rs.getString("month"),
+                        rs.getLong("revenue")
+                )
         );
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("revenueThisMonth", revenueThisMonth == null ? 0L : revenueThisMonth);
-        data.put("revenueYear", revenueYear == null ? 0L : revenueYear);
-        data.put("revenueAllTime", revenueAllTime == null ? 0L : revenueAllTime);
-        data.put("revenueByMonth", revenueByMonth);
-        return data;
+        return new StatisticsResponse(
+                revenueThisMonth == null ? 0L : revenueThisMonth,
+                revenueYear == null ? 0L : revenueYear,
+                revenueAllTime == null ? 0L : revenueAllTime,
+                revenueByMonth
+        );
     }
 
-    private Map<String, Object> getOrdersInternal(boolean admin,
-                                                  Long userId,
-                                                  String keyword,
-                                                  String status,
-                                                  String page,
-                                                  String pageSize) {
+    private OrderSearchResult getOrdersInternal(boolean admin,
+                                                Long userId,
+                                                String keyword,
+                                                String status,
+                                                String page,
+                                                String pageSize) {
         int pageValue = parsePositiveOrDefault(page, 1);
         int pageSizeValue = parsePositiveOrDefault(pageSize, 10);
         int offset = (pageValue - 1) * pageSizeValue;
@@ -257,72 +306,134 @@ public class OrderService {
         }
 
         Long total = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id " + where,
-                params.toArray(),
-                Long.class
+            "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id " + where,
+            Long.class,
+            params.toArray()
         );
 
         String sql =
-                """
-                SELECT o.id,
-                       o.user_id,
-                       u.email,
-                       o.shipping_name,
-                       o.shipping_phone,
-                       o.shipping_address,
-                       o.total_price,
-                       o.status,
-                       o.created_at,
-                       o.updated_at
-                FROM orders o
-                JOIN users u ON u.id = o.user_id
-                """ + where + " ORDER BY o.updated_at DESC LIMIT ? OFFSET ?";
+            """
+            SELECT o.id,
+                   o.user_id,
+                   u.email,
+                   o.shipping_name,
+                   o.shipping_phone,
+                   o.shipping_address,
+                   o.total_price,
+                   o.status,
+                   o.created_at,
+                   o.updated_at
+            FROM orders o
+            JOIN users u ON u.id = o.user_id
+            """ + where + " ORDER BY o.updated_at DESC LIMIT ? OFFSET ?";
 
         List<Object> queryParams = new ArrayList<>(params);
         queryParams.add(pageSizeValue);
         queryParams.add(offset);
 
-        List<Map<String, Object>> items = jdbcTemplate.query(sql, queryParams.toArray(), (rs, rowNum) -> {
+        List<OrderSearchRow> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Long orderId = rs.getLong("id");
 
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("id", orderId);
-            if (admin) {
-                row.put("userId", rs.getLong("user_id"));
-                row.put("email", rs.getString("email"));
-            }
-            row.put("shippingName", rs.getString("shipping_name"));
-            row.put("shippingPhone", rs.getString("shipping_phone"));
-            row.put("shippingAddress", rs.getString("shipping_address"));
-            row.put("totalPrice", rs.getLong("total_price"));
-            row.put("status", rs.getString("status"));
-            row.put("createdAt", rs.getTimestamp("created_at"));
-            row.put("updatedAt", rs.getTimestamp("updated_at"));
-            row.put("orderDetails", getOrderItems(orderId));
-            return row;
-        });
+            return new OrderSearchRow(
+                    orderId,
+                    rs.getLong("user_id"),
+                    rs.getString("email"),
+                    rs.getString("shipping_name"),
+                    rs.getString("shipping_phone"),
+                    rs.getString("shipping_address"),
+                    rs.getLong("total_price"),
+                    rs.getString("status"),
+                    rs.getTimestamp("created_at").toLocalDateTime(),
+                    rs.getTimestamp("updated_at").toLocalDateTime(),
+                    getOrderItems(orderId)
+            );
+        }, queryParams.toArray());
 
-        Map<String, Object> data = new LinkedHashMap<>();
+        Long totalPendingOrders = null;
+        Long totalIncompleteOrders = null;
         if (admin) {
-            Long totalPendingOrders = jdbcTemplate.queryForObject(
-                    "SELECT COUNT(*) FROM orders WHERE status = 'pending'",
-                    Long.class
+            totalPendingOrders = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM orders WHERE status = 'pending'",
+                Long.class
             );
-            Long totalIncompleteOrders = jdbcTemplate.queryForObject(
-                    "SELECT COUNT(*) FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
-                    Long.class
+            totalIncompleteOrders = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
+                Long.class
             );
-            data.put("totalPendingOrders", totalPendingOrders == null ? 0L : totalPendingOrders);
-            data.put("totalIncompleteOrders", totalIncompleteOrders == null ? 0L : totalIncompleteOrders);
         }
-        data.put("items", items);
-        data.put("page", pageValue);
-        data.put("pageSize", pageSizeValue);
-        data.put("total", total == null ? 0L : total);
-        return data;
+
+        return new OrderSearchResult(
+                items,
+                pageValue,
+                pageSizeValue,
+                total == null ? 0L : total,
+                totalPendingOrders,
+                totalIncompleteOrders
+        );
     }
 
-    private List<Map<String, Object>> getOrderItems(Long orderId) {
+    private static class OrderSearchResult {
+        private final List<OrderSearchRow> items;
+        private final Integer page;
+        private final Integer pageSize;
+        private final Long total;
+        private final Long totalPendingOrders;
+        private final Long totalIncompleteOrders;
+
+        private OrderSearchResult(List<OrderSearchRow> items,
+                                  Integer page,
+                                  Integer pageSize,
+                                  Long total,
+                                  Long totalPendingOrders,
+                                  Long totalIncompleteOrders) {
+            this.items = items;
+            this.page = page;
+            this.pageSize = pageSize;
+            this.total = total;
+            this.totalPendingOrders = totalPendingOrders;
+            this.totalIncompleteOrders = totalIncompleteOrders;
+        }
+    }
+
+    private static class OrderSearchRow {
+        private final Long id;
+        private final Long userId;
+        private final String email;
+        private final String shippingName;
+        private final String shippingPhone;
+        private final String shippingAddress;
+        private final Long totalPrice;
+        private final String status;
+        private final java.time.LocalDateTime createdAt;
+        private final java.time.LocalDateTime updatedAt;
+        private final List<OrderItemResponse> orderDetails;
+
+        private OrderSearchRow(Long id,
+                               Long userId,
+                               String email,
+                               String shippingName,
+                               String shippingPhone,
+                               String shippingAddress,
+                               Long totalPrice,
+                               String status,
+                               java.time.LocalDateTime createdAt,
+                               java.time.LocalDateTime updatedAt,
+                               List<OrderItemResponse> orderDetails) {
+            this.id = id;
+            this.userId = userId;
+            this.email = email;
+            this.shippingName = shippingName;
+            this.shippingPhone = shippingPhone;
+            this.shippingAddress = shippingAddress;
+            this.totalPrice = totalPrice;
+            this.status = status;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.orderDetails = orderDetails;
+        }
+    }
+
+    private List<OrderItemResponse> getOrderItems(Long orderId) {
         return jdbcTemplate.query(
                 """
                 SELECT oi.id,
@@ -340,20 +451,18 @@ public class OrderService {
                 WHERE oi.order_id = ?
                 ORDER BY oi.id
                 """,
-                new Object[]{orderId},
-                (rs, rowNum) -> {
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("id", rs.getLong("id"));
-                    row.put("productId", rs.getLong("product_id"));
-                    row.put("variantId", rs.getLong("product_variant_id"));
-                    row.put("productName", rs.getString("product_name"));
-                    row.put("thumbnail", rs.getString("thumbnail"));
-                    row.put("color", rs.getString("color"));
-                    row.put("size", rs.getString("size"));
-                    row.put("quantity", rs.getInt("quantity"));
-                    row.put("price", rs.getLong("price_at_purchase"));
-                    return row;
-                }
+                (rs, rowNum) -> new OrderItemResponse(
+                        rs.getLong("id"),
+                        rs.getLong("product_id"),
+                        rs.getLong("product_variant_id"),
+                        rs.getString("product_name"),
+                        rs.getString("thumbnail"),
+                        rs.getString("color"),
+                        rs.getString("size"),
+                        rs.getInt("quantity"),
+                        rs.getLong("price_at_purchase")
+                    ),
+                    orderId
         );
     }
 

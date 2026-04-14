@@ -106,10 +106,10 @@ public class GlobalExceptionHandler {
             return "Đổi mật khẩu thất bại";
         }
         if ("/api/admin/products".equals(uri) && "POST".equalsIgnoreCase(method)) {
-            return "Dữ liệu sản phẩm không hợp lệ";
+            return "Dữ liệu không hợp lệ";
         }
         if (uri.startsWith("/api/admin/products/") && "PUT".equalsIgnoreCase(method)) {
-            return "Dữ liệu cập nhật không hợp lệ";
+            return "Dữ liệu không hợp lệ";
         }
         if (uri.startsWith("/api/admin/orders/") && "PUT".equalsIgnoreCase(method)) {
             return "Cập nhật thất bại";

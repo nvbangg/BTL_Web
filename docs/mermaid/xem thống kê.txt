@@ -1,11 +1,13 @@
 sequenceDiagram
     autonumber
-    actor Admin
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Admin as Quản trị viên
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Admin->>UI: (1) Truy cập trang Admin
-    UI->>System: (2) Yêu cầu dữ liệu thống kê
-    System->>System: (3) Truy vấn dữ liệu thống kê
-    System-->>UI: (4) Trả dữ liệu thống kê
-    UI-->>Admin: (5) Hiển thị bảng thống kê
+    Admin->>FE: (1) Nhấn vào mục Thống kê
+    FE->>BE: (2) Gửi yêu cầu lấy thống kê
+    BE->>DB: (3) Truy vấn số liệu tổng hợp
+    DB-->>BE: (4) Trả về dữ liệu thống kê
+    BE-->>FE: (5) Phản hồi kết quả xử lý
+    FE-->>Admin: (6) Hiển thị biểu đồ và số liệu

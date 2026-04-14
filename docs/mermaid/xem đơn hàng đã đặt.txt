@@ -1,10 +1,13 @@
 sequenceDiagram
     autonumber
-    actor User as Người dùng
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Người dùng
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    User->>UI: (1) Mở trang Đơn hàng của tôi
-    UI->>System: (2) Yêu cầu danh sách đơn hàng
-    System-->>UI: (3) Trả danh sách đơn hàng
-    UI-->>User: (4) Hiển thị danh sách đơn hàng
+    Actor->>FE: (1) Nhấn mục Đơn hàng của tôi
+    FE->>BE: (2) Gửi yêu cầu lấy danh sách đơn
+    BE->>DB: (3) Truy vấn lịch sử đơn hàng
+    DB-->>BE: (4) Trả về danh sách đơn hàng
+    BE-->>FE: (5) Phản hồi dữ liệu đơn hàng
+    FE-->>Actor: (6) Hiển thị danh sách lên UI

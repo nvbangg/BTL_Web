@@ -3,8 +3,8 @@ package com.nvbangg.fashonshop.controller;
 import com.nvbangg.fashonshop.common.dto.ApiResponse;
 import com.nvbangg.fashonshop.dto.request.LoginRequest;
 import com.nvbangg.fashonshop.dto.request.RegisterRequest;
-import com.nvbangg.fashonshop.dto.response.AuthResponse;
-import com.nvbangg.fashonshop.dto.response.RegisterAuthResponse;
+import com.nvbangg.fashonshop.dto.response.LoginResponse;
+import com.nvbangg.fashonshop.dto.response.RegisterResponse;
 import com.nvbangg.fashonshop.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +23,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<RegisterAuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        RegisterAuthResponse data = authService.register(request);
+    public ApiResponse<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
+        RegisterResponse data = authService.register(request);
         return ApiResponse.success("Đăng ký thành công", data);
     }
 
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        AuthResponse data = authService.login(request);
+    public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse data = authService.login(request);
         return ApiResponse.success("Đăng nhập thành công", data);
     }
 

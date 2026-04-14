@@ -5,7 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RegisterAuthResponse {
+public class LoginResponse {
     private final String accessToken;
-    private final RegisterResponse user;
+    private final Long id;
+    private final String email;
+    private final String name;
+    private final String role;
 }

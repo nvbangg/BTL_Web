@@ -1,17 +1,15 @@
 sequenceDiagram
     autonumber
-    actor Admin as Admin
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Admin as Quản trị viên
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Admin->>UI: (1) Mở tab Quản lý người dùng
-    UI->>System: (2) Yêu cầu danh sách người dùng
-    System->>System: (3) Truy vấn danh sách người dùng
-    System-->>UI: (4) Trả danh sách người dùng
-    UI-->>Admin: (5) Hiển thị danh sách người dùng
-
-    Admin->>UI: (6) Chọn thay đổi vai trò của một người dùng
-    UI->>System: (7) Gửi yêu cầu cập nhật vai trò
-    System->>System: (8) Cập nhật dữ liệu vai trò trong CSDL
-    System-->>UI: (9) Xác nhận thao tác thành công
-    UI-->>Admin: (10) Cập nhật trạng thái hiển thị và thông báo thành công
+    Admin->>FE: (1) Chọn vai trò và nhấn Xác nhận
+    FE->>BE: (2) Gửi yêu cầu cập nhật vai trò
+    BE->>DB: (3) Kiểm tra ID người dùng
+    DB-->>BE: (4) Xác nhận người dùng tồn tại
+    BE->>DB: (5) Lưu vai trò mới
+    DB-->>BE: (6) Xác nhận thay đổi thành công
+    BE-->>FE: (7) Phản hồi thành công
+    FE-->>Admin: (8) Thông báo cập nhật thành công

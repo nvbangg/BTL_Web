@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthResponse {
-    private final String accessToken;
-    private final LoginUserResponse user;
+public class ProductImageResponse {
+    private final Long id;
+    private final String image;
+    private final Integer sortOrder;
 }

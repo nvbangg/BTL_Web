@@ -1,16 +1,13 @@
 sequenceDiagram
     autonumber
-    actor Guest as Khách
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Khách
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Guest->>UI: (1) Nhập từ khóa tìm kiếm
-    Guest->>UI: (2) Nhấn nút Tìm kiếm
-    UI->>System: (3) Gửi từ khóa tìm kiếm
-    System->>System: (4) Tìm kiếm sản phẩm phù hợp
-    System-->>UI: (5) Trả danh sách sản phẩm
-    UI-->>Guest: (6) Hiển thị danh sách sản phẩm tìm được
-
-    Guest->>UI: (7) Chọn bộ lọc và kiểu sắp xếp
-    UI->>System: (8) Gửi bộ lọc và kiểu sắp xếp
-    System-->>UI: (9) Trả danh sách sản phẩm phù hợp
+    Actor->>FE: (1) Nhập từ khóa và bộ lọc
+    FE->>BE: (2) Gửi yêu cầu tìm kiếm
+    BE->>DB: (3) Truy vấn sản phẩm
+    DB-->>BE: (4) Trả về danh sách kết quả
+    BE-->>FE: (5) Phản hồi dữ liệu
+    FE-->>Actor: (6) Hiển thị sản phẩm lên UI

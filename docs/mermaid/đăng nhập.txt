@@ -1,20 +1,21 @@
 sequenceDiagram
     autonumber
-    actor Guest as Khách
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Khách
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Guest->>UI: (1) Nhấn nút Đăng nhập
-    UI-->>Guest: (2) Hiển thị form nhập email
-
-    Guest->>UI: (3) Nhập email và nhấn Tiếp tục
-    UI->>System: (4) Gửi email để kiểm tra
-    System-->>UI: (5) Xác nhận email hợp lệ
-
-    UI-->>Guest: (6) Hiển thị form nhập mật khẩu
-    Guest->>UI: (7) Nhập mật khẩu và nhấn Đăng nhập
-
-    UI->>System: (8) Gửi thông tin đăng nhập
-    System-->>UI: (9) Xác thực đăng nhập thành công
-
-    UI-->>Guest: (10) Chuyển đến trang danh sách sản phẩm và thông báo đăng nhập thành công
+    Actor->>FE: (1) Nhấn nút Đăng nhập
+    FE-->>Actor: (2) Hiển thị form nhập Email
+    Actor->>FE: (3) Nhập Email và nhấn Tiếp tục
+    FE->>BE: (4) Kiểm tra Email
+    BE->>DB: (5) Query User by Email
+    DB-->>BE: (6) Email tồn tại
+    BE-->>FE: (7) Phản hồi Email hợp lệ
+    FE-->>Actor: (8) Hiển thị form nhập Mật khẩu
+    Actor->>FE: (9) Nhập Mật khẩu và nhấn Đăng nhập
+    FE->>BE: (10) Gửi thông tin đăng nhập
+    BE->>DB: (11) Đối soát mật khẩu
+    DB-->>BE: (12) Xác nhận đúng mật khẩu
+    BE-->>FE: (13) Trả về Token và thông tin
+    FE-->>Actor: (14) Thông báo thành công và chuyển hướng

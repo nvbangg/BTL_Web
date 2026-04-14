@@ -8,13 +8,11 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Đăng ký thành công"",
   ""data"": {
     ""accessToken"": ""jwt_token_here"",
-    ""user"": {
-      ""id"": 1,
-      ""email"": ""user@gmail.com"",
-      ""name"": ""Nguyen Van A"",
-      ""role"": ""user"",
-      ""createdAt"": ""2026-04-01T10:00:00Z""
-    }
+    ""id"": 1,
+    ""email"": ""user@gmail.com"",
+    ""name"": ""Nguyen Van A"",
+    ""role"": ""user"",
+    ""createdAt"": ""2026-04-01T10:00:00Z""
   },
   ""errors"": []
 }","409 Conflict
@@ -50,12 +48,10 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Đăng nhập thành công"",
   ""data"": {
     ""accessToken"": ""jwt_token_here"",
-    ""user"": {
-      ""id"": 1,
-      ""email"": ""user@gmail.com"",
-      ""name"": ""Nguyen Van A"",
-      ""role"": ""user""
-    }
+    ""id"": 1,
+    ""email"": ""user@gmail.com"",
+    ""name"": ""Nguyen Van A"",
+    ""role"": ""user""
   },
   ""errors"": []
 }","401 Unauthorized
@@ -220,7 +216,7 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
       ""message"": ""Không thể tải bộ lọc lúc này""
     }
   ]
-}","dùng để lấy giá trị lựa chọn cho bộ lọc, genders cố định: ""male"", ""female"", ""unisex""
+}","dùng để lấy giá trị lựa chọn cho bộ lọc. genders cố định: ""male"", ""female"", ""unisex""
 các dữ liệu khác sắp xếp theo abc",Progress
 9,Lấy chi tiết sản phẩm,GET /api/products/{id},,"{
   ""success"": true,
@@ -603,7 +599,7 @@ các dữ liệu khác sắp xếp theo abc",Progress
         ""priceOverride"": 10000
       }
     ]
-  },","{
+  }","{
   ""success"": true,
   ""message"": ""Tạo sản phẩm thành công"",
   ""data"": {
@@ -621,11 +617,18 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
     { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
     { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
-    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
+    { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
-    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
+    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
+    { ""field"": ""images[0].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""variants[0].color"", ""message"": ""Màu phân loại là bắt buộc"" },
+    { ""field"": ""variants[0].size"", ""message"": ""Size phân loại là bắt buộc"" },
+    { ""field"": ""variants[0].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
+    { ""field"": ""variants[0].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+
+    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
-}",Bao gồm variants + images,Progress
+}",,Progress
 22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},"{
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
@@ -643,14 +646,14 @@ các dữ liệu khác sắp xếp theo abc",Progress
     ],
     ""variants"": [
       {
-        ""id"": 10,
+        ""id"": 1,
         ""color"": ""red"",
         ""size"": ""M"",
         ""stock"": 10,
         ""priceOverride"": 10000
       }
     ]
-  },","{
+  }","{
   ""success"": true,
   ""message"": ""Cập nhật sản phẩm thành công"",
   ""data"": null,
@@ -667,11 +670,18 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
     { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
     { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
-    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)"" },
+    { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
-    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại (màu sắc/kích thước)"" }
+    { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
+    { ""field"": ""images[0].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""variants[0].color"", ""message"": ""Màu phân loại là bắt buộc"" },
+    { ""field"": ""variants[0].size"", ""message"": ""Size phân loại là bắt buộc"" },
+    { ""field"": ""variants[0].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
+    { ""field"": ""variants[0].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+
+    { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
-}",,Progress
+}","images và variants cập nhật theo id đã có, nếu id chưa có thì tạo mới với các trường đã điền (báo lỗi tương ứng nếu sai)",Progress
 23,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,,"{
   ""success"": true,
   ""message"": ""Lấy danh sách người dùng thành công"",

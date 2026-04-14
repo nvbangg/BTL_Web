@@ -5,9 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginUserResponse {
+public class CreateProductResponse {
     private final Long id;
-    private final String email;
-    private final String name;
-    private final String role;
 }

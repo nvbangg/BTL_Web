@@ -1,11 +1,13 @@
 sequenceDiagram
     autonumber
-    actor Guest as Khách
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Khách
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Guest->>UI: (1) Chọn sản phẩm
-    UI->>System: (2) Yêu cầu thông tin sản phẩm
-    System->>System: (3) Lấy thông tin chi tiết sản phẩm
-    System-->>UI: (4) Trả dữ liệu sản phẩm
-    UI-->>Guest: (5) Hiển thị trang chi tiết sản phẩm
+    Actor->>FE: (1) Nhấn chọn sản phẩm
+    FE->>BE: (2) Gửi yêu cầu lấy chi tiết
+    BE->>DB: (3) Truy vấn dữ liệu theo ID
+    DB-->>BE: (4) Trả về thông tin chi tiết
+    BE-->>FE: (5) Phản hồi dữ liệu chi tiết
+    FE-->>Actor: (6) Hiển thị thông tin sản phẩm

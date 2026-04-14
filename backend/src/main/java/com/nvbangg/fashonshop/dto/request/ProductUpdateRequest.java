@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ProductUpsertRequest {
+public class ProductUpdateRequest {
 
     @NotBlank(message = "Tên sản phẩm là bắt buộc")
     private String name;
@@ -35,9 +35,9 @@ public class ProductUpsertRequest {
     private Boolean isActive;
 
     @Valid
-    private List<ProductImageRequest> images;
+    private List<ProductUpdateImageRequest> images;
 
     @NotEmpty(message = "Sản phẩm phải có ít nhất một phân loại")
     @Valid
-    private List<ProductVariantRequest> variants;
+    private List<ProductUpdateVariantRequest> variants;
 }

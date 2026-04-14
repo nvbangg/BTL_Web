@@ -3,9 +3,7 @@ package com.nvbangg.fashonshop.service;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import com.nvbangg.fashonshop.dto.request.LoginRequest;
 import com.nvbangg.fashonshop.dto.request.RegisterRequest;
-import com.nvbangg.fashonshop.dto.response.AuthResponse;
-import com.nvbangg.fashonshop.dto.response.LoginUserResponse;
-import com.nvbangg.fashonshop.dto.response.RegisterAuthResponse;
+import com.nvbangg.fashonshop.dto.response.LoginResponse;
 import com.nvbangg.fashonshop.dto.response.RegisterResponse;
 import com.nvbangg.fashonshop.entity.User;
 import com.nvbangg.fashonshop.exception.ConflictException;
@@ -32,7 +30,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public RegisterAuthResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ConflictException("Đăng ký thất bại",
                     List.of(new ErrorDetail("email", "Email này đã tồn tại trong hệ thống")));
@@ -45,40 +43,38 @@ public class AuthService {
         user.setRole("user");
 
         User saved = userRepository.save(user);
-        RegisterResponse registerUser = new RegisterResponse(
+        String token = jwtService.generateToken(saved);
+        return new RegisterResponse(
+                token,
                 saved.getId(),
                 saved.getEmail(),
                 saved.getName(),
                 saved.getRole(),
                 saved.getCreatedAt()
         );
-
-        String token = jwtService.generateToken(saved);
-        return new RegisterAuthResponse(token, registerUser);
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
-            .orElseThrow(() -> new UnauthorizedException("Đăng nhập thất bại",
-                List.of(new ErrorDetail(null, "Sai email hoặc mật khẩu"))));
+                .orElseThrow(() -> new UnauthorizedException("Đăng nhập thất bại",
+                        List.of(new ErrorDetail(null, "Sai email hoặc mật khẩu"))));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Đăng nhập thất bại",
-                List.of(new ErrorDetail(null, "Sai email hoặc mật khẩu")));
+                    List.of(new ErrorDetail(null, "Sai email hoặc mật khẩu")));
         }
 
         return toLoginResponse(user);
     }
 
-    private AuthResponse toLoginResponse(User user) {
+    private LoginResponse toLoginResponse(User user) {
         String token = jwtService.generateToken(user);
-        LoginUserResponse userResponse = new LoginUserResponse(
+        return new LoginResponse(
+                token,
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
                 user.getRole()
         );
-
-        return new AuthResponse(token, userResponse);
     }
 }

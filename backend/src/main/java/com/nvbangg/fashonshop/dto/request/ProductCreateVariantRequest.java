@@ -8,9 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductVariantRequest {
-
-    private Long id;
+public class ProductCreateVariantRequest {
 
     @NotBlank(message = "Màu phân loại là bắt buộc")
     private String color;
@@ -18,8 +16,8 @@ public class ProductVariantRequest {
     @NotBlank(message = "Size phân loại là bắt buộc")
     private String size;
 
-    @NotNull(message = "Số lượng tồn kho phân loại là bắt buộc")
-    @Min(value = 0, message = "Tồn kho phải là số nguyên >= 0")
+    @NotNull(message = "Số lượng tồn kho phải là số nguyên >= 0")
+    @Min(value = 0, message = "Số lượng tồn kho phải là số nguyên >= 0")
     private Integer stock;
 
     @Min(value = 0, message = "Giá tùy chỉnh phải là số nguyên >= 0")

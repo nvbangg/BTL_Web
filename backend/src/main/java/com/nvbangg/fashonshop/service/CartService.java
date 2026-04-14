@@ -3,13 +3,14 @@ package com.nvbangg.fashonshop.service;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import com.nvbangg.fashonshop.dto.request.CartAddRequest;
 import com.nvbangg.fashonshop.dto.request.CartUpdateRequest;
+import com.nvbangg.fashonshop.dto.response.CartItemResponse;
+import com.nvbangg.fashonshop.dto.response.CartResponse;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.security.SecurityUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,10 +57,10 @@ public class CartService {
         );
     }
 
-    public Map<String, Object> getMyCart() {
+    public CartResponse getMyCart() {
         Long userId = SecurityUtils.getCurrentUser().getId();
 
-        List<Map<String, Object>> items = jdbcTemplate.query(
+        List<CartItemResponse> items = jdbcTemplate.query(
                 """
                 SELECT c.id,
                        c.product_variant_id,
@@ -79,35 +80,32 @@ public class CartService {
                 WHERE c.user_id = ?
                 ORDER BY c.created_at DESC
                 """,
-                new Object[]{userId},
                 (rs, rowNum) -> {
                     long price = rs.getObject("price_override", Long.class) == null
                             ? rs.getLong("base_price")
                             : rs.getLong("price_override");
 
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("id", rs.getLong("id"));
-                    row.put("productId", rs.getLong("product_id"));
-                    row.put("variantId", rs.getLong("product_variant_id"));
-                    row.put("productName", rs.getString("product_name"));
-                    row.put("thumbnail", rs.getString("thumbnail"));
-                    row.put("color", rs.getString("color"));
-                    row.put("size", rs.getString("size"));
-                    row.put("quantity", rs.getInt("quantity"));
-                    row.put("price", price);
-                    row.put("stock", rs.getInt("stock"));
-                    return row;
-                }
+                    return new CartItemResponse(
+                            rs.getLong("id"),
+                            rs.getLong("product_id"),
+                            rs.getLong("product_variant_id"),
+                            rs.getString("product_name"),
+                            rs.getString("thumbnail"),
+                            rs.getString("color"),
+                            rs.getString("size"),
+                            rs.getInt("quantity"),
+                            price,
+                            rs.getInt("stock")
+                    );
+                },
+                userId
         );
 
         long totalPrice = items.stream()
-                .mapToLong(item -> ((Number) item.get("price")).longValue() * ((Number) item.get("quantity")).longValue())
+                .mapToLong(item -> item.getPrice() * item.getQuantity())
                 .sum();
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("items", items);
-        data.put("totalPrice", totalPrice);
-        return data;
+        return new CartResponse(items, totalPrice);
     }
 
     public void updateItem(Long itemId, CartUpdateRequest request) {

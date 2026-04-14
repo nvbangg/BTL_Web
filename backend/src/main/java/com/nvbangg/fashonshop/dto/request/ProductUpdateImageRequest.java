@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductImageRequest {
+public class ProductUpdateImageRequest {
 
     private Long id;
 

@@ -3,6 +3,7 @@ package com.nvbangg.fashonshop.controller;
 import com.nvbangg.fashonshop.common.dto.ApiResponse;
 import com.nvbangg.fashonshop.dto.request.CartAddRequest;
 import com.nvbangg.fashonshop.dto.request.CartUpdateRequest;
+import com.nvbangg.fashonshop.dto.response.CartResponse;
 import com.nvbangg.fashonshop.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -33,7 +32,7 @@ public class CartController {
     }
 
     @GetMapping
-    public ApiResponse<Map<String, Object>> getMyCart() {
+    public ApiResponse<CartResponse> getMyCart() {
         return ApiResponse.success("Lấy thông tin giỏ hàng thành công", cartService.getMyCart());
     }
 

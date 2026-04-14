@@ -1,9 +1,22 @@
 package com.nvbangg.fashonshop.service;
 
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
-import com.nvbangg.fashonshop.dto.request.ProductImageRequest;
-import com.nvbangg.fashonshop.dto.request.ProductUpsertRequest;
-import com.nvbangg.fashonshop.dto.request.ProductVariantRequest;
+import com.nvbangg.fashonshop.dto.request.ProductCreateImageRequest;
+import com.nvbangg.fashonshop.dto.request.ProductCreateRequest;
+import com.nvbangg.fashonshop.dto.request.ProductCreateVariantRequest;
+import com.nvbangg.fashonshop.dto.request.ProductUpdateImageRequest;
+import com.nvbangg.fashonshop.dto.request.ProductUpdateRequest;
+import com.nvbangg.fashonshop.dto.request.ProductUpdateVariantRequest;
+import com.nvbangg.fashonshop.dto.response.AdminProductDetailResponse;
+import com.nvbangg.fashonshop.dto.response.AdminProductListItemResponse;
+import com.nvbangg.fashonshop.dto.response.AdminProductListResponse;
+import com.nvbangg.fashonshop.dto.response.CreateProductResponse;
+import com.nvbangg.fashonshop.dto.response.ProductDetailResponse;
+import com.nvbangg.fashonshop.dto.response.ProductFiltersResponse;
+import com.nvbangg.fashonshop.dto.response.ProductImageResponse;
+import com.nvbangg.fashonshop.dto.response.ProductListItemResponse;
+import com.nvbangg.fashonshop.dto.response.ProductListResponse;
+import com.nvbangg.fashonshop.dto.response.ProductVariantResponse;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +45,7 @@ public class ProductService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Map<String, Object> getPublicProducts(String keyword,
+    public ProductListResponse getPublicProducts(String keyword,
                                                  String category,
                                                  String gender,
                                                  String color,
@@ -42,24 +55,59 @@ public class ProductService {
                                                  String sort,
                                                  String page,
                                                  String pageSize) {
-        return getProductsInternal(false, keyword, category, gender, color, size, minPrice, maxPrice, sort, null, page, pageSize);
+        ProductSearchResult result = getProductsInternal(false, keyword, category, gender, color, size, minPrice, maxPrice, sort, null, page, pageSize);
+        List<ProductListItemResponse> items = result.items.stream()
+            .map(item -> new ProductListItemResponse(
+                item.id,
+                item.name,
+                item.thumbnail,
+                item.price
+            ))
+            .toList();
+
+        return new ProductListResponse(
+            items,
+            result.page,
+            result.pageSize,
+            result.total
+        );
     }
 
-    public Map<String, Object> getAdminProducts(String keyword,
-                                                String category,
-                                                String gender,
-                                                String color,
-                                                String size,
-                                                Long minPrice,
-                                                Long maxPrice,
-                                                String sort,
-                                                String isActive,
-                                                String page,
-                                                String pageSize) {
-        return getProductsInternal(true, keyword, category, gender, color, size, minPrice, maxPrice, sort, isActive, page, pageSize);
+    public AdminProductListResponse getAdminProducts(String keyword,
+                                                     String category,
+                                                     String gender,
+                                                     String color,
+                                                     String size,
+                                                     Long minPrice,
+                                                     Long maxPrice,
+                                                     String sort,
+                                                     String isActive,
+                                                     String page,
+                                                     String pageSize) {
+        ProductSearchResult result = getProductsInternal(true, keyword, category, gender, color, size, minPrice, maxPrice, sort, isActive, page, pageSize);
+        List<AdminProductListItemResponse> items = result.items.stream()
+            .map(item -> new AdminProductListItemResponse(
+                item.id,
+                item.thumbnail,
+                item.name,
+                item.price,
+                item.soldCount,
+                item.totalStock,
+                item.isActive
+            ))
+            .toList();
+
+        return new AdminProductListResponse(
+            result.totalActiveProducts,
+            result.totalOutOfStockProducts,
+            items,
+            result.page,
+            result.pageSize,
+            result.total
+        );
     }
 
-    public Map<String, Object> getFilters() {
+    public ProductFiltersResponse getFilters() {
         List<String> categories = jdbcTemplate.queryForList(
             "SELECT DISTINCT category FROM products WHERE is_active = TRUE ORDER BY category ASC",
                 String.class
@@ -75,25 +123,49 @@ public class ProductService {
                 String.class
         );
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("categories", categories);
-        data.put("genders", List.of("male", "female", "unisex"));
-        data.put("colors", colors);
-        data.put("sizes", sizes);
-        return data;
+        return new ProductFiltersResponse(
+                categories,
+                List.of("male", "female", "unisex"),
+                colors,
+                sizes
+        );
     }
 
-    public Map<String, Object> getPublicProductDetail(Long id) {
-        return getProductDetail(id, false);
+    public ProductDetailResponse getPublicProductDetail(Long id) {
+        ProductDetailRow product = getProductDetailInternal(id, false);
+        return new ProductDetailResponse(
+                product.id,
+                product.name,
+                product.description,
+                product.thumbnail,
+                product.category,
+                product.gender,
+                product.price,
+                product.soldCount,
+                getProductImages(id),
+                getProductVariants(id)
+        );
     }
 
-    public Map<String, Object> getAdminProductDetail(Long id) {
-        return getProductDetail(id, true);
+    public AdminProductDetailResponse getAdminProductDetail(Long id) {
+        ProductDetailRow product = getProductDetailInternal(id, true);
+        return new AdminProductDetailResponse(
+                product.id,
+                product.name,
+                product.description,
+                product.thumbnail,
+                product.category,
+                product.gender,
+                product.price,
+                product.isActive,
+                getProductImages(id),
+                getProductVariants(id)
+        );
     }
 
     @Transactional
-    public Map<String, Object> createProduct(ProductUpsertRequest request) {
-        validateUpsertRequest(request);
+    public CreateProductResponse createProduct(ProductCreateRequest request) {
+        validateCreateRequest(request);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -122,15 +194,13 @@ public class ProductService {
         insertImages(productId, request.getImages());
         insertVariants(productId, request.getVariants());
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("id", productId);
-        return data;
+        return new CreateProductResponse(productId);
     }
 
     @Transactional
-    public void updateProduct(Long id, ProductUpsertRequest request) {
+    public void updateProduct(Long id, ProductUpdateRequest request) {
         ensureProductExists(id);
-        validateUpsertRequest(request);
+        validateUpdateRequest(id, request);
 
         jdbcTemplate.update(
                 """
@@ -148,14 +218,11 @@ public class ProductService {
                 id
         );
 
-        jdbcTemplate.update("DELETE FROM product_images WHERE product_id = ?", id);
-        jdbcTemplate.update("DELETE FROM product_variants WHERE product_id = ?", id);
-
-        insertImages(id, request.getImages());
-        insertVariants(id, request.getVariants());
+            upsertImages(id, request.getImages());
+            upsertVariants(id, request.getVariants());
     }
 
-    private Map<String, Object> getProductsInternal(boolean admin,
+    private ProductSearchResult getProductsInternal(boolean admin,
                                                     String keyword,
                                                     String category,
                                                     String gender,
@@ -172,13 +239,10 @@ public class ProductService {
         String normalizedGender = normalizeNullable(gender);
         if (normalizedGender != null && !VALID_GENDERS.contains(normalizedGender)) {
             throw new BadRequestException("Dữ liệu truy vấn không hợp lệ",
-                List.of(new ErrorDetail("gender", "Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)")));
+                    List.of(new ErrorDetail("gender", "Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)")));
         }
 
-        Boolean activeFilter = null;
-        if (admin) {
-            activeFilter = parseNullableBoolean(isActive);
-        }
+        Boolean activeFilter = admin ? parseNullableBoolean(isActive) : null;
 
         int defaultPageSize = admin ? 10 : 16;
         int pageValue = parsePositiveOrDefault(page, 1);
@@ -239,8 +303,8 @@ public class ProductService {
 
         Long total = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM products p " + where,
-                params.toArray(),
-                Long.class
+                Long.class,
+                params.toArray()
         );
 
         String listSql =
@@ -270,32 +334,24 @@ public class ProductService {
         listParams.add(pageSizeValue);
         listParams.add(offset);
 
-        List<Map<String, Object>> items = jdbcTemplate.query(listSql, listParams.toArray(), (rs, rowNum) -> {
-            Map<String, Object> row = new LinkedHashMap<>();
-            if (admin) {
-                row.put("id", rs.getLong("id"));
-                row.put("thumbnail", rs.getString("thumbnail"));
-                row.put("name", rs.getString("name"));
-                row.put("price", rs.getLong("price"));
-                row.put("soldCount", rs.getLong("sold_count"));
-                row.put("totalStock", rs.getLong("total_stock"));
-                row.put("isActive", rs.getBoolean("is_active"));
-            } else {
-                row.put("id", rs.getLong("id"));
-                row.put("name", rs.getString("name"));
-                row.put("thumbnail", rs.getString("thumbnail"));
-                row.put("price", rs.getLong("price"));
-            }
-            return row;
-        });
+        List<ProductSearchRow> items = jdbcTemplate.query(listSql, (rs, rowNum) -> new ProductSearchRow(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("thumbnail"),
+            rs.getLong("price"),
+            rs.getLong("sold_count"),
+            rs.getLong("total_stock"),
+            rs.getBoolean("is_active")
+        ), listParams.toArray());
 
-        Map<String, Object> data = new LinkedHashMap<>();
+        Long totalActiveProducts = null;
+        Long totalOutOfStockProducts = null;
         if (admin) {
-            Long totalActiveProducts = jdbcTemplate.queryForObject(
+            totalActiveProducts = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM products WHERE is_active = TRUE",
                     Long.class
             );
-            Long totalOutOfStockProducts = jdbcTemplate.queryForObject(
+            totalOutOfStockProducts = jdbcTemplate.queryForObject(
                     """
                     SELECT COUNT(*)
                     FROM products p
@@ -307,18 +363,19 @@ public class ProductService {
                     """,
                     Long.class
             );
-
-            data.put("totalActiveProducts", totalActiveProducts == null ? 0L : totalActiveProducts);
-            data.put("totalOutOfStockProducts", totalOutOfStockProducts == null ? 0L : totalOutOfStockProducts);
         }
-        data.put("items", items);
-        data.put("page", pageValue);
-        data.put("pageSize", pageSizeValue);
-        data.put("total", total == null ? 0L : total);
-        return data;
+
+        return new ProductSearchResult(
+            items,
+            pageValue,
+            pageSizeValue,
+            total == null ? 0L : total,
+            totalActiveProducts,
+            totalOutOfStockProducts
+        );
     }
 
-    private Map<String, Object> getProductDetail(Long id, boolean admin) {
+    private ProductDetailRow getProductDetailInternal(Long id, boolean admin) {
         String sql =
                 """
                 SELECT p.id,
@@ -340,59 +397,133 @@ public class ProductService {
                 WHERE p.id = ?
                 """ + (admin ? "" : " AND p.is_active = TRUE ");
 
-        List<Map<String, Object>> products = jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("id", rs.getLong("id"));
-            row.put("name", rs.getString("name"));
-            row.put("description", rs.getString("description"));
-            row.put("thumbnail", rs.getString("thumbnail"));
-            row.put("category", rs.getString("category"));
-            row.put("gender", rs.getString("gender"));
-            row.put("price", rs.getLong("price"));
-            if (admin) {
-                row.put("isActive", rs.getBoolean("is_active"));
-            } else {
-                row.put("soldCount", rs.getLong("sold_count"));
-            }
-            return row;
-        });
+        List<ProductDetailRow> products = jdbcTemplate.query(sql, (rs, rowNum) -> new ProductDetailRow(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("description"),
+                rs.getString("thumbnail"),
+                rs.getString("category"),
+                rs.getString("gender"),
+                rs.getLong("price"),
+                rs.getLong("sold_count"),
+                rs.getBoolean("is_active")
+        ), id);
 
         if (products.isEmpty()) {
             throw new NotFoundException("Không tìm thấy dữ liệu yêu cầu");
         }
 
-        Map<String, Object> product = products.getFirst();
+        return products.getFirst();
+    }
 
-        List<Map<String, Object>> images = jdbcTemplate.query(
+    private List<ProductImageResponse> getProductImages(Long productId) {
+        return jdbcTemplate.query(
                 "SELECT id, image, sort_order FROM product_images WHERE product_id = ? ORDER BY sort_order, id",
-                new Object[]{id},
-                (rs, rowNum) -> {
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("id", rs.getLong("id"));
-                    row.put("image", rs.getString("image"));
-                    row.put("sortOrder", rs.getInt("sort_order"));
-                    return row;
-                }
-        );
+                (rs, rowNum) -> new ProductImageResponse(
+                    rs.getLong("id"),
+                    rs.getString("image"),
+                    rs.getInt("sort_order")
+                ),
+                productId
+            );
+    }
 
-        List<Map<String, Object>> variants = jdbcTemplate.query(
+    private List<ProductVariantResponse> getProductVariants(Long productId) {
+        return jdbcTemplate.query(
                 "SELECT id, color, size, stock, price_override FROM product_variants WHERE product_id = ? ORDER BY color, size",
-                new Object[]{id},
-                (rs, rowNum) -> {
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("id", rs.getLong("id"));
-                    row.put("color", rs.getString("color"));
-                    row.put("size", rs.getString("size"));
-                    row.put("stock", rs.getInt("stock"));
-                    Long priceOverride = rs.getObject("price_override", Long.class);
-                    row.put("priceOverride", priceOverride);
-                    return row;
-                }
+                (rs, rowNum) -> new ProductVariantResponse(
+                    rs.getLong("id"),
+                    rs.getString("color"),
+                    rs.getString("size"),
+                    rs.getInt("stock"),
+                    rs.getObject("price_override", Long.class)
+                ),
+                productId
         );
+    }
 
-        product.put("images", images);
-        product.put("variants", variants);
-        return product;
+    private static class ProductSearchResult {
+        private final List<ProductSearchRow> items;
+        private final Integer page;
+        private final Integer pageSize;
+        private final Long total;
+        private final Long totalActiveProducts;
+        private final Long totalOutOfStockProducts;
+
+        private ProductSearchResult(List<ProductSearchRow> items,
+                                    Integer page,
+                                    Integer pageSize,
+                                    Long total,
+                                    Long totalActiveProducts,
+                                    Long totalOutOfStockProducts) {
+            this.items = items;
+            this.page = page;
+            this.pageSize = pageSize;
+            this.total = total;
+            this.totalActiveProducts = totalActiveProducts;
+            this.totalOutOfStockProducts = totalOutOfStockProducts;
+        }
+    }
+
+    private static class ProductSearchRow {
+        private final Long id;
+        private final String name;
+        private final String thumbnail;
+        private final Long price;
+        private final Long soldCount;
+        private final Long totalStock;
+        private final Boolean isActive;
+
+        private ProductSearchRow(Long id,
+                                 String name,
+                                 String thumbnail,
+                                 Long price,
+                                 Long soldCount,
+                                 Long totalStock,
+                                 Boolean isActive) {
+            this.id = id;
+            this.name = name;
+            this.thumbnail = thumbnail;
+            this.price = price;
+            this.soldCount = soldCount;
+            this.totalStock = totalStock;
+            this.isActive = isActive;
+        }
+    }
+
+    private static class ProductDetailRow {
+        private final Long id;
+        private final String name;
+        private final String description;
+        private final String thumbnail;
+        private final String category;
+        private final String gender;
+        private final Long price;
+        private final Long soldCount;
+        private final Boolean isActive;
+
+        private ProductDetailRow(Long id,
+                                 String name,
+                                 String description,
+                                 String thumbnail,
+                                 String category,
+                                 String gender,
+                                 Long price,
+                                 Long soldCount,
+                                 Boolean isActive) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.thumbnail = thumbnail;
+            this.category = category;
+            this.gender = gender;
+            this.price = price;
+            this.soldCount = soldCount;
+            this.isActive = isActive;
+        }
+    }
+
+    private record ExistingVariantKey(Long id, String key) {
     }
 
     private void ensureProductExists(Long id) {
@@ -402,37 +533,105 @@ public class ProductService {
         }
     }
 
-    private void validateUpsertRequest(ProductUpsertRequest request) {
-        String gender = request.getGender().trim().toLowerCase(Locale.ROOT);
+    private void validateCreateRequest(ProductCreateRequest request) {
+        validateGender(request.getGender());
+        validateUniqueVariantKeysForCreate(request.getVariants());
+    }
+
+    private void validateUpdateRequest(Long productId, ProductUpdateRequest request) {
+        validateGender(request.getGender());
+        validateUniqueVariantKeysForUpdate(productId, request.getVariants());
+    }
+
+    private void validateGender(String genderValue) {
+        String gender = genderValue.trim().toLowerCase(Locale.ROOT);
         if (!VALID_GENDERS.contains(gender)) {
-            throw new BadRequestException("Dữ liệu đầu vào không hợp lệ",
-                    List.of(new ErrorDetail("gender", "Giới tính không hợp lệ (Hỗ trợ: male, female, unisex)")));
+            throw new BadRequestException("Dữ liệu không hợp lệ",
+                    List.of(new ErrorDetail("gender", "Giới tính không hợp lệ")));
         }
+    }
 
-        validateImageFilename("thumbnail", request.getThumbnail());
-
-        List<ProductImageRequest> images = request.getImages() == null ? List.of() : request.getImages();
-        for (ProductImageRequest image : images) {
-            validateImageFilename("images", image.getImage());
-        }
-
+    private void validateUniqueVariantKeysForCreate(List<ProductCreateVariantRequest> variants) {
         Set<String> uniqueVariantKeys = new HashSet<>();
-        for (ProductVariantRequest variant : request.getVariants()) {
-            String key = variant.getColor().trim().toLowerCase(Locale.ROOT) + "|" + variant.getSize().trim().toLowerCase(Locale.ROOT);
+        for (ProductCreateVariantRequest variant : variants) {
+            String key = normalizeVariantKey(variant.getColor(), variant.getSize());
             if (!uniqueVariantKeys.add(key)) {
-                throw new BadRequestException("Dữ liệu đầu vào không hợp lệ",
-                        List.of(new ErrorDetail("variants", "Biến thể color + size bị trùng")));
+                throwDuplicateVariantKeyError();
             }
         }
     }
 
-    private void insertImages(Long productId, List<ProductImageRequest> images) {
+    private void validateUniqueVariantKeysForUpdate(Long productId, List<ProductUpdateVariantRequest> variants) {
+        List<ExistingVariantKey> existingVariants = jdbcTemplate.query(
+                "SELECT id, color, size FROM product_variants WHERE product_id = ?",
+                (rs, rowNum) -> new ExistingVariantKey(
+                        rs.getLong("id"),
+                        normalizeVariantKey(rs.getString("color"), rs.getString("size"))
+                ),
+                productId
+        );
+
+        Map<Long, String> existingKeysById = new HashMap<>();
+        Set<String> finalKeys = new HashSet<>();
+        for (ExistingVariantKey existingVariant : existingVariants) {
+            existingKeysById.put(existingVariant.id(), existingVariant.key());
+            finalKeys.add(existingVariant.key());
+        }
+
+        Set<Long> seenVariantIds = new HashSet<>();
+        for (ProductUpdateVariantRequest variant : variants) {
+            Long variantId = variant.getId();
+
+            if (variantId != null && existingKeysById.containsKey(variantId) && !seenVariantIds.add(variantId)) {
+                throw new BadRequestException("Dữ liệu không hợp lệ",
+                        List.of(new ErrorDetail("variants", "ID biến thể bị trùng trong payload")));
+            }
+        }
+
+        Set<Long> missingExistingVariantIds = new HashSet<>(existingKeysById.keySet());
+        missingExistingVariantIds.removeAll(seenVariantIds);
+        if (!missingExistingVariantIds.isEmpty()) {
+            throw new BadRequestException("Dữ liệu không hợp lệ",
+                    List.of(new ErrorDetail("variants", "Không thể xóa phân loại sản phẩm đã tồn tại")));
+        }
+
+        for (Long variantId : seenVariantIds) {
+            finalKeys.remove(existingKeysById.get(variantId));
+        }
+
+        for (ProductUpdateVariantRequest variant : variants) {
+            String newKey = normalizeVariantKey(variant.getColor(), variant.getSize());
+            Long variantId = variant.getId();
+
+            if (variantId != null && existingKeysById.containsKey(variantId)) {
+                if (!finalKeys.add(newKey)) {
+                    throwDuplicateVariantKeyError();
+                }
+                continue;
+            }
+
+            if (!finalKeys.add(newKey)) {
+                throwDuplicateVariantKeyError();
+            }
+        }
+    }
+
+    private void throwDuplicateVariantKeyError() {
+        throw new BadRequestException("Dữ liệu không hợp lệ",
+                List.of(new ErrorDetail("variants", "Biến thể color + size bị trùng")));
+    }
+
+    private String normalizeVariantKey(String color, String size) {
+        return color.trim().toLowerCase(Locale.ROOT) + "|" + size.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private void insertImages(Long productId, List<ProductCreateImageRequest> images) {
         if (images == null || images.isEmpty()) {
             return;
         }
 
         for (int i = 0; i < images.size(); i++) {
-            ProductImageRequest image = images.get(i);
+            ProductCreateImageRequest image = images.get(i);
             int sortOrder = image.getSortOrder() == null ? (i + 1) : image.getSortOrder();
             jdbcTemplate.update(
                     "INSERT INTO product_images(product_id, image, sort_order) VALUES (?, ?, ?)",
@@ -443,8 +642,8 @@ public class ProductService {
         }
     }
 
-    private void insertVariants(Long productId, List<ProductVariantRequest> variants) {
-        for (ProductVariantRequest variant : variants) {
+    private void insertVariants(Long productId, List<ProductCreateVariantRequest> variants) {
+        for (ProductCreateVariantRequest variant : variants) {
             jdbcTemplate.update(
                     "INSERT INTO product_variants(product_id, color, size, stock, price_override) VALUES (?, ?, ?, ?, ?)",
                     productId,
@@ -456,10 +655,70 @@ public class ProductService {
         }
     }
 
-    private void validateImageFilename(String field, String filename) {
-        if (filename == null || filename.isBlank()) {
-            throw new BadRequestException("Dữ liệu đầu vào không hợp lệ",
-                    List.of(new ErrorDetail(field, "Ảnh sản phẩm là bắt buộc")));
+    private void upsertImages(Long productId, List<ProductUpdateImageRequest> images) {
+        if (images == null || images.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < images.size(); i++) {
+            ProductUpdateImageRequest image = images.get(i);
+            int sortOrder = image.getSortOrder() == null ? (i + 1) : image.getSortOrder();
+
+            if (image.getId() != null) {
+                int updated = jdbcTemplate.update(
+                        """
+                        UPDATE product_images
+                        SET image = ?, sort_order = COALESCE(?, sort_order)
+                        WHERE id = ? AND product_id = ?
+                        """,
+                        image.getImage().trim(),
+                        image.getSortOrder(),
+                        image.getId(),
+                        productId
+                );
+                if (updated > 0) {
+                    continue;
+                }
+            }
+
+            jdbcTemplate.update(
+                    "INSERT INTO product_images(product_id, image, sort_order) VALUES (?, ?, ?)",
+                    productId,
+                    image.getImage().trim(),
+                    sortOrder
+            );
+        }
+    }
+
+    private void upsertVariants(Long productId, List<ProductUpdateVariantRequest> variants) {
+        for (ProductUpdateVariantRequest variant : variants) {
+            if (variant.getId() != null) {
+                int updated = jdbcTemplate.update(
+                        """
+                        UPDATE product_variants
+                        SET color = ?, size = ?, stock = ?, price_override = ?
+                        WHERE id = ? AND product_id = ?
+                        """,
+                        variant.getColor().trim(),
+                        variant.getSize().trim(),
+                        variant.getStock(),
+                        variant.getPriceOverride(),
+                        variant.getId(),
+                        productId
+                );
+                if (updated > 0) {
+                    continue;
+                }
+            }
+
+            jdbcTemplate.update(
+                    "INSERT INTO product_variants(product_id, color, size, stock, price_override) VALUES (?, ?, ?, ?, ?)",
+                    productId,
+                    variant.getColor().trim(),
+                    variant.getSize().trim(),
+                    variant.getStock(),
+                    variant.getPriceOverride()
+            );
         }
     }
 

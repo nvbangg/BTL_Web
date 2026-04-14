@@ -1,13 +1,15 @@
 sequenceDiagram
     autonumber
-    actor User as Người dùng
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Người dùng
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    User->>UI: (1) Mở giỏ hàng và nhấn Đặt hàng
-    UI-->>User: (2) Hiển thị form thông tin giao hàng
-    User->>UI: (3) Nhập thông tin và xác nhận đặt hàng
-    UI->>System: (4) Gửi thông tin đơn hàng
-    System->>System: (5) Kiểm tra tồn kho và tạo đơn hàng
-    System-->>UI: (6) Xác nhận đặt hàng thành công
-    UI-->>User: (7) Hiển thị thông báo đặt hàng thành công
+    Actor->>FE: (1) Nhấn nút Đặt hàng
+    FE->>BE: (2) Gửi yêu cầu tạo đơn hàng
+    BE->>DB: (3) Xác thực tồn kho và giá
+    DB-->>BE: (4) Trả về thông tin xác thực
+    BE->>DB: (5) Lưu đơn hàng và trừ tồn kho
+    DB-->>BE: (6) Xác nhận lưu thành công
+    BE-->>FE: (7) Phản hồi đặt hàng thành công
+    FE-->>Actor: (8) Thông báo và chuyển hướng trang

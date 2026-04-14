@@ -1,20 +1,15 @@
 sequenceDiagram
     autonumber
-    actor Admin
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Admin as Quản trị viên
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    Admin->>UI: (1) Mở tab Quản lý sản phẩm
-    UI->>System: (2) Yêu cầu danh sách sản phẩm
-    System->>System: (3) Truy vấn dữ liệu sản phẩm
-    System-->>UI: (4) Trả danh sách sản phẩm
-    UI-->>Admin: (5) Hiển thị bảng sản phẩm
-
-    Admin->>UI: (6) Nhấn Chỉnh sửa tại sản phẩm
-    UI-->>Admin: (7) Hiển thị form chỉnh sửa sản phẩm
-
-    Admin->>UI: (8) Sửa thông tin sản phẩm
-    UI->>System: (9) Gửi dữ liệu sản phẩm
-    System->>System: (10) Cập nhật thông tin sản phẩm
-    System-->>UI: (11) Xác nhận cập nhật thành công
-    UI-->>Admin: (12) Cập nhật danh sách sản phẩm
+    Admin->>FE: (1) Chỉnh sửa và nhấn Lưu thay đổi
+    FE->>BE: (2) Gửi yêu cầu cập nhật sản phẩm
+    BE->>DB: (3) Truy vấn thông tin sản phẩm
+    DB-->>BE: (4) Trả về dữ liệu hiện tại
+    BE->>DB: (5) Lưu dữ liệu cập nhật
+    DB-->>BE: (6) Xác nhận cập nhật thành công
+    BE-->>FE: (7) Phản hồi thành công
+    FE-->>Admin: (8) Thông báo hoàn tất

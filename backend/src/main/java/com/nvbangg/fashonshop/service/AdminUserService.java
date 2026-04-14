@@ -2,6 +2,8 @@ package com.nvbangg.fashonshop.service;
 
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import com.nvbangg.fashonshop.dto.request.AdminUpdateUserRoleRequest;
+import com.nvbangg.fashonshop.dto.response.AdminUserItemResponse;
+import com.nvbangg.fashonshop.dto.response.AdminUserListResponse;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.security.SecurityUtils;
@@ -9,10 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -26,7 +26,7 @@ public class AdminUserService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Map<String, Object> getUsers(String keyword, String role, String page, String pageSize) {
+    public AdminUserListResponse getUsers(String keyword, String role, String page, String pageSize) {
         String normalizedRole = normalizeNullable(role);
         if (normalizedRole != null && !VALID_ROLES.contains(normalizedRole)) {
             throw new BadRequestException("Dữ liệu truy vấn không hợp lệ",
@@ -53,7 +53,7 @@ public class AdminUserService {
             params.add(normalizedRole);
         }
 
-        Long total = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users u " + where, params.toArray(), Long.class);
+        Long total = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users u " + where, Long.class, params.toArray());
 
         String sql =
                 "SELECT u.id, u.email, u.name, u.phone, u.address, u.role, u.created_at FROM users u "
@@ -64,17 +64,15 @@ public class AdminUserService {
         queryParams.add(pageSizeValue);
         queryParams.add(offset);
 
-        List<Map<String, Object>> items = jdbcTemplate.query(sql, queryParams.toArray(), (rs, rowNum) -> {
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("id", rs.getLong("id"));
-            row.put("email", rs.getString("email"));
-            row.put("name", rs.getString("name"));
-            row.put("phone", rs.getString("phone"));
-            row.put("address", rs.getString("address"));
-            row.put("role", rs.getString("role"));
-            row.put("createdAt", rs.getTimestamp("created_at"));
-            return row;
-        });
+        List<AdminUserItemResponse> items = jdbcTemplate.query(sql, (rs, rowNum) -> new AdminUserItemResponse(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("name"),
+            rs.getString("phone"),
+            rs.getString("address"),
+            rs.getString("role"),
+            rs.getTimestamp("created_at").toLocalDateTime()
+        ), queryParams.toArray());
 
         Long totalPurchasedUsers = jdbcTemplate.queryForObject(
                 "SELECT COUNT(DISTINCT user_id) FROM orders WHERE status = 'delivered'",
@@ -85,14 +83,14 @@ public class AdminUserService {
                 Long.class
         );
 
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("totalPurchasedUsers", totalPurchasedUsers == null ? 0L : totalPurchasedUsers);
-        data.put("totalAdmins", totalAdmins == null ? 0L : totalAdmins);
-        data.put("items", items);
-        data.put("page", pageValue);
-        data.put("pageSize", pageSizeValue);
-        data.put("total", total == null ? 0L : total);
-        return data;
+        return new AdminUserListResponse(
+            totalPurchasedUsers == null ? 0L : totalPurchasedUsers,
+            totalAdmins == null ? 0L : totalAdmins,
+            items,
+            pageValue,
+            pageSizeValue,
+            total == null ? 0L : total
+        );
     }
 
     public void updateRole(Long id, AdminUpdateUserRoleRequest request) {

@@ -1,16 +1,17 @@
 sequenceDiagram
     autonumber
-    actor User as Người dùng
-    participant UI as Giao diện
-    participant System as Hệ thống
+    actor Actor as Người dùng
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    User->>UI: (1) Chọn mục Đổi mật khẩu
-    UI-->>User: (2) Hiển thị form Đổi mật khẩu
-    
-    User->>UI: (3) Nhập mật khẩu hiện tại, mật khẩu mới và nhấn Xác nhận
-    UI->>System: (4) Gửi thông tin đổi mật khẩu
-    
-    System->>System: (5) Kiểm tra mật khẩu hiện tại và lưu mật khẩu mới
-    System-->>UI: (6) Xác nhận đổi mật khẩu thành công
-    
-    UI-->>User: (7) Hiển thị thông báo đổi mật khẩu thành công
+    Actor->>FE: (1) Chọn Đổi mật khẩu
+    FE-->>Actor: (2) Hiển thị form nhập liệu
+    Actor->>FE: (3) Nhập thông tin và xác nhận
+    FE->>BE: (4) Gửi yêu cầu đổi mật khẩu
+    BE->>DB: (5) Truy vấn mật khẩu hiện tại
+    DB-->>BE: (6) Trả về mật khẩu đã băm
+    BE->>DB: (7) Cập nhật mật khẩu mới
+    DB-->>BE: (8) Xác nhận lưu thành công
+    BE-->>FE: (9) Phản hồi thành công
+    FE-->>Actor: (10) Thông báo hoàn tất
