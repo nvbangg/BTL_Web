@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS fashonshop;
 CREATE DATABASE fashonshop;
 USE fashonshop;
 
