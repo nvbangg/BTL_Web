@@ -5,7 +5,7 @@ CREATE TABLE users (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  name VARCHAR(255),
+  name VARCHAR(255) NOT NULL,
   phone VARCHAR(20),
   address TEXT,
   role ENUM('admin', 'user') NOT NULL DEFAULT 'user',
@@ -29,6 +29,7 @@ CREATE TABLE product_images (
   product_id BIGINT UNSIGNED NOT NULL,
   image VARCHAR(255) NOT NULL,
   sort_order INT NOT NULL DEFAULT 0,
+  UNIQUE (product_id, sort_order),
   FOREIGN KEY (product_id)
     REFERENCES products(id)
     ON DELETE CASCADE

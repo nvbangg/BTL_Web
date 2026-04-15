@@ -5,22 +5,32 @@ import com.nvbangg.fashonshop.dto.request.CartAddRequest;
 import com.nvbangg.fashonshop.dto.request.CartUpdateRequest;
 import com.nvbangg.fashonshop.dto.response.CartItemResponse;
 import com.nvbangg.fashonshop.dto.response.CartResponse;
+import com.nvbangg.fashonshop.entity.CartItem;
+import com.nvbangg.fashonshop.entity.ProductVariant;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
+import com.nvbangg.fashonshop.repository.CartItemRepository;
+import com.nvbangg.fashonshop.repository.ProductVariantRepository;
 import com.nvbangg.fashonshop.security.SecurityUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CartService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CartItemRepository cartItemRepository;
+    private final ProductVariantRepository productVariantRepository;
 
-    public CartService(JdbcTemplate jdbcTemplate) {
+    public CartService(JdbcTemplate jdbcTemplate,
+                       CartItemRepository cartItemRepository,
+                       ProductVariantRepository productVariantRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.cartItemRepository = cartItemRepository;
+        this.productVariantRepository = productVariantRepository;
     }
 
     public void addItem(CartAddRequest request) {
@@ -31,20 +41,16 @@ public class CartService {
             throw new NotFoundException("Không tìm thấy dữ liệu yêu cầu");
         }
 
-        List<Map<String, Object>> existingRows = jdbcTemplate.queryForList(
-                "SELECT id, quantity FROM cart_items WHERE user_id = ? AND product_variant_id = ?",
-                userId,
-                request.getProductVariantId()
-        );
+        CartItem existingItem = cartItemRepository
+                .findByUserIdAndProductVariantId(userId, request.getProductVariantId())
+                .orElse(null);
 
-        if (!existingRows.isEmpty()) {
-            Map<String, Object> row = existingRows.getFirst();
-            long cartId = ((Number) row.get("id")).longValue();
-            int oldQuantity = ((Number) row.get("quantity")).intValue();
-            int newQuantity = oldQuantity + request.getQuantity();
+        if (existingItem != null) {
+            int newQuantity = existingItem.getQuantity() + request.getQuantity();
             validateStock(newQuantity, variantStock);
 
-            jdbcTemplate.update("UPDATE cart_items SET quantity = ? WHERE id = ?", newQuantity, cartId);
+            existingItem.setQuantity(newQuantity);
+            cartItemRepository.save(existingItem);
             return;
         }
 
@@ -57,49 +63,14 @@ public class CartService {
         );
     }
 
+    @Transactional(readOnly = true)
     public CartResponse getMyCart() {
         Long userId = SecurityUtils.getCurrentUser().getId();
 
-        List<CartItemResponse> items = jdbcTemplate.query(
-                """
-                SELECT c.id,
-                       c.product_variant_id,
-                       c.quantity,
-                       c.created_at,
-                       pv.color,
-                       pv.size,
-                       pv.stock,
-                       pv.price_override,
-                       p.id AS product_id,
-                       p.name AS product_name,
-                       p.thumbnail,
-                       p.price AS base_price
-                FROM cart_items c
-                JOIN product_variants pv ON pv.id = c.product_variant_id
-                JOIN products p ON p.id = pv.product_id
-                WHERE c.user_id = ?
-                ORDER BY c.created_at DESC
-                """,
-                (rs, rowNum) -> {
-                    long price = rs.getObject("price_override", Long.class) == null
-                            ? rs.getLong("base_price")
-                            : rs.getLong("price_override");
-
-                    return new CartItemResponse(
-                            rs.getLong("id"),
-                            rs.getLong("product_id"),
-                            rs.getLong("product_variant_id"),
-                            rs.getString("product_name"),
-                            rs.getString("thumbnail"),
-                            rs.getString("color"),
-                            rs.getString("size"),
-                            rs.getInt("quantity"),
-                            price,
-                            rs.getInt("stock")
-                    );
-                },
-                userId
-        );
+        List<CartItemResponse> items = cartItemRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(this::toCartItemResponse)
+                .toList();
 
         long totalPrice = items.stream()
                 .mapToLong(item -> item.getPrice() * item.getQuantity())
@@ -108,54 +79,56 @@ public class CartService {
         return new CartResponse(items, totalPrice);
     }
 
+    @Transactional
     public void updateItem(Long itemId, CartUpdateRequest request) {
         Long userId = SecurityUtils.getCurrentUser().getId();
 
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
-                """
-                SELECT c.id, pv.stock
-                FROM cart_items c
-                JOIN product_variants pv ON pv.id = c.product_variant_id
-                WHERE c.id = ? AND c.user_id = ?
-                """,
-                itemId,
-                userId
-        );
+        CartItem cartItem = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy dữ liệu yêu cầu"));
 
-        if (rows.isEmpty()) {
+        if (!cartItem.getUser().getId().equals(userId)) {
             throw new NotFoundException("Không tìm thấy dữ liệu yêu cầu");
         }
 
-        int stock = ((Number) rows.getFirst().get("stock")).intValue();
+        int stock = cartItem.getProductVariant().getStock();
         validateStock(request.getQuantity(), stock);
 
-        jdbcTemplate.update("UPDATE cart_items SET quantity = ? WHERE id = ?", request.getQuantity(), itemId);
+        cartItem.setQuantity(request.getQuantity());
+        cartItemRepository.save(cartItem);
     }
 
     public void deleteItem(Long itemId) {
         Long userId = SecurityUtils.getCurrentUser().getId();
-        int deleted = jdbcTemplate.update("DELETE FROM cart_items WHERE id = ? AND user_id = ?", itemId, userId);
+        long deleted = cartItemRepository.deleteByIdAndUserId(itemId, userId);
         if (deleted == 0) {
             throw new NotFoundException("Không tìm thấy dữ liệu yêu cầu");
         }
     }
 
     private Integer findVariantStock(Long variantId) {
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
-                """
-                SELECT pv.stock
-                FROM product_variants pv
-                JOIN products p ON p.id = pv.product_id
-                WHERE pv.id = ? AND p.is_active = TRUE
-                """,
-                variantId
+        return productVariantRepository.findByIdAndProductIsActiveTrue(variantId)
+                .map(ProductVariant::getStock)
+                .orElse(null);
+    }
+
+    private CartItemResponse toCartItemResponse(CartItem item) {
+        ProductVariant variant = item.getProductVariant();
+        long price = variant.getPriceOverride() == null
+                ? variant.getProduct().getPrice()
+                : variant.getPriceOverride();
+
+        return new CartItemResponse(
+                item.getId(),
+                variant.getProduct().getId(),
+                variant.getId(),
+                variant.getProduct().getName(),
+                variant.getProduct().getThumbnail(),
+                variant.getColor(),
+                variant.getSize(),
+                item.getQuantity(),
+                price,
+                variant.getStock()
         );
-
-        if (rows.isEmpty()) {
-            return null;
-        }
-
-        return ((Number) rows.getFirst().get("stock")).intValue();
     }
 
     private void validateStock(int quantity, int stock) {

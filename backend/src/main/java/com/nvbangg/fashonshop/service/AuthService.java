@@ -6,6 +6,7 @@ import com.nvbangg.fashonshop.dto.request.RegisterRequest;
 import com.nvbangg.fashonshop.dto.response.LoginResponse;
 import com.nvbangg.fashonshop.dto.response.RegisterResponse;
 import com.nvbangg.fashonshop.entity.User;
+import com.nvbangg.fashonshop.entity.UserRole;
 import com.nvbangg.fashonshop.exception.ConflictException;
 import com.nvbangg.fashonshop.exception.UnauthorizedException;
 import com.nvbangg.fashonshop.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AuthService {
@@ -40,7 +42,7 @@ public class AuthService {
         user.setEmail(request.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName().trim());
-        user.setRole("user");
+        user.setRole(UserRole.user);
 
         User saved = userRepository.save(user);
         String token = jwtService.generateToken(saved);
@@ -49,7 +51,7 @@ public class AuthService {
                 saved.getId(),
                 saved.getEmail(),
                 saved.getName(),
-                saved.getRole(),
+                saved.getRole().name().toLowerCase(Locale.ROOT),
                 saved.getCreatedAt()
         );
     }
@@ -74,7 +76,7 @@ public class AuthService {
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
-                user.getRole()
+                user.getRole().name().toLowerCase(Locale.ROOT)
         );
     }
 }

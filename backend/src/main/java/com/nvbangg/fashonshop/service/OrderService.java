@@ -3,16 +3,13 @@ package com.nvbangg.fashonshop.service;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import com.nvbangg.fashonshop.dto.request.AdminUpdateOrderStatusRequest;
 import com.nvbangg.fashonshop.dto.request.CreateOrderRequest;
-import com.nvbangg.fashonshop.dto.response.AdminOrderListResponse;
-import com.nvbangg.fashonshop.dto.response.AdminOrderSummaryResponse;
-import com.nvbangg.fashonshop.dto.response.CreateOrderResponse;
-import com.nvbangg.fashonshop.dto.response.OrderItemResponse;
-import com.nvbangg.fashonshop.dto.response.OrderListResponse;
-import com.nvbangg.fashonshop.dto.response.OrderSummaryResponse;
-import com.nvbangg.fashonshop.dto.response.RevenueByMonthResponse;
-import com.nvbangg.fashonshop.dto.response.StatisticsResponse;
+import com.nvbangg.fashonshop.dto.response.*;
+import com.nvbangg.fashonshop.entity.OrderItem;
+import com.nvbangg.fashonshop.entity.OrderStatus;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
+import com.nvbangg.fashonshop.repository.OrderItemRepository;
+import com.nvbangg.fashonshop.repository.OrderRepository;
 import com.nvbangg.fashonshop.security.SecurityUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,22 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class OrderService {
 
-    private static final Set<String> VALID_ORDER_STATUS = Set.of("pending", "processing", "shipped", "delivered", "cancelled");
+    private static final Set<OrderStatus> VALID_ORDER_STATUS = EnumSet.allOf(OrderStatus.class);
 
     private final JdbcTemplate jdbcTemplate;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    public OrderService(JdbcTemplate jdbcTemplate) {
+    public OrderService(JdbcTemplate jdbcTemplate,
+                        OrderRepository orderRepository,
+                        OrderItemRepository orderItemRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     @Transactional
@@ -52,16 +50,16 @@ public class OrderService {
         String placeholders = buildPlaceholders(cartItemIds.size());
         String cartSql =
                 """
-                SELECT c.id AS cart_id,
-                       c.quantity,
-                       pv.id AS product_variant_id,
-                       pv.stock,
-                       COALESCE(pv.price_override, p.price) AS unit_price
-                FROM cart_items c
-                JOIN product_variants pv ON pv.id = c.product_variant_id
-                JOIN products p ON p.id = pv.product_id
-                WHERE c.user_id = ? AND c.id IN (%s)
-                """.formatted(placeholders);
+                        SELECT c.id AS cart_id,
+                               c.quantity,
+                               pv.id AS product_variant_id,
+                               pv.stock,
+                               COALESCE(pv.price_override, p.price) AS unit_price
+                        FROM cart_items c
+                        JOIN product_variants pv ON pv.id = c.product_variant_id
+                        JOIN products p ON p.id = pv.product_id
+                        WHERE c.user_id = ? AND c.id IN (%s)
+                        """.formatted(placeholders);
 
         List<Object> queryParams = new ArrayList<>();
         queryParams.add(userId);
@@ -93,9 +91,9 @@ public class OrderService {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     """
-                    INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, total_price, status)
-                    VALUES (?, ?, ?, ?, ?, 'pending')
-                    """,
+                            INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, total_price, status)
+                            VALUES (?, ?, ?, ?, ?, ?)
+                            """,
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setLong(1, userId);
@@ -103,6 +101,7 @@ public class OrderService {
             ps.setString(3, shippingPhone);
             ps.setString(4, shippingAddress);
             ps.setLong(5, finalTotalPrice);
+            ps.setString(6, OrderStatus.pending.name());
             return ps;
         }, keyHolder);
 
@@ -150,118 +149,122 @@ public class OrderService {
         return new CreateOrderResponse(
                 orderId,
                 totalPrice,
-                "pending",
+                OrderStatus.pending.name(),
                 createdAt == null ? null : createdAt.toLocalDateTime()
         );
     }
 
+    @Transactional(readOnly = true)
     public OrderListResponse getMyOrders(String page, String pageSize) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         OrderSearchResult result = getOrdersInternal(false, userId, null, null, page, pageSize);
         List<OrderSummaryResponse> items = result.items.stream()
-            .map(item -> new OrderSummaryResponse(
-                item.id,
-                item.shippingName,
-                item.shippingPhone,
-                item.shippingAddress,
-                item.totalPrice,
-                item.status,
-                item.createdAt,
-                item.updatedAt,
-                item.orderDetails
-            ))
-            .toList();
+                .map(item -> new OrderSummaryResponse(
+                        item.id,
+                        item.shippingName,
+                        item.shippingPhone,
+                        item.shippingAddress,
+                        item.totalPrice,
+                        item.status,
+                        item.createdAt,
+                        item.updatedAt,
+                        item.orderDetails
+                ))
+                .toList();
 
         return new OrderListResponse(
-            items,
-            result.page,
-            result.pageSize,
-            result.total
+                items,
+                result.page,
+                result.pageSize,
+                result.total
         );
     }
 
+    @Transactional(readOnly = true)
     public AdminOrderListResponse getAdminOrders(String keyword, String status, String page, String pageSize) {
         validateOrderStatusIfPresent(status);
         OrderSearchResult result = getOrdersInternal(true, null, keyword, status, page, pageSize);
         List<AdminOrderSummaryResponse> items = result.items.stream()
-            .map(item -> new AdminOrderSummaryResponse(
-                item.id,
-                item.userId,
-                item.email,
-                item.shippingName,
-                item.shippingPhone,
-                item.shippingAddress,
-                item.totalPrice,
-                item.status,
-                item.createdAt,
-                item.updatedAt,
-                item.orderDetails
-            ))
-            .toList();
+                .map(item -> new AdminOrderSummaryResponse(
+                        item.id,
+                        item.userId,
+                        item.email,
+                        item.shippingName,
+                        item.shippingPhone,
+                        item.shippingAddress,
+                        item.totalPrice,
+                        item.status,
+                        item.createdAt,
+                        item.updatedAt,
+                        item.orderDetails
+                ))
+                .toList();
 
         return new AdminOrderListResponse(
-            result.totalPendingOrders,
-            result.totalIncompleteOrders,
-            items,
-            result.page,
-            result.pageSize,
-            result.total
+                result.totalPendingOrders,
+                result.totalIncompleteOrders,
+                items,
+                result.page,
+                result.pageSize,
+                result.total
         );
     }
 
     public void updateOrderStatus(Long id, AdminUpdateOrderStatusRequest request) {
-        String status = request.getStatus().trim().toLowerCase(Locale.ROOT);
-        if (!VALID_ORDER_STATUS.contains(status)) {
-            throw new BadRequestException("Cập nhật thất bại",
-                    List.of(new ErrorDetail("status", "Trạng thái cập nhật không hợp lệ")));
-        }
+        OrderStatus status = parseOrderStatus(request.getStatus(), "Cập nhật thất bại", "Trạng thái cập nhật không hợp lệ");
 
-        int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status, id);
+        int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status.name(), id);
         if (updated == 0) {
             throw new NotFoundException("Không tìm thấy dữ liệu yêu cầu");
         }
     }
 
     public StatisticsResponse getStatistics() {
+        String deliveredStatus = OrderStatus.delivered.name();
+
         Long revenueThisMonth = jdbcTemplate.queryForObject(
                 """
-                SELECT COALESCE(SUM(total_price), 0)
-                FROM orders
-                WHERE status = 'delivered'
-                  AND YEAR(created_at) = YEAR(CURDATE())
-                  AND MONTH(created_at) = MONTH(CURDATE())
-                """,
-                Long.class
+                        SELECT COALESCE(SUM(total_price), 0)
+                        FROM orders
+                        WHERE status = ?
+                          AND YEAR(created_at) = YEAR(CURDATE())
+                          AND MONTH(created_at) = MONTH(CURDATE())
+                        """,
+                Long.class,
+                deliveredStatus
         );
 
         Long revenueYear = jdbcTemplate.queryForObject(
                 """
-                SELECT COALESCE(SUM(total_price), 0)
-                FROM orders
-                WHERE status = 'delivered'
-                  AND YEAR(created_at) = YEAR(CURDATE())
-                """,
-                Long.class
+                        SELECT COALESCE(SUM(total_price), 0)
+                        FROM orders
+                        WHERE status = ?
+                          AND YEAR(created_at) = YEAR(CURDATE())
+                        """,
+                Long.class,
+                deliveredStatus
         );
 
         Long revenueAllTime = jdbcTemplate.queryForObject(
-                "SELECT COALESCE(SUM(total_price), 0) FROM orders WHERE status = 'delivered'",
-                Long.class
+                "SELECT COALESCE(SUM(total_price), 0) FROM orders WHERE status = ?",
+                Long.class,
+                deliveredStatus
         );
 
         List<RevenueByMonthResponse> revenueByMonth = jdbcTemplate.query(
                 """
-                SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
-                       COALESCE(SUM(total_price), 0) AS revenue
-                FROM orders
-                WHERE status = 'delivered'
-                GROUP BY DATE_FORMAT(created_at, '%Y-%m')
-                ORDER BY month
-                """,
+                        SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
+                               COALESCE(SUM(total_price), 0) AS revenue
+                        FROM orders
+                        WHERE status = ?
+                        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+                        ORDER BY month
+                        """,
                 (rs, rowNum) -> new RevenueByMonthResponse(
                         rs.getString("month"),
                         rs.getLong("revenue")
-                )
+                ),
+                deliveredStatus
         );
 
         return new StatisticsResponse(
@@ -299,33 +302,33 @@ public class OrderService {
             params.add(pattern);
         }
 
-        String normalizedStatus = normalizeNullable(status);
+        OrderStatus normalizedStatus = parseNullableOrderStatus(status, "Lỗi truy vấn danh sách", "Trạng thái đơn hàng không hợp lệ");
         if (normalizedStatus != null) {
             where.append(" AND o.status = ? ");
-            params.add(normalizedStatus);
+            params.add(normalizedStatus.name());
         }
 
         Long total = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id " + where,
-            Long.class,
-            params.toArray()
+                "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id " + where,
+                Long.class,
+                params.toArray()
         );
 
         String sql =
-            """
-            SELECT o.id,
-                   o.user_id,
-                   u.email,
-                   o.shipping_name,
-                   o.shipping_phone,
-                   o.shipping_address,
-                   o.total_price,
-                   o.status,
-                   o.created_at,
-                   o.updated_at
-            FROM orders o
-            JOIN users u ON u.id = o.user_id
-            """ + where + " ORDER BY o.updated_at DESC LIMIT ? OFFSET ?";
+                """
+                        SELECT o.id,
+                            o.user_id,
+                            u.email,
+                            o.shipping_name,
+                            o.shipping_phone,
+                            o.shipping_address,
+                            o.total_price,
+                            o.status,
+                            o.created_at,
+                            o.updated_at
+                        FROM orders o
+                        JOIN users u ON u.id = o.user_id
+                        """ + where + " ORDER BY o.updated_at DESC LIMIT ? OFFSET ?";
 
         List<Object> queryParams = new ArrayList<>(params);
         queryParams.add(pageSizeValue);
@@ -352,14 +355,11 @@ public class OrderService {
         Long totalPendingOrders = null;
         Long totalIncompleteOrders = null;
         if (admin) {
-            totalPendingOrders = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM orders WHERE status = 'pending'",
-                Long.class
-            );
-            totalIncompleteOrders = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
-                Long.class
-            );
+            long pendingOrders = orderRepository.countByStatus(OrderStatus.pending);
+            long processingOrders = orderRepository.countByStatus(OrderStatus.processing);
+            long shippedOrders = orderRepository.countByStatus(OrderStatus.shipped);
+            totalPendingOrders = pendingOrders;
+            totalIncompleteOrders = pendingOrders + processingOrders + shippedOrders;
         }
 
         return new OrderSearchResult(
@@ -434,36 +434,10 @@ public class OrderService {
     }
 
     private List<OrderItemResponse> getOrderItems(Long orderId) {
-        return jdbcTemplate.query(
-                """
-                SELECT oi.id,
-                       oi.product_variant_id,
-                       oi.quantity,
-                       oi.price_at_purchase,
-                       pv.color,
-                       pv.size,
-                       p.id AS product_id,
-                       p.name AS product_name,
-                       p.thumbnail
-                FROM order_items oi
-                JOIN product_variants pv ON pv.id = oi.product_variant_id
-                JOIN products p ON p.id = pv.product_id
-                WHERE oi.order_id = ?
-                ORDER BY oi.id
-                """,
-                (rs, rowNum) -> new OrderItemResponse(
-                        rs.getLong("id"),
-                        rs.getLong("product_id"),
-                        rs.getLong("product_variant_id"),
-                        rs.getString("product_name"),
-                        rs.getString("thumbnail"),
-                        rs.getString("color"),
-                        rs.getString("size"),
-                        rs.getInt("quantity"),
-                        rs.getLong("price_at_purchase")
-                    ),
-                    orderId
-        );
+        return orderItemRepository.findByOrderIdOrderByIdAsc(orderId)
+                .stream()
+                .map(this::toOrderItemResponse)
+                .toList();
     }
 
     private List<Long> normalizeCartItemIds(List<Long> cartItemIds) {
@@ -503,15 +477,51 @@ public class OrderService {
         return builder.toString();
     }
 
+    private OrderItemResponse toOrderItemResponse(OrderItem item) {
+        var variant = item.getProductVariant();
+        var product = variant.getProduct();
+
+        return new OrderItemResponse(
+                item.getId(),
+                product.getId(),
+                variant.getId(),
+                product.getName(),
+                product.getThumbnail(),
+                variant.getColor(),
+                variant.getSize(),
+                item.getQuantity(),
+                item.getPriceAtPurchase()
+        );
+    }
+
     private void validateOrderStatusIfPresent(String status) {
-        String normalized = normalizeNullable(status);
+        parseNullableOrderStatus(status, "Lỗi truy vấn danh sách", "Trạng thái đơn hàng không hợp lệ");
+    }
+
+    private OrderStatus parseNullableOrderStatus(String value, String message, String errorMessage) {
+        String normalized = normalizeNullable(value);
         if (normalized == null) {
-            return;
+            return null;
         }
 
-        if (!VALID_ORDER_STATUS.contains(normalized)) {
-            throw new BadRequestException("Lỗi truy vấn danh sách",
-                    List.of(new ErrorDetail("status", "Trạng thái đơn hàng không hợp lệ")));
+        return parseOrderStatus(normalized, message, errorMessage);
+    }
+
+    private OrderStatus parseOrderStatus(String value, String message, String errorMessage) {
+        if (value == null) {
+            throw new BadRequestException(message,
+                    List.of(new ErrorDetail("status", errorMessage)));
+        }
+
+        try {
+            OrderStatus status = OrderStatus.valueOf(value.trim().toLowerCase(Locale.ROOT));
+            if (!VALID_ORDER_STATUS.contains(status)) {
+                throw new IllegalArgumentException("Unsupported status");
+            }
+            return status;
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException(message,
+                    List.of(new ErrorDetail("status", errorMessage)));
         }
     }
 

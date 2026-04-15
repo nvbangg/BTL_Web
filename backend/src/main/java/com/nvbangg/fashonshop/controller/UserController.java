@@ -6,11 +6,7 @@ import com.nvbangg.fashonshop.dto.request.UpdateProfileRequest;
 import com.nvbangg.fashonshop.dto.response.UserResponse;
 import com.nvbangg.fashonshop.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")

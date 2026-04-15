@@ -5,11 +5,7 @@ import com.nvbangg.fashonshop.dto.response.ProductDetailResponse;
 import com.nvbangg.fashonshop.dto.response.ProductFiltersResponse;
 import com.nvbangg.fashonshop.dto.response.ProductListResponse;
 import com.nvbangg.fashonshop.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/products")

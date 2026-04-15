@@ -1,11 +1,6 @@
 package com.nvbangg.fashonshop.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +35,8 @@ public class User {
     private String address;
 
     @Column(nullable = false)
-    private String role = "user";
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.user;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

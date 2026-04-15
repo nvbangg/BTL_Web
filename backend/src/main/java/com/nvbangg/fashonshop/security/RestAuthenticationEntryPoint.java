@@ -31,7 +31,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         ApiResponse<Void> body = ApiResponse.error(
                 "Chưa xác thực hoặc phiên đăng nhập hết hạn",
-            List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
+                List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
         );
 
         objectMapper.writeValue(response.getWriter(), body);

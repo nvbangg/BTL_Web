@@ -1,5 +1,5 @@
-STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
-1,Đăng ký tài khoản,POST /api/auth/register,"{
+STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
+1,Đăng ký tài khoản,POST /api/auth/register,,"{
   ""email"": ""user@gmail.com"",
   ""password"": ""12345678"",
   ""name"": ""Nguyen Van A""
@@ -39,8 +39,8 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
     { ""field"": ""password"", ""message"": ""Mật khẩu phải có ít nhất 6 ký tự"" },
     { ""field"": ""name"", ""message"": ""Tên hiển thị là bắt buộc"" }
   ]
-}",,Progress
-2,Đăng nhập,POST /api/auth/login,"{
+}",,Done
+2,Đăng nhập,POST /api/auth/login,,"{
   ""email"": ""user@gmail.com"",
   ""password"": ""12345678""
 }","{
@@ -76,14 +76,14 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
     { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" }
   ]
-}",hạn accessToken = 7 ngày,Progress
-3,Đăng xuất,POST /api/auth/logout,,"{
+}",hạn accessToken = 7 ngày,Done
+3,Đăng xuất,POST /api/auth/logout,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Đăng xuất thành công"",
   ""data"": null,
   ""errors"": []
-}",,chỉ trả thông báo để fe xử lý xóa token,Progress
-4,Đổi mật khẩu,PUT /api/users/password,"{
+}",,chỉ trả thông báo để fe xử lý xóa token,Done
+4,Đổi mật khẩu,PUT /api/users/password,"User, Admin","{
   ""currentPassword"": ""12345678"",
   ""newPassword"": ""newpassword123""
 }","{
@@ -111,15 +111,12 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
   ""errors"": [
     { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại là bắt buộc"" },
     { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới là bắt buộc"" },
-    {
-      ""field"": ""newPassword"",
-      ""message"": ""Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự""
-    },
+    { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự"" },
 
     { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại không chính xác"" },
   ]
-}",,Progress
-5,Lấy thông tin bản thân,GET /api/users/me,,"{
+}",,Done
+5,Lấy thông tin bản thân,GET /api/users/me,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy thông tin thành công"",
   ""data"": {
@@ -131,8 +128,8 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
     ""role"": ""user""
   },
   ""errors"": []
-}",401 Unauthorized,Dùng Hiển thị username (không có phần @domain) trên nút account navbar,Progress
-6,Cập nhật thông tin bản thân (khi ở trang giỏ hàng),PUT /api/users/me,"{
+}",401 Unauthorized,Dùng Hiển thị username (không có phần @domain) trên nút account navbar,Done
+6,Cập nhật thông tin bản thân (khi ở trang giỏ hàng),PUT /api/users/me,"User, Admin","{
   ""name"": ""Nguyen Van A"",
   ""phone"": ""0123456789"",
   ""address"": ""Hanoi""
@@ -153,8 +150,8 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
     { ""field"": ""phone"", ""message"": ""Số điện thoại không đúng định dạng"" },
     { ""field"": ""address"", ""message"": ""Địa chỉ là bắt buộc"" }
   ]
-}",,Progress
-7,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,,"{
+}",,Done
+7,Lấy danh sách sản phẩm,GET /api/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=best_selling&page=1&pageSize=16,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy danh sách sản phẩm thành công"",
   ""data"": {
@@ -194,8 +191,8 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
       ""message"": ""Giá trị sắp xếp (sort) không được hỗ trợ (chỉ hỗ trợ: best_selling, newest, price_asc, price_desc)""
     }
   ]
-}",Không trả sản phẩm isActive=false.,Progress
-8,Lấy bộ lọc sản phẩm,GET /api/products/filters,,"{
+}",Không trả sản phẩm isActive=false.,Done
+8,Lấy bộ lọc sản phẩm,GET /api/products/filters,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy dữ liệu bộ lọc thành công"",
   ""data"": {
@@ -217,8 +214,8 @@ STT,Name,API,Request Body,Response Body,Error Cases,Note,Status
     }
   ]
 }","dùng để lấy giá trị lựa chọn cho bộ lọc. genders cố định: ""male"", ""female"", ""unisex""
-các dữ liệu khác sắp xếp theo abc",Progress
-9,Lấy chi tiết sản phẩm,GET /api/products/{id},,"{
+các dữ liệu khác sắp xếp theo abc",Done
+9,Lấy chi tiết sản phẩm,GET /api/products/{id},"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy chi tiết sản phẩm thành công"",
   ""data"": {
@@ -259,8 +256,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
       ""message"": ""Dữ liệu không tồn tại trong hệ thống hoặc đã bị ẩn/xóa""
     }
   ]
-}","số lượng đã bán là tính số  order có sản phẩm đẩy đang ""delivered""",Progress
-10,Thêm vào giỏ hàng,POST /api/cart,"{
+}","số lượng đã bán là tính số  order có sản phẩm đẩy đang ""delivered""",Done
+10,Thêm vào giỏ hàng,POST /api/cart,"User, Admin","{
   ""productVariantId"": 10,
   ""quantity"": 2
 }","{
@@ -288,8 +285,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu không hợp lệ"" },
   ]
 }
-404 Not Found","Khi user bấm thêm vào giỏ một sản phẩm đã có sẵn trong giỏ, Backend không được báo lỗi và cũng không được Insert dòng mới. Backend phải bắt được trường hợp này và thực hiện lệnh Cộng dồn số lượng",Progress
-11,Lấy danh sách giỏ hàng,GET /api/cart,,"{
+404 Not Found","Khi user bấm thêm vào giỏ một sản phẩm đã có sẵn trong giỏ, Backend không được báo lỗi và cũng không được Insert dòng mới. Backend phải bắt được trường hợp này và thực hiện lệnh Cộng dồn số lượng",Done
+11,Lấy danh sách giỏ hàng,GET /api/cart,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy thông tin giỏ hàng thành công"",
   ""data"": {
@@ -310,8 +307,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
     ""totalPrice"": 400000
   },
   ""errors"": []
-}",401 Unauthorized,"mặc định sắp xếp theo ngày tạo, không có phân trang",Progress
-12,Cập nhật giỏ hàng,PUT /api/cart/{itemId},"{
+}",401 Unauthorized,"mặc định sắp xếp theo ngày tạo, không có phân trang",Done
+12,Cập nhật giỏ hàng,PUT /api/cart/{itemId},"User, Admin","{
   ""quantity"": 3
 }","{
   ""success"": true,
@@ -329,15 +326,15 @@ các dữ liệu khác sắp xếp theo abc",Progress
      { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu không hợp lệ"" }
   ]
 }
-404 Not Found",chỉ sửa được quantity,Progress
-13,Xóa item giỏ hàng,DELETE /api/cart/{itemId},,"{
+404 Not Found",chỉ sửa được quantity,Done
+13,Xóa item giỏ hàng,DELETE /api/cart/{itemId},"User, Admin",,"{
   ""success"": true,
   ""message"": ""Đã xóa sản phẩm khỏi giỏ hàng"",
   ""data"": null,
   ""errors"": []
 }","401 Unauthorized
-404 Not Found",,Progress
-14,Tạo đơn hàng,POST /api/orders,"{
+404 Not Found",,Done
+14,Tạo đơn hàng,POST /api/orders,"User, Admin","{
   ""cartItemIds"": [1, 3], 
   ""shippingName"": ""Nguyen Van A"",
   ""shippingPhone"": ""0123456789"",
@@ -369,8 +366,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""cartItemIds"", ""message"": ""Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa"" }
     
   ]
-}",Checkout ngay tại trang giỏ hàng.,Progress
-15,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,,"{
+}",Checkout ngay tại trang giỏ hàng.,Done
+15,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy danh sách đơn hàng thành công"",
   ""data"": {
@@ -404,8 +401,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
     ""total"": 1
   },
   ""errors"": []
-}",401 Unauthorized,mặc định sắp xếp theo ngày cập nhật,Progress
-16,Xem thống kê,GET /api/admin/statistics,,"{
+}",401 Unauthorized,mặc định sắp xếp theo ngày cập nhật,Done
+16,Xem thống kê,GET /api/admin/statistics,Admin,,"{
   ""success"": true,
   ""message"": ""Lấy dữ liệu thống kê thành công"",
   ""data"": {
@@ -440,8 +437,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
       ""message"": ""Tài khoản của bạn không có quyền thực hiện thao tác này""
     }
   ]
-}",,Progress
-17,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,,"{
+}",,Done
+17,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,Admin,,"{
   ""success"": true,
   ""message"": ""Lấy danh sách đơn hàng thành công"",
   ""data"": {
@@ -489,8 +486,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
   ""errors"": [
     { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
   ]
-}",,Progress
-18,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},"{
+}",,Done
+18,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},Admin,"{
   ""status"": ""shipped""
 }","{
   ""success"": true,
@@ -510,8 +507,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
   ]
 }
-404 Not Found",có thể thay đổi status tự do,Progress
-19,Lấy danh sách sản phẩm (admin),GET /api/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=newest&isActive=&page=1&pageSize=10,,"{
+404 Not Found",có thể thay đổi status tự do,Done
+19,Lấy danh sách sản phẩm (admin),GET /api/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=newest&isActive=&page=1&pageSize=10,Admin,,"{
   ""success"": true,
   ""message"": ""Lấy danh sách sản phẩm thành công"",
   ""data"": {
@@ -543,8 +540,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
   ""errors"": [
     { ""field"": ""minPrice"", ""message"": ""Giá trị khoảng giá không hợp lệ"" }
   ]
-}",,Progress
-20,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},,"{
+}",,Done
+20,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},Admin,,"{
   ""success"": true,
   ""message"": ""Lấy chi tiết sản phẩm thành công"",
   ""data"": {
@@ -576,8 +573,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
   ""errors"": []
 }","401 Unauthorized
 403 Forbidden
-404 Not Found",,Progress
-21,Tạo sản phẩm (admin),POST /api/admin/products,"{
+404 Not Found",,Done
+21,Tạo sản phẩm (admin),POST /api/admin/products,Admin,"{
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
     ""thumbnail"": ""url"",
@@ -620,16 +617,16 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
-    { ""field"": ""images[0].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
-    { ""field"": ""variants[0].color"", ""message"": ""Màu phân loại là bắt buộc"" },
-    { ""field"": ""variants[0].size"", ""message"": ""Size phân loại là bắt buộc"" },
-    { ""field"": ""variants[0].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
-    { ""field"": ""variants[0].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+    { ""field"": ""images[i].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
+    { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },
+    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
+    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
 
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
-}",,Progress
-22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},"{
+}",,Done
+22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},Admin,"{
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
     ""thumbnail"": ""url"",
@@ -673,16 +670,19 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
-    { ""field"": ""images[0].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
-    { ""field"": ""variants[0].color"", ""message"": ""Màu phân loại là bắt buộc"" },
-    { ""field"": ""variants[0].size"", ""message"": ""Size phân loại là bắt buộc"" },
-    { ""field"": ""variants[0].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
-    { ""field"": ""variants[0].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+    { ""field"": ""variants"", ""message"": ""Không thể xóa phân loại đã tồn tại"" },
+    { ""field"": ""variants"", ""message"": ""Phân loại color + size bị trùng"" },
+    { ""field"": ""images[i].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""variants[i].id"", ""message"": ""ID phân loại của sản phẩm không tồn tại"" },
+    { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
+    { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },
+    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
+    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
 
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
-}","images và variants cập nhật theo id đã có, nếu id chưa có thì tạo mới với các trường đã điền (báo lỗi tương ứng nếu sai)",Progress
-23,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,,"{
+}","Ở variants thì không thể xóa variants đã tồn tại, nếu có id và id chưa tồn tại thì báo lỗi. Nếu có id và id đã tồn tại thì cập nhật variant đấy. Nếu không có id thì sẽ check (color,size) cho product, nếu trùng thì báo lỗi, không trùng thì insert mới",Done
+23,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,Admin,,"{
   ""success"": true,
   ""message"": ""Lấy danh sách người dùng thành công"",
   ""data"": {
@@ -714,8 +714,8 @@ các dữ liệu khác sắp xếp theo abc",Progress
   ""errors"": [
     { ""field"": ""role"", ""message"": ""Bộ lọc vai trò (role) không hợp lệ"" }
   ]
-}",,Progress
-24,Cập nhật role user (admin),PUT /api/admin/users/{id},"{
+}",,Done
+24,Cập nhật role user (admin),PUT /api/admin/users/{id},Admin,"{
   ""role"": ""admin""
 }","{
   ""success"": true,
@@ -734,4 +734,4 @@ các dữ liệu khác sắp xếp theo abc",Progress
     { ""field"": ""role"", ""message"": ""Vai trò tài khoản là bắt buộc"" },
     { ""field"": ""role"", ""message"": ""Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân"" }
   ]
-}",,Progress
+}",,Done

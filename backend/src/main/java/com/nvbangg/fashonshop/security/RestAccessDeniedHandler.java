@@ -30,8 +30,8 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType("application/json;charset=UTF-8");
 
         ApiResponse<Void> body = ApiResponse.error(
-            "Không có quyền truy cập",
-            List.of(new ErrorDetail("role", "Tài khoản của bạn không có quyền thực hiện thao tác này"))
+                "Không có quyền truy cập",
+                List.of(new ErrorDetail("role", "Tài khoản của bạn không có quyền thực hiện thao tác này"))
         );
 
         objectMapper.writeValue(response.getWriter(), body);

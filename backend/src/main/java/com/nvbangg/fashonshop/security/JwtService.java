@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Locale;
 
 @Service
 public class JwtService {
@@ -39,7 +40,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim("uid", user.getId())
-                .claim("role", user.getRole())
+                .claim("role", user.getRole().name().toLowerCase(Locale.ROOT))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiresAt))
                 .signWith(key)
