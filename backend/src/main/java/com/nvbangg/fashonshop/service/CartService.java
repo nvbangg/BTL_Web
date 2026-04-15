@@ -133,7 +133,7 @@ public class CartService {
 
     private void validateStock(int quantity, int stock) {
         if (quantity > stock) {
-            throw new BadRequestException("Dữ liệu đầu vào không hợp lệ",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("quantity", "Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ")));
         }
     }

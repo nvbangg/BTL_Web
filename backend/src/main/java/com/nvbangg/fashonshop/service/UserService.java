@@ -47,12 +47,12 @@ public class UserService {
         User user = getCurrentUserEntity();
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new BadRequestException("Đổi mật khẩu thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("currentPassword", "Mật khẩu hiện tại không chính xác")));
         }
 
         if (request.getCurrentPassword().equals(request.getNewPassword())) {
-            throw new BadRequestException("Đổi mật khẩu thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("newPassword", "Mật khẩu mới không được trùng với mật khẩu cũ và phải >= 6 ký tự")));
         }
 

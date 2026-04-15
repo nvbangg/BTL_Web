@@ -618,6 +618,7 @@ các dữ liệu khác sắp xếp theo abc",Done
     { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
     { ""field"": ""images[i].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""images[i].sortOrder"", ""message"": ""Thứ tự ảnh bị trùng"" },
     { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
     { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },
     { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
@@ -625,7 +626,7 @@ các dữ liệu khác sắp xếp theo abc",Done
 
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
-}",,Done
+}",[i] là thứ tự trong mảng request chứ không phải id,Done
 22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},Admin,"{
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
@@ -673,6 +674,7 @@ các dữ liệu khác sắp xếp theo abc",Done
     { ""field"": ""variants"", ""message"": ""Không thể xóa phân loại đã tồn tại"" },
     { ""field"": ""variants"", ""message"": ""Phân loại color + size bị trùng"" },
     { ""field"": ""images[i].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
+    { ""field"": ""images[i].sortOrder"", ""message"": ""Thứ tự ảnh bị trùng"" },
     { ""field"": ""variants[i].id"", ""message"": ""ID phân loại của sản phẩm không tồn tại"" },
     { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
     { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },

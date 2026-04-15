@@ -9,4 +9,8 @@ public class ForbiddenException extends AppException {
     public ForbiddenException(String message) {
         super(HttpStatus.FORBIDDEN, message, List.of(new ErrorDetail(null, message)));
     }
+
+    public ForbiddenException(String message, List<ErrorDetail> errors) {
+        super(HttpStatus.FORBIDDEN, message, errors);
+    }
 }

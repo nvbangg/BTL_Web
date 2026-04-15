@@ -8,7 +8,10 @@ import java.util.Objects;
 @Configuration
 public class EnvConfig {
     static {
-        Dotenv dotenv = Dotenv.load(); // load file .env
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .ignoreIfMalformed()
+                .load();
         setIfPresent("DB_USERNAME", dotenv.get("DB_USERNAME"));
         setIfPresent("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         setIfPresent("DB_URL", dotenv.get("DB_URL"));

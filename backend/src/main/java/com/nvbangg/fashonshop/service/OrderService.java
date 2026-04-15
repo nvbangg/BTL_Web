@@ -68,7 +68,7 @@ public class OrderService {
         List<Map<String, Object>> cartItems = jdbcTemplate.queryForList(cartSql, queryParams.toArray());
 
         if (cartItems.size() != cartItemIds.size()) {
-            throw new BadRequestException("Tạo đơn hàng thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("cartItemIds", "Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa")));
         }
 
@@ -77,7 +77,7 @@ public class OrderService {
             int quantity = ((Number) item.get("quantity")).intValue();
             int stock = ((Number) item.get("stock")).intValue();
             if (quantity > stock) {
-                throw new BadRequestException("Tạo đơn hàng thất bại",
+                throw new BadRequestException("Dữ liệu không hợp lệ",
                         List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm trong giỏ đã hết hàng")));
             }
 
@@ -130,7 +130,7 @@ public class OrderService {
                     quantity
             );
             if (updated == 0) {
-                throw new BadRequestException("Tạo đơn hàng thất bại",
+                throw new BadRequestException("Dữ liệu không hợp lệ",
                         List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm trong giỏ đã hết hàng")));
             }
         }
@@ -211,7 +211,7 @@ public class OrderService {
     }
 
     public void updateOrderStatus(Long id, AdminUpdateOrderStatusRequest request) {
-        OrderStatus status = parseOrderStatus(request.getStatus(), "Cập nhật thất bại", "Trạng thái cập nhật không hợp lệ");
+        OrderStatus status = parseOrderStatus(request.getStatus(), "Dữ liệu không hợp lệ", "Trạng thái cập nhật không hợp lệ");
 
         int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status.name(), id);
         if (updated == 0) {
@@ -302,7 +302,7 @@ public class OrderService {
             params.add(pattern);
         }
 
-        OrderStatus normalizedStatus = parseNullableOrderStatus(status, "Lỗi truy vấn danh sách", "Trạng thái đơn hàng không hợp lệ");
+        OrderStatus normalizedStatus = parseNullableOrderStatus(status, "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
         if (normalizedStatus != null) {
             where.append(" AND o.status = ? ");
             params.add(normalizedStatus.name());
@@ -442,14 +442,14 @@ public class OrderService {
 
     private List<Long> normalizeCartItemIds(List<Long> cartItemIds) {
         if (cartItemIds == null || cartItemIds.isEmpty()) {
-            throw new BadRequestException("Tạo đơn hàng thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
         }
 
         LinkedHashSet<Long> uniqueIds = new LinkedHashSet<>();
         for (Long itemId : cartItemIds) {
             if (itemId == null || itemId <= 0) {
-                throw new BadRequestException("Tạo đơn hàng thất bại",
+                throw new BadRequestException("Dữ liệu không hợp lệ",
                         List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
             }
             uniqueIds.add(itemId);
@@ -460,7 +460,7 @@ public class OrderService {
 
     private String requireShippingValue(String value, String fieldName, String message) {
         if (value == null || value.isBlank()) {
-            throw new BadRequestException("Tạo đơn hàng thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail(fieldName, message)));
         }
         return value.trim();
@@ -495,7 +495,7 @@ public class OrderService {
     }
 
     private void validateOrderStatusIfPresent(String status) {
-        parseNullableOrderStatus(status, "Lỗi truy vấn danh sách", "Trạng thái đơn hàng không hợp lệ");
+        parseNullableOrderStatus(status, "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
     }
 
     private OrderStatus parseNullableOrderStatus(String value, String message, String errorMessage) {

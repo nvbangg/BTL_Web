@@ -3,8 +3,10 @@ package com.nvbangg.fashonshop.exception;
 import com.nvbangg.fashonshop.common.dto.ApiResponse;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,9 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String VALIDATION_MESSAGE = "Dữ liệu không hợp lệ";
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse<Void>> handleAppException(AppException ex) {
@@ -23,16 +28,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex,
-                                                                       HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex) {
         List<ErrorDetail> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(this::toErrorDetail)
                 .toList();
 
-        String message = resolveValidationMessage(request);
-        return ResponseEntity.badRequest().body(ApiResponse.error(message, errors));
+        return ResponseEntity.badRequest().body(ApiResponse.error(VALIDATION_MESSAGE, errors));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -44,33 +47,63 @@ public class GlobalExceptionHandler {
         if ("/api/products".equals(uri)) {
             if ("minPrice".equals(field)) {
                 return ResponseEntity.badRequest().body(ApiResponse.error(
-                        "Dữ liệu truy vấn không hợp lệ",
+                        VALIDATION_MESSAGE,
                         List.of(new ErrorDetail("minPrice", "Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0"))
                 ));
             }
             if ("maxPrice".equals(field)) {
                 return ResponseEntity.badRequest().body(ApiResponse.error(
-                        "Dữ liệu truy vấn không hợp lệ",
+                        VALIDATION_MESSAGE,
                         List.of(new ErrorDetail("maxPrice", "Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice"))
                 ));
             }
             return ResponseEntity.badRequest().body(ApiResponse.error(
-                    "Dữ liệu truy vấn không hợp lệ",
+                    VALIDATION_MESSAGE,
                     List.of(new ErrorDetail(field, "Giá trị truy vấn không hợp lệ"))
             ));
         }
 
         if ("/api/admin/products".equals(uri)) {
             return ResponseEntity.badRequest().body(ApiResponse.error(
-                    "Lỗi truy vấn",
+                    VALIDATION_MESSAGE,
                     List.of(new ErrorDetail("minPrice", "Giá trị khoảng giá không hợp lệ"))
             ));
         }
 
         return ResponseEntity.badRequest().body(ApiResponse.error(
-                "Dữ liệu đầu vào không hợp lệ",
+                VALIDATION_MESSAGE,
                 List.of(new ErrorDetail(field, "Giá trị không hợp lệ"))
         ));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNotReadableBody(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body(ApiResponse.error(
+                VALIDATION_MESSAGE,
+                List.of(new ErrorDetail("body", "JSON không hợp lệ hoặc sai định dạng"))
+        ));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String rootMessage = extractRootMessage(ex).toLowerCase(Locale.ROOT);
+        if (rootMessage.contains("users.email") || rootMessage.contains("email")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ApiResponse.error(
+                            "Đăng ký thất bại",
+                            List.of(new ErrorDetail("email", "Email này đã tồn tại trong hệ thống"))
+                    ));
+        }
+
+        if (rootMessage.contains("duplicate") || rootMessage.contains("unique")) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(
+                    VALIDATION_MESSAGE,
+                    List.of(new ErrorDetail("data", "Dữ liệu bị trùng hoặc xung đột"))
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Vui lòng thử lại sau"))));
     }
 
     @ExceptionHandler(Exception.class)
@@ -83,41 +116,11 @@ public class GlobalExceptionHandler {
         return new ErrorDetail(error.getField(), error.getDefaultMessage());
     }
 
-    private String resolveValidationMessage(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
-
-        if ("/api/auth/login".equals(uri)) {
-            return "Thiếu thông tin đăng nhập";
+    private String extractRootMessage(Throwable throwable) {
+        Throwable root = throwable;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
         }
-        if ("/api/users/me".equals(uri) && "PUT".equalsIgnoreCase(method)) {
-            return "Dữ liệu không hợp lệ";
-        }
-        if ("/api/cart".equals(uri) && "POST".equalsIgnoreCase(method)) {
-            return "Dữ liệu không hợp lệ";
-        }
-        if ("/api/orders".equals(uri) && "POST".equalsIgnoreCase(method)) {
-            return "Tạo đơn hàng thất bại";
-        }
-        if (uri.startsWith("/api/cart/") && "PUT".equalsIgnoreCase(method)) {
-            return "Cập nhật thất bại";
-        }
-        if ("/api/users/password".equals(uri) && "PUT".equalsIgnoreCase(method)) {
-            return "Đổi mật khẩu thất bại";
-        }
-        if ("/api/admin/products".equals(uri) && "POST".equalsIgnoreCase(method)) {
-            return "Dữ liệu không hợp lệ";
-        }
-        if (uri.startsWith("/api/admin/products/") && "PUT".equalsIgnoreCase(method)) {
-            return "Dữ liệu không hợp lệ";
-        }
-        if (uri.startsWith("/api/admin/orders/") && "PUT".equalsIgnoreCase(method)) {
-            return "Cập nhật thất bại";
-        }
-        if (uri.startsWith("/api/admin/users/") && "PUT".equalsIgnoreCase(method)) {
-            return "Cập nhật thất bại";
-        }
-
-        return "Dữ liệu đầu vào không hợp lệ";
+        return root.getMessage() == null ? "" : root.getMessage();
     }
 }

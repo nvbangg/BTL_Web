@@ -26,7 +26,7 @@ public class AdminUserService {
     }
 
     public AdminUserListResponse getUsers(String keyword, String role, String page, String pageSize) {
-        UserRole normalizedRole = parseNullableRole(role, "Dữ liệu truy vấn không hợp lệ", "Bộ lọc vai trò (role) không hợp lệ");
+        UserRole normalizedRole = parseNullableRole(role, "Dữ liệu không hợp lệ", "Bộ lọc vai trò (role) không hợp lệ");
 
         int pageValue = parsePositiveOrDefault(page, 1);
         int pageSizeValue = parsePositiveOrDefault(pageSize, 10);
@@ -91,11 +91,11 @@ public class AdminUserService {
     }
 
     public void updateRole(Long id, AdminUpdateUserRoleRequest request) {
-        UserRole role = parseRole(request.getRole(), "Cập nhật thất bại", "Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân");
+        UserRole role = parseRole(request.getRole(), "Dữ liệu không hợp lệ", "Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân");
 
         Long currentUserId = SecurityUtils.getCurrentUser().getId();
         if (currentUserId.equals(id)) {
-            throw new BadRequestException("Cập nhật thất bại",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("role", "Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân")));
         }
 

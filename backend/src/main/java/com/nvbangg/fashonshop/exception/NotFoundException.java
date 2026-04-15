@@ -9,4 +9,8 @@ public class NotFoundException extends AppException {
     public NotFoundException(String message) {
         super(HttpStatus.NOT_FOUND, message, List.of(new ErrorDetail(null, message)));
     }
+
+    public NotFoundException(String message, List<ErrorDetail> errors) {
+        super(HttpStatus.NOT_FOUND, message, errors);
+    }
 }

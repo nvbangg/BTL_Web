@@ -691,12 +691,12 @@ public class ProductService {
 
     private void throwDuplicateImageSortOrderError(int index) {
         throw new BadRequestException("Dữ liệu không hợp lệ",
-                List.of(new ErrorDetail("images[" + index + "].sortOrder", "Thứ tự ảnh (sortOrder) bị trùng")));
+                List.of(new ErrorDetail("images[" + index + "].sortOrder", "Thứ tự ảnh bị trùng")));
     }
 
     private void throwDuplicateImageSortOrderError(String field) {
         throw new BadRequestException("Dữ liệu không hợp lệ",
-                List.of(new ErrorDetail(field, "Thứ tự ảnh (sortOrder) bị trùng")));
+                List.of(new ErrorDetail(field, "Thứ tự ảnh bị trùng")));
     }
 
     private void throwDuplicateImageIdError(int index) {
@@ -754,7 +754,7 @@ public class ProductService {
         try {
             return ProductGender.valueOf(normalized);
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Dữ liệu truy vấn không hợp lệ",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("gender", "Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)")));
         }
     }
@@ -929,7 +929,7 @@ public class ProductService {
             case "newest" -> "p.created_at DESC";
             case "price_asc" -> "p.price ASC, p.created_at DESC";
             case "price_desc" -> "p.price DESC, p.created_at DESC";
-            default -> throw new BadRequestException(admin ? "Lỗi truy vấn" : "Dữ liệu truy vấn không hợp lệ",
+            default -> throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("sort", invalidSortMessage)));
         };
     }
@@ -939,20 +939,20 @@ public class ProductService {
             if ((minPrice != null && minPrice < 0)
                     || (maxPrice != null && maxPrice < 0)
                     || (minPrice != null && maxPrice != null && maxPrice < minPrice)) {
-                throw new BadRequestException("Lỗi truy vấn",
+                throw new BadRequestException("Dữ liệu không hợp lệ",
                         List.of(new ErrorDetail("minPrice", "Giá trị khoảng giá không hợp lệ")));
             }
             return;
         }
 
         if (minPrice != null && minPrice < 0) {
-            throw new BadRequestException("Dữ liệu truy vấn không hợp lệ",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("minPrice", "Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0")));
         }
 
         if ((maxPrice != null && maxPrice < 0)
                 || (minPrice != null && maxPrice != null && maxPrice < minPrice)) {
-            throw new BadRequestException("Dữ liệu truy vấn không hợp lệ",
+            throw new BadRequestException("Dữ liệu không hợp lệ",
                     List.of(new ErrorDetail("maxPrice", "Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice")));
         }
     }
@@ -979,7 +979,7 @@ public class ProductService {
         if ("false".equalsIgnoreCase(value)) {
             return false;
         }
-        throw new BadRequestException("Lỗi truy vấn",
+        throw new BadRequestException("Dữ liệu không hợp lệ",
                 List.of(new ErrorDetail("isActive", "isActive phải là true hoặc false")));
     }
 
