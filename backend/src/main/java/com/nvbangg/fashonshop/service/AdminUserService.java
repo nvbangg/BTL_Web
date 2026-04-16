@@ -1,6 +1,7 @@
 package com.nvbangg.fashonshop.service;
 
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
+import com.nvbangg.fashonshop.common.util.QueryUtils;
 import com.nvbangg.fashonshop.dto.request.AdminUpdateUserRoleRequest;
 import com.nvbangg.fashonshop.dto.response.AdminUserItemResponse;
 import com.nvbangg.fashonshop.dto.response.AdminUserListResponse;
@@ -28,14 +29,14 @@ public class AdminUserService {
     public AdminUserListResponse getUsers(String keyword, String role, String page, String pageSize) {
         UserRole normalizedRole = parseNullableRole(role, "Dữ liệu không hợp lệ", "Bộ lọc vai trò (role) không hợp lệ");
 
-        int pageValue = parsePositiveOrDefault(page, 1);
-        int pageSizeValue = parsePositiveOrDefault(pageSize, 10);
+        int pageValue = QueryUtils.parsePositiveOrDefault(page, 1);
+        int pageSizeValue = QueryUtils.parsePositiveOrDefault(pageSize, 10);
         int offset = (pageValue - 1) * pageSizeValue;
 
         StringBuilder where = new StringBuilder(" WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
 
-        String normalizedKeyword = normalizeNullable(keyword);
+        String normalizedKeyword = QueryUtils.normalizeNullable(keyword);
         if (normalizedKeyword != null) {
             where.append(" AND (LOWER(u.email) LIKE ? OR LOWER(IFNULL(u.name, '')) LIKE ?) ");
             String pattern = "%" + normalizedKeyword + "%";
@@ -106,7 +107,7 @@ public class AdminUserService {
     }
 
     private UserRole parseNullableRole(String value, String message, String errorMessage) {
-        String normalized = normalizeNullable(value);
+        String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
         }
@@ -141,23 +142,4 @@ public class AdminUserService {
         }
     }
 
-    private int parsePositiveOrDefault(String value, int defaultValue) {
-        if (value == null || value.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            int parsed = Integer.parseInt(value);
-            return parsed > 0 ? parsed : defaultValue;
-        } catch (NumberFormatException ex) {
-            return defaultValue;
-        }
-    }
-
-    private String normalizeNullable(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed.toLowerCase(Locale.ROOT);
-    }
 }

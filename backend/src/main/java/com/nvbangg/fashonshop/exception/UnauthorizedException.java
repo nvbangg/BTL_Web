@@ -11,6 +11,7 @@ public class UnauthorizedException extends AppException {
     }
 
     public UnauthorizedException(String message) {
-        super(HttpStatus.UNAUTHORIZED, message, List.of(new ErrorDetail(null, message)));
+        super(HttpStatus.UNAUTHORIZED, message,
+                List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này")));
     }
 }

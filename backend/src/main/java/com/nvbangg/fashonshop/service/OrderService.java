@@ -1,14 +1,13 @@
 package com.nvbangg.fashonshop.service;
 
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
+import com.nvbangg.fashonshop.common.util.QueryUtils;
 import com.nvbangg.fashonshop.dto.request.AdminUpdateOrderStatusRequest;
 import com.nvbangg.fashonshop.dto.request.CreateOrderRequest;
 import com.nvbangg.fashonshop.dto.response.*;
-import com.nvbangg.fashonshop.entity.OrderItem;
 import com.nvbangg.fashonshop.entity.OrderStatus;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
-import com.nvbangg.fashonshop.repository.OrderItemRepository;
 import com.nvbangg.fashonshop.repository.OrderRepository;
 import com.nvbangg.fashonshop.security.SecurityUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,14 +27,11 @@ public class OrderService {
 
     private final JdbcTemplate jdbcTemplate;
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
 
     public OrderService(JdbcTemplate jdbcTemplate,
-                        OrderRepository orderRepository,
-                        OrderItemRepository orderItemRepository) {
+                        OrderRepository orderRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
     }
 
     @Transactional
@@ -47,7 +43,7 @@ public class OrderService {
         String shippingPhone = requireShippingValue(request.getShippingPhone(), "shippingPhone", "Số điện thoại là bắt buộc");
         String shippingAddress = requireShippingValue(request.getShippingAddress(), "shippingAddress", "Địa chỉ nhận hàng là bắt buộc");
 
-        String placeholders = buildPlaceholders(cartItemIds.size());
+        String placeholders = QueryUtils.buildPlaceholders(cartItemIds.size());
         String cartSql =
                 """
                         SELECT c.id AS cart_id,
@@ -211,7 +207,7 @@ public class OrderService {
     }
 
     public void updateOrderStatus(Long id, AdminUpdateOrderStatusRequest request) {
-        OrderStatus status = parseOrderStatus(request.getStatus(), "Dữ liệu không hợp lệ", "Trạng thái cập nhật không hợp lệ");
+        OrderStatus status = parseOrderStatus(request.getStatus(), "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
 
         int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status.name(), id);
         if (updated == 0) {
@@ -222,32 +218,24 @@ public class OrderService {
     public StatisticsResponse getStatistics() {
         String deliveredStatus = OrderStatus.delivered.name();
 
-        Long revenueThisMonth = jdbcTemplate.queryForObject(
+        Map<String, Object> summary = jdbcTemplate.queryForMap(
                 """
-                        SELECT COALESCE(SUM(total_price), 0)
+                        SELECT COALESCE(SUM(CASE
+                               WHEN status = ?
+                                AND YEAR(created_at) = YEAR(CURDATE())
+                                AND MONTH(created_at) = MONTH(CURDATE())
+                               THEN total_price ELSE 0 END), 0) AS revenue_this_month,
+                               COALESCE(SUM(CASE
+                               WHEN status = ?
+                                AND YEAR(created_at) = YEAR(CURDATE())
+                               THEN total_price ELSE 0 END), 0) AS revenue_year,
+                               COALESCE(SUM(CASE
+                               WHEN status = ?
+                               THEN total_price ELSE 0 END), 0) AS revenue_all_time
                         FROM orders
-                        WHERE status = ?
-                          AND YEAR(created_at) = YEAR(CURDATE())
-                          AND MONTH(created_at) = MONTH(CURDATE())
                         """,
-                Long.class,
-                deliveredStatus
-        );
-
-        Long revenueYear = jdbcTemplate.queryForObject(
-                """
-                        SELECT COALESCE(SUM(total_price), 0)
-                        FROM orders
-                        WHERE status = ?
-                          AND YEAR(created_at) = YEAR(CURDATE())
-                        """,
-                Long.class,
-                deliveredStatus
-        );
-
-        Long revenueAllTime = jdbcTemplate.queryForObject(
-                "SELECT COALESCE(SUM(total_price), 0) FROM orders WHERE status = ?",
-                Long.class,
+                deliveredStatus,
+                deliveredStatus,
                 deliveredStatus
         );
 
@@ -268,9 +256,9 @@ public class OrderService {
         );
 
         return new StatisticsResponse(
-                revenueThisMonth == null ? 0L : revenueThisMonth,
-                revenueYear == null ? 0L : revenueYear,
-                revenueAllTime == null ? 0L : revenueAllTime,
+                toLong(summary.get("revenue_this_month")),
+                toLong(summary.get("revenue_year")),
+                toLong(summary.get("revenue_all_time")),
                 revenueByMonth
         );
     }
@@ -281,8 +269,8 @@ public class OrderService {
                                                 String status,
                                                 String page,
                                                 String pageSize) {
-        int pageValue = parsePositiveOrDefault(page, 1);
-        int pageSizeValue = parsePositiveOrDefault(pageSize, 10);
+        int pageValue = QueryUtils.parsePositiveOrDefault(page, 1);
+        int pageSizeValue = QueryUtils.parsePositiveOrDefault(pageSize, 10);
         int offset = (pageValue - 1) * pageSizeValue;
 
         StringBuilder where = new StringBuilder(" WHERE 1=1 ");
@@ -293,7 +281,7 @@ public class OrderService {
             params.add(userId);
         }
 
-        String normalizedKeyword = normalizeNullable(keyword);
+        String normalizedKeyword = QueryUtils.normalizeNullable(keyword);
         if (normalizedKeyword != null) {
             where.append(" AND (CAST(o.id AS CHAR) LIKE ? OR LOWER(o.shipping_name) LIKE ? OR LOWER(u.email) LIKE ?) ");
             String pattern = "%" + normalizedKeyword + "%";
@@ -334,23 +322,38 @@ public class OrderService {
         queryParams.add(pageSizeValue);
         queryParams.add(offset);
 
-        List<OrderSearchRow> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Long orderId = rs.getLong("id");
+        List<OrderBaseRow> baseRows = jdbcTemplate.query(sql, (rs, rowNum) -> new OrderBaseRow(
+                rs.getLong("id"),
+                rs.getLong("user_id"),
+                rs.getString("email"),
+                rs.getString("shipping_name"),
+                rs.getString("shipping_phone"),
+                rs.getString("shipping_address"),
+                rs.getLong("total_price"),
+                rs.getString("status"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getTimestamp("updated_at").toLocalDateTime()
+        ), queryParams.toArray());
 
-            return new OrderSearchRow(
-                    orderId,
-                    rs.getLong("user_id"),
-                    rs.getString("email"),
-                    rs.getString("shipping_name"),
-                    rs.getString("shipping_phone"),
-                    rs.getString("shipping_address"),
-                    rs.getLong("total_price"),
-                    rs.getString("status"),
-                    rs.getTimestamp("created_at").toLocalDateTime(),
-                    rs.getTimestamp("updated_at").toLocalDateTime(),
-                    getOrderItems(orderId)
-            );
-        }, queryParams.toArray());
+        Map<Long, List<OrderItemResponse>> orderItemsByOrderId = loadOrderItemsByOrderIds(
+                baseRows.stream().map(row -> row.id).toList()
+        );
+
+        List<OrderSearchRow> items = baseRows.stream()
+                .map(baseRow -> new OrderSearchRow(
+                        baseRow.id,
+                        baseRow.userId,
+                        baseRow.email,
+                        baseRow.shippingName,
+                        baseRow.shippingPhone,
+                        baseRow.shippingAddress,
+                        baseRow.totalPrice,
+                        baseRow.status,
+                        baseRow.createdAt,
+                        baseRow.updatedAt,
+                        orderItemsByOrderId.getOrDefault(baseRow.id, Collections.emptyList())
+                ))
+                .toList();
 
         Long totalPendingOrders = null;
         Long totalIncompleteOrders = null;
@@ -395,6 +398,41 @@ public class OrderService {
         }
     }
 
+    private static class OrderBaseRow {
+        private final Long id;
+        private final Long userId;
+        private final String email;
+        private final String shippingName;
+        private final String shippingPhone;
+        private final String shippingAddress;
+        private final Long totalPrice;
+        private final String status;
+        private final java.time.LocalDateTime createdAt;
+        private final java.time.LocalDateTime updatedAt;
+
+        private OrderBaseRow(Long id,
+                             Long userId,
+                             String email,
+                             String shippingName,
+                             String shippingPhone,
+                             String shippingAddress,
+                             Long totalPrice,
+                             String status,
+                             java.time.LocalDateTime createdAt,
+                             java.time.LocalDateTime updatedAt) {
+            this.id = id;
+            this.userId = userId;
+            this.email = email;
+            this.shippingName = shippingName;
+            this.shippingPhone = shippingPhone;
+            this.shippingAddress = shippingAddress;
+            this.totalPrice = totalPrice;
+            this.status = status;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+        }
+    }
+
     private static class OrderSearchRow {
         private final Long id;
         private final Long userId;
@@ -433,11 +471,52 @@ public class OrderService {
         }
     }
 
-    private List<OrderItemResponse> getOrderItems(Long orderId) {
-        return orderItemRepository.findByOrderIdOrderByIdAsc(orderId)
-                .stream()
-                .map(this::toOrderItemResponse)
-                .toList();
+    private Map<Long, List<OrderItemResponse>> loadOrderItemsByOrderIds(List<Long> orderIds) {
+        if (orderIds == null || orderIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        String placeholders = QueryUtils.buildPlaceholders(orderIds.size());
+        String sql =
+                """
+                        SELECT oi.order_id,
+                               oi.id,
+                               p.id AS product_id,
+                               pv.id AS variant_id,
+                               p.name AS product_name,
+                               p.thumbnail,
+                               pv.color,
+                               pv.size,
+                               oi.quantity,
+                               oi.price_at_purchase
+                        FROM order_items oi
+                        JOIN product_variants pv ON pv.id = oi.product_variant_id
+                        JOIN products p ON p.id = pv.product_id
+                        WHERE oi.order_id IN (%s)
+                        ORDER BY oi.order_id ASC, oi.id ASC
+                        """.formatted(placeholders);
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, orderIds.toArray());
+        Map<Long, List<OrderItemResponse>> orderItemsByOrderId = new HashMap<>();
+
+        for (Map<String, Object> row : rows) {
+            Long orderId = ((Number) row.get("order_id")).longValue();
+            OrderItemResponse item = new OrderItemResponse(
+                    ((Number) row.get("id")).longValue(),
+                    ((Number) row.get("product_id")).longValue(),
+                    ((Number) row.get("variant_id")).longValue(),
+                    (String) row.get("product_name"),
+                    (String) row.get("thumbnail"),
+                    (String) row.get("color"),
+                    (String) row.get("size"),
+                    ((Number) row.get("quantity")).intValue(),
+                    ((Number) row.get("price_at_purchase")).longValue()
+            );
+
+            orderItemsByOrderId.computeIfAbsent(orderId, key -> new ArrayList<>()).add(item);
+        }
+
+        return orderItemsByOrderId;
     }
 
     private List<Long> normalizeCartItemIds(List<Long> cartItemIds) {
@@ -466,40 +545,12 @@ public class OrderService {
         return value.trim();
     }
 
-    private String buildPlaceholders(int count) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            if (i > 0) {
-                builder.append(",");
-            }
-            builder.append("?");
-        }
-        return builder.toString();
-    }
-
-    private OrderItemResponse toOrderItemResponse(OrderItem item) {
-        var variant = item.getProductVariant();
-        var product = variant.getProduct();
-
-        return new OrderItemResponse(
-                item.getId(),
-                product.getId(),
-                variant.getId(),
-                product.getName(),
-                product.getThumbnail(),
-                variant.getColor(),
-                variant.getSize(),
-                item.getQuantity(),
-                item.getPriceAtPurchase()
-        );
-    }
-
     private void validateOrderStatusIfPresent(String status) {
         parseNullableOrderStatus(status, "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
     }
 
     private OrderStatus parseNullableOrderStatus(String value, String message, String errorMessage) {
-        String normalized = normalizeNullable(value);
+        String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
         }
@@ -525,23 +576,10 @@ public class OrderService {
         }
     }
 
-    private int parsePositiveOrDefault(String value, int defaultValue) {
-        if (value == null || value.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            int parsed = Integer.parseInt(value);
-            return parsed > 0 ? parsed : defaultValue;
-        } catch (NumberFormatException ex) {
-            return defaultValue;
-        }
-    }
-
-    private String normalizeNullable(String value) {
+    private long toLong(Object value) {
         if (value == null) {
-            return null;
+            return 0L;
         }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed.toLowerCase(Locale.ROOT);
+        return ((Number) value).longValue();
     }
 }

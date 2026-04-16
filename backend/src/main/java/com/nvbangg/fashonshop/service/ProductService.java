@@ -1,6 +1,7 @@
 package com.nvbangg.fashonshop.service;
 
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
+import com.nvbangg.fashonshop.common.util.QueryUtils;
 import com.nvbangg.fashonshop.dto.request.*;
 import com.nvbangg.fashonshop.dto.response.*;
 import com.nvbangg.fashonshop.entity.ProductGender;
@@ -172,7 +173,7 @@ public class ProductService {
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, request.getName().trim());
-            ps.setString(2, nullableTrim(request.getDescription()));
+            ps.setString(2, QueryUtils.nullableTrim(request.getDescription()));
             ps.setString(3, request.getThumbnail().trim());
             ps.setString(4, request.getCategory().trim());
             ps.setString(5, gender.name());
@@ -204,7 +205,7 @@ public class ProductService {
                         WHERE id = ?
                         """,
                 request.getName().trim(),
-                nullableTrim(request.getDescription()),
+                QueryUtils.nullableTrim(request.getDescription()),
                 request.getThumbnail().trim(),
                 request.getCategory().trim(),
                 gender.name(),
@@ -236,8 +237,8 @@ public class ProductService {
         Boolean activeFilter = admin ? parseNullableBoolean(isActive) : null;
 
         int defaultPageSize = admin ? 10 : 16;
-        int pageValue = parsePositiveOrDefault(page, 1);
-        int pageSizeValue = parsePositiveOrDefault(pageSize, defaultPageSize);
+        int pageValue = QueryUtils.parsePositiveOrDefault(page, 1);
+        int pageSizeValue = QueryUtils.parsePositiveOrDefault(pageSize, defaultPageSize);
         int offset = (pageValue - 1) * pageSizeValue;
 
         String orderBy = resolveSort(sort, admin);
@@ -252,14 +253,14 @@ public class ProductService {
             params.add(activeFilter);
         }
 
-        String normalizedKeyword = normalizeNullable(keyword);
+        String normalizedKeyword = QueryUtils.normalizeNullable(keyword);
         if (normalizedKeyword != null) {
             where.append(" AND (LOWER(p.name) LIKE ? OR LOWER(IFNULL(p.description, '')) LIKE ?) ");
             params.add("%" + normalizedKeyword + "%");
             params.add("%" + normalizedKeyword + "%");
         }
 
-        String normalizedCategory = normalizeNullable(category);
+        String normalizedCategory = QueryUtils.normalizeNullable(category);
         if (normalizedCategory != null) {
             where.append(" AND LOWER(p.category) = ? ");
             params.add(normalizedCategory);
@@ -280,13 +281,13 @@ public class ProductService {
             params.add(maxPrice);
         }
 
-        String normalizedColor = normalizeNullable(color);
+        String normalizedColor = QueryUtils.normalizeNullable(color);
         if (normalizedColor != null) {
             where.append(" AND EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id AND LOWER(pv.color) = ?) ");
             params.add(normalizedColor);
         }
 
-        String normalizedSize = normalizeNullable(size);
+        String normalizedSize = QueryUtils.normalizeNullable(size);
         if (normalizedSize != null) {
             where.append(" AND EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id AND LOWER(pv.size) = ?) ");
             params.add(normalizedSize);
@@ -645,7 +646,7 @@ public class ProductService {
             Integer previousIndex = seenIdToIndex.putIfAbsent(variantId, i);
             if (previousIndex != null) {
                 throw new BadRequestException("Dữ liệu không hợp lệ",
-                        List.of(new ErrorDetail("variants[" + i + "].id", "ID phân loại bị trùng trong payload")));
+                        List.of(new ErrorDetail("variants[" + i + "].id", "ID phân loại bị trùng trong request")));
             }
 
             if (!existingKeysById.containsKey(variantId)) {
@@ -701,7 +702,7 @@ public class ProductService {
 
     private void throwDuplicateImageIdError(int index) {
         throw new BadRequestException("Dữ liệu không hợp lệ",
-                List.of(new ErrorDetail("images[" + index + "].id", "ID ảnh bị trùng trong payload")));
+                List.of(new ErrorDetail("images[" + index + "].id", "ID ảnh bị trùng trong request")));
     }
 
     private String normalizeVariantKey(String color, String size) {
@@ -746,7 +747,7 @@ public class ProductService {
     }
 
     private ProductGender parseNullableGenderForQuery(String value) {
-        String normalized = normalizeNullable(value);
+        String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
         }
@@ -920,7 +921,7 @@ public class ProductService {
 
     private String resolveSort(String sort, boolean admin) {
         String defaultSort = admin ? "newest" : "best_selling";
-        String normalizedSort = normalizeNullable(sort);
+        String normalizedSort = QueryUtils.normalizeNullable(sort);
         String finalSort = normalizedSort == null ? defaultSort : normalizedSort;
         String invalidSortMessage = "Giá trị sắp xếp (sort) không được hỗ trợ (chỉ hỗ trợ: best_selling, newest, price_asc, price_desc)";
 
@@ -957,18 +958,6 @@ public class ProductService {
         }
     }
 
-    private int parsePositiveOrDefault(String value, int defaultValue) {
-        if (value == null || value.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            int parsed = Integer.parseInt(value);
-            return parsed > 0 ? parsed : defaultValue;
-        } catch (NumberFormatException ex) {
-            return defaultValue;
-        }
-    }
-
     private Boolean parseNullableBoolean(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -983,19 +972,4 @@ public class ProductService {
                 List.of(new ErrorDetail("isActive", "isActive phải là true hoặc false")));
     }
 
-    private String normalizeNullable(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed.toLowerCase(Locale.ROOT);
-    }
-
-    private String nullableTrim(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
-    }
 }

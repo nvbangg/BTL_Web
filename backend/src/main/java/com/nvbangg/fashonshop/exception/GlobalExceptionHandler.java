@@ -107,7 +107,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex, HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if ("/api/products/filters".equals(uri)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Không thể tải bộ lọc lúc này"))));
+        }
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Vui lòng thử lại sau"))));
     }

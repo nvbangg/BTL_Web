@@ -7,7 +7,8 @@ import java.util.List;
 
 public class NotFoundException extends AppException {
     public NotFoundException(String message) {
-        super(HttpStatus.NOT_FOUND, message, List.of(new ErrorDetail(null, message)));
+        super(HttpStatus.NOT_FOUND, message,
+                List.of(new ErrorDetail("id", "Dữ liệu không tồn tại trong hệ thống hoặc đã bị ẩn/xóa")));
     }
 
     public NotFoundException(String message, List<ErrorDetail> errors) {

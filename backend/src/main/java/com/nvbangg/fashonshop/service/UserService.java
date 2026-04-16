@@ -53,7 +53,7 @@ public class UserService {
 
         if (request.getCurrentPassword().equals(request.getNewPassword())) {
             throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("newPassword", "Mật khẩu mới không được trùng với mật khẩu cũ và phải >= 6 ký tự")));
+                    List.of(new ErrorDetail("newPassword", "Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự")));
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -63,7 +63,10 @@ public class UserService {
     private User getCurrentUserEntity() {
         AuthUser currentUser = SecurityUtils.getCurrentUser();
         return userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new UnauthorizedException("Chưa xác thực hoặc phiên đăng nhập hết hạn"));
+                .orElseThrow(() -> new UnauthorizedException(
+                        "Chưa xác thực hoặc phiên đăng nhập hết hạn",
+                        List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
+                ));
     }
 
     private UserResponse toUserResponse(User user) {

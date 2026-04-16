@@ -29,10 +29,21 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        ApiResponse<Void> body = ApiResponse.error(
-                "Chưa xác thực hoặc phiên đăng nhập hết hạn",
-                List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
-        );
+        String uri = request.getRequestURI();
+        String method = request.getMethod();
+
+        ApiResponse<Void> body;
+        if ("/api/cart".equals(uri) && "POST".equalsIgnoreCase(method)) {
+            body = ApiResponse.error(
+                    "Thao tác thất bại",
+                    List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thêm vào giỏ hàng"))
+            );
+        } else {
+            body = ApiResponse.error(
+                    "Chưa xác thực hoặc phiên đăng nhập hết hạn",
+                    List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
+            );
+        }
 
         objectMapper.writeValue(response.getWriter(), body);
     }
