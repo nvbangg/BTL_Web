@@ -20,7 +20,7 @@ public class CreateOrderRequest {
     private String shippingName;
 
     @NotBlank(message = "Số điện thoại là bắt buộc")
-    @Pattern(regexp = "^[0-9]{9,11}$", message = "Số điện thoại không đúng định dạng")
+    @Pattern(regexp = "^[0-9]{9,11}$", message = "Số điện thoại không hợp lệ")
     private String shippingPhone;
 
     @NotBlank(message = "Địa chỉ nhận hàng là bắt buộc")

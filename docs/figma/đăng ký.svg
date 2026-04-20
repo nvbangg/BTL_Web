@@ -51,7 +51,6 @@
   </g>
 
   <g id="Search_Page_Content">
-    
     <g id="Sorting_And_Filters_Row">
       <text x="130" y="140" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Sắp xếp theo:</text>
       
@@ -119,45 +118,54 @@
   <rect width="1440" height="1024" fill="#0F172A" opacity="0.6" />
 
   <g id="Popup_Register_Modal">
-    <rect x="440" y="200" width="560" height="580" rx="24" fill="#FFFFFF" filter="url(#popupShadow)" />
+    <rect x="440" y="190" width="560" height="530" rx="24" fill="#FFFFFF" filter="url(#popupShadow)" />
     
     <g id="Close_Button" style="cursor: pointer;">
-      <circle cx="960" cy="240" r="16" fill="#F1F5F9" />
-      <path d="M954 234 L966 246 M966 234 L954 246" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+      <circle cx="960" cy="230" r="16" fill="#F1F5F9" />
+      <path d="M954 224 L966 236 M966 224 L954 236" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
     </g>
     
     <g id="Logo_Popup">
-      <circle cx="625" cy="260" r="16" fill="#2563EB" />
-      <circle cx="641" cy="260" r="16" fill="#60A5FA" opacity="0.8" />
-      <text x="670" y="268" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Fashon Shop</text>
+      <circle cx="625" cy="230" r="16" fill="#2563EB" />
+      <circle cx="641" cy="230" r="16" fill="#60A5FA" opacity="0.8" />
+      <text x="670" y="238" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0F172A">Fashon Shop</text>
     </g>
     
-    <text x="720" y="340" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0F172A" text-anchor="middle">Đăng ký</text>
-    <text x="720" y="380" font-family="Arial, sans-serif" font-size="16" fill="#475569" text-anchor="middle">Nhập tên và mật khẩu để đăng ký tài khoản mới</text>
+    <text x="720" y="285" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0F172A" text-anchor="middle">Đăng ký</text>
     
+    <g id="Input_Email">
+      <rect x="490" y="325" width="460" height="56" rx="28" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+      <text x="520" y="359" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập email</text>
+    </g>
+
     <g id="Input_DisplayName">
-      <rect x="490" y="420" width="460" height="60" rx="30" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
-      <text x="520" y="456" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập tên hiển thị</text>
+      <rect x="490" y="395" width="460" height="56" rx="28" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+      <text x="520" y="429" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập tên hiển thị</text>
     </g>
 
     <g id="Input_Password">
-      <rect x="490" y="500" width="460" height="60" rx="30" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
-      <text x="520" y="536" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập mật khẩu</text>
-      <path d="M895 530 C903 522 917 522 925 530 C917 538 903 538 895 530 Z" fill="none" stroke="#94A3B8" stroke-width="2"/>
-      <circle cx="910" cy="530" r="3" fill="#94A3B8"/>
+      <rect x="490" y="465" width="460" height="56" rx="28" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+      <text x="520" y="499" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Nhập mật khẩu</text>
+      <path d="M895 493 C903 485 917 485 925 493 C917 501 903 501 895 493 Z" fill="none" stroke="#94A3B8" stroke-width="2"/>
+      <circle cx="910" cy="493" r="3" fill="#94A3B8"/>
     </g>
 
     <g id="Input_Confirm_Password">
-      <rect x="490" y="580" width="460" height="60" rx="30" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
-      <text x="520" y="616" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Xác nhận lại mật khẩu</text>
-      <path d="M895 610 C903 602 917 602 925 610 C917 618 903 618 895 610 Z" fill="none" stroke="#94A3B8" stroke-width="2"/>
-      <circle cx="910" cy="610" r="3" fill="#94A3B8"/>
+      <rect x="490" y="535" width="460" height="56" rx="28" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+      <text x="520" y="569" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">Xác nhận lại mật khẩu</text>
+      <path d="M895 563 C903 555 917 555 925 563 C917 571 903 571 895 563 Z" fill="none" stroke="#94A3B8" stroke-width="2"/>
+      <circle cx="910" cy="563" r="3" fill="#94A3B8"/>
     </g>
 
     <g id="Button_Register" style="cursor: pointer;">
-      <rect x="490" y="660" width="460" height="60" rx="30" fill="#FFC83D" />
-      <text x="680" y="696" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A" text-anchor="middle">Đăng ký</text>
-      <path d="M760 684 L768 690 L760 696 M748 690 L767 690" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="490" y="605" width="460" height="56" rx="28" fill="#FFC83D" />
+      <text x="680" y="639" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F172A" text-anchor="middle">Đăng ký</text>
+      <path d="M760 627 L768 633 L760 639 M748 633 L767 633" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
+
+    <text x="720" y="685" font-family="Arial, sans-serif" font-size="15" fill="#475569" text-anchor="middle">
+      Đã có tài khoản? 
+      <tspan fill="#2563EB" font-weight="bold" style="cursor: pointer;">Đăng nhập</tspan>
+    </text>
   </g>
 </svg>

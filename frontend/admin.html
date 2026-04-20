@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thống kê - Fashon Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="app-admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Tổng quan thống kê</h1>
+
+        <div class="admin-stats-row" id="stats-grid"></div>
+
+        <section class="admin-card">
+          <div class="admin-card-header">
+            <h3>Biểu đồ doanh thu</h3>
+            <select class="admin-filter-select" id="chart-year"></select>
+          </div>
+          <div style="height:340px;padding:12px 20px 24px">
+            <canvas id="revenue-chart"></canvas>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="app-auth"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/admin-stats.js"></script>
+</body>
+</html>

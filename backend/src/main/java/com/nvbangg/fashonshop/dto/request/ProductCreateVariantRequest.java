@@ -16,10 +16,10 @@ public class ProductCreateVariantRequest {
     @NotBlank(message = "Size phân loại là bắt buộc")
     private String size;
 
-    @NotNull(message = "Số lượng tồn kho phải là số nguyên >= 0")
-    @Min(value = 0, message = "Số lượng tồn kho phải là số nguyên >= 0")
+    @NotNull(message = "Số lượng tồn kho không hợp lệ")
+    @Min(value = 0, message = "Số lượng tồn kho không hợp lệ")
     private Integer stock;
 
-    @Min(value = 0, message = "Giá tùy chỉnh phải là số nguyên >= 0")
+    @Min(value = 0, message = "Giá tùy chỉnh không hợp lệ")
     private Long priceOverride;
 }

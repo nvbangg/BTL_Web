@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashon Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <main class="page-body">
+    <div class="container">
+      <div class="sort-bar">
+        <div class="sort-bar-left">
+          <span class="sort-label">Sắp xếp theo:</span>
+          <div class="sort-pills">
+            <button class="sort-pill" data-sort="best_selling">Bán chạy nhất</button>
+            <button class="sort-pill" data-sort="newest">Mới nhất</button>
+            <button class="sort-pill" data-sort="price_asc">Giá tăng</button>
+            <button class="sort-pill" data-sort="price_desc">Giá giảm</button>
+          </div>
+        </div>
+        <div class="sort-bar-right">
+          <button class="btn-filter" id="btn-filter"><i class="bi bi-funnel"></i><span>Lọc</span></button>
+        </div>
+      </div>
+
+      <div class="product-grid" id="product-grid"></div>
+
+      <div id="pagination-area"></div>
+
+      <div class="empty-state" id="empty-state" style="display:none">
+        <h3>Không tìm thấy sản phẩm</h3>
+        <p>Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="filter-overlay" id="filter-overlay"></div>
+  <aside class="filter-panel" id="filter-panel">
+    <div class="filter-header">
+      <h3>Bộ lọc</h3>
+      <button class="filter-close" id="filter-close" type="button"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="filter-body">
+      <div class="filter-group">
+        <label class="filter-group-title" for="filter-category">Danh mục</label>
+        <select class="admin-filter-select" id="filter-category" style="width:100%;height:42px"></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group-title" for="filter-gender">Giới tính</label>
+        <select class="admin-filter-select" id="filter-gender" style="width:100%;height:42px"></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group-title" for="filter-color">Màu sắc</label>
+        <select class="admin-filter-select" id="filter-color" style="width:100%;height:42px"></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group-title" for="filter-size">Size</label>
+        <select class="admin-filter-select" id="filter-size" style="width:100%;height:42px"></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group-title">Giá tiền</label>
+        <div class="form-row">
+          <input class="form-input" id="filter-min-price" placeholder="Giá tối thiểu" type="number" min="0">
+          <input class="form-input" id="filter-max-price" placeholder="Giá tối đa" type="number" min="0">
+        </div>
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-ghost" id="filter-reset" type="button">Xóa lọc</button>
+      <button class="btn btn-yellow" id="filter-apply" type="button">Áp dụng</button>
+    </div>
+  </aside>
+
+  <div id="app-why"></div>
+  <div id="app-footer"></div>
+  <div id="app-auth"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

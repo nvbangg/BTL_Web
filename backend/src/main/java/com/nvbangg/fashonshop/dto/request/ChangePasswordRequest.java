@@ -13,6 +13,6 @@ public class ChangePasswordRequest {
     private String currentPassword;
 
     @NotBlank(message = "Mật khẩu mới là bắt buộc")
-    @Size(min = 6, message = "Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự")
+    @Size(min = 6, message = "Mật khẩu mới không được trùng với mật khẩu hiện tại và ít nhất 6 ký tự")
     private String newPassword;
 }

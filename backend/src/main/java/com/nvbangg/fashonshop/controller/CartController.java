@@ -6,17 +6,15 @@ import com.nvbangg.fashonshop.dto.request.CartUpdateRequest;
 import com.nvbangg.fashonshop.dto.response.CartResponse;
 import com.nvbangg.fashonshop.service.CartService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cart")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
-
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @PostMapping
     public ApiResponse<Void> addToCart(@Valid @RequestBody CartAddRequest request) {

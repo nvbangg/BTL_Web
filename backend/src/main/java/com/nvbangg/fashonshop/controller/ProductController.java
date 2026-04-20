@@ -5,17 +5,15 @@ import com.nvbangg.fashonshop.dto.response.ProductDetailResponse;
 import com.nvbangg.fashonshop.dto.response.ProductFiltersResponse;
 import com.nvbangg.fashonshop.dto.response.ProductListResponse;
 import com.nvbangg.fashonshop.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     public ApiResponse<ProductListResponse> listProducts(@RequestParam(required = false) String keyword,
@@ -23,8 +21,8 @@ public class ProductController {
                                                          @RequestParam(required = false) String gender,
                                                          @RequestParam(required = false) String color,
                                                          @RequestParam(required = false) String size,
-                                                         @RequestParam(required = false) Long minPrice,
-                                                         @RequestParam(required = false) Long maxPrice,
+                                                         @RequestParam(required = false) String minPrice,
+                                                         @RequestParam(required = false) String maxPrice,
                                                          @RequestParam(required = false) String sort,
                                                          @RequestParam(required = false) String page,
                                                          @RequestParam(required = false) String pageSize) {

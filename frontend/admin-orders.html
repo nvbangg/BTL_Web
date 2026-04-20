@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý đơn hàng - Fashon Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <div class="page-body">
+    <div class="admin-layout">
+      <div id="app-admin-sidebar"></div>
+
+      <main class="admin-main">
+        <h1>Quản lý đơn hàng</h1>
+
+        <div class="admin-stats-row" id="order-stats"></div>
+
+        <section class="admin-card">
+          <div class="admin-card-header">
+            <h3>Danh sách đơn hàng</h3>
+            <div class="admin-card-tools">
+              <div class="admin-search-pill">
+                <i class="bi bi-search"></i>
+                <input id="order-search" placeholder="Tìm mã đơn hàng...">
+              </div>
+              <select class="admin-filter-select" id="order-status-filter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Đang chờ</option>
+                <option value="processing">Đang xử lý</option>
+                <option value="shipped">Đang giao</option>
+                <option value="delivered">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã đơn hàng</th>
+                  <th>Ngày đặt</th>
+                  <th>Ngày cập nhật</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+          </div>
+          <div id="orders-pagination"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="app-auth"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/admin-orders.js"></script>
+</body>
+</html>

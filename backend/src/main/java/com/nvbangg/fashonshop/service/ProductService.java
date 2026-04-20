@@ -12,6 +12,7 @@ import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.repository.ProductImageRepository;
 import com.nvbangg.fashonshop.repository.ProductRepository;
 import com.nvbangg.fashonshop.repository.ProductVariantRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
@@ -22,51 +23,33 @@ import java.sql.Statement;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    private static final Set<ProductGender> VALID_GENDERS = EnumSet.allOf(ProductGender.class);
+    private static final String INVALID_REQUEST_MESSAGE = "Dữ liệu không hợp lệ";
+    private static final String INVALID_GENDER_MESSAGE = "Giới tính không hợp lệ";
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductVariantRepository productVariantRepository;
 
-    public ProductService(JdbcTemplate jdbcTemplate,
-                          ProductRepository productRepository,
-                          ProductImageRepository productImageRepository,
-                          ProductVariantRepository productVariantRepository) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.productRepository = productRepository;
-        this.productImageRepository = productImageRepository;
-        this.productVariantRepository = productVariantRepository;
-    }
-
     public ProductListResponse getPublicProducts(String keyword,
                                                  String category,
                                                  String gender,
                                                  String color,
                                                  String size,
-                                                 Long minPrice,
-                                                 Long maxPrice,
+                                                 String minPrice,
+                                                 String maxPrice,
                                                  String sort,
                                                  String page,
                                                  String pageSize) {
         ProductSearchResult result = getProductsInternal(false, keyword, category, gender, color, size, minPrice, maxPrice, sort, null, page, pageSize);
-        List<ProductListItemResponse> items = result.items.stream()
-                .map(item -> new ProductListItemResponse(
-                        item.id,
-                        item.name,
-                        item.thumbnail,
-                        item.price
-                ))
-                .toList();
+        List<ProductListItemResponse> items = result.items().stream()
+            .map(item -> new ProductListItemResponse(item.id(), item.name(), item.thumbnail(), item.price()))
+            .toList();
 
-        return new ProductListResponse(
-                items,
-                result.page,
-                result.pageSize,
-                result.total
-        );
+        return new ProductListResponse(items, result.page(), result.pageSize(), result.total());
     }
 
     public AdminProductListResponse getAdminProducts(String keyword,
@@ -74,33 +57,20 @@ public class ProductService {
                                                      String gender,
                                                      String color,
                                                      String size,
-                                                     Long minPrice,
-                                                     Long maxPrice,
+                                                     String minPrice,
+                                                     String maxPrice,
                                                      String sort,
                                                      String isActive,
                                                      String page,
                                                      String pageSize) {
         ProductSearchResult result = getProductsInternal(true, keyword, category, gender, color, size, minPrice, maxPrice, sort, isActive, page, pageSize);
-        List<AdminProductListItemResponse> items = result.items.stream()
-                .map(item -> new AdminProductListItemResponse(
-                        item.id,
-                        item.thumbnail,
-                        item.name,
-                        item.price,
-                        item.soldCount,
-                        item.totalStock,
-                        item.isActive
-                ))
-                .toList();
+        List<AdminProductListItemResponse> items = result.items().stream()
+            .map(item -> new AdminProductListItemResponse(
+                item.id(), item.thumbnail(), item.name(), item.price(), item.soldCount(), item.totalStock(), item.isActive()))
+            .toList();
 
         return new AdminProductListResponse(
-                result.totalActiveProducts,
-                result.totalOutOfStockProducts,
-                items,
-                result.page,
-                result.pageSize,
-                result.total
-        );
+            result.totalActiveProducts(), result.totalOutOfStockProducts(), items, result.page(), result.pageSize(), result.total());
     }
 
     public ProductFiltersResponse getFilters() {
@@ -121,7 +91,7 @@ public class ProductService {
 
         return new ProductFiltersResponse(
                 categories,
-                VALID_GENDERS.stream().map(ProductGender::name).toList(),
+                Arrays.stream(ProductGender.values()).map(ProductGender::name).toList(),
                 colors,
                 sizes
         );
@@ -130,14 +100,13 @@ public class ProductService {
     public ProductDetailResponse getPublicProductDetail(Long id) {
         ProductDetailRow product = getProductDetailInternal(id, false);
         return new ProductDetailResponse(
-                product.id,
-                product.name,
-                product.description,
-                product.thumbnail,
-                product.category,
-                product.gender,
-                product.price,
-                product.soldCount,
+                product.name(),
+                product.description(),
+                product.thumbnail(),
+                product.category(),
+                product.gender(),
+                product.price(),
+                product.soldCount(),
                 getProductImages(id),
                 getProductVariants(id)
         );
@@ -146,14 +115,13 @@ public class ProductService {
     public AdminProductDetailResponse getAdminProductDetail(Long id) {
         ProductDetailRow product = getProductDetailInternal(id, true);
         return new AdminProductDetailResponse(
-                product.id,
-                product.name,
-                product.description,
-                product.thumbnail,
-                product.category,
-                product.gender,
-                product.price,
-                product.isActive,
+                product.name(),
+                product.description(),
+                product.thumbnail(),
+                product.category(),
+                product.gender(),
+                product.price(),
+                product.isActive(),
                 getProductImages(id),
                 getProductVariants(id)
         );
@@ -224,22 +192,23 @@ public class ProductService {
                                                     String gender,
                                                     String color,
                                                     String size,
-                                                    Long minPrice,
-                                                    Long maxPrice,
+                                                    String minPrice,
+                                                    String maxPrice,
                                                     String sort,
                                                     String isActive,
                                                     String page,
                                                     String pageSize) {
-        validatePriceRange(admin, minPrice, maxPrice);
+        ProductGender normalizedGender = parseGenderFilter(gender);
 
-        ProductGender normalizedGender = parseNullableGenderForQuery(gender);
-
-        Boolean activeFilter = admin ? parseNullableBoolean(isActive) : null;
+        Boolean activeFilter = admin ? parseNullableBooleanFilter(isActive) : null;
 
         int defaultPageSize = admin ? 10 : 16;
         int pageValue = QueryUtils.parsePositiveOrDefault(page, 1);
         int pageSizeValue = QueryUtils.parsePositiveOrDefault(pageSize, defaultPageSize);
         int offset = (pageValue - 1) * pageSizeValue;
+
+        Long normalizedMinPrice = normalizeMinPrice(minPrice);
+        Long normalizedMaxPrice = normalizeMaxPrice(maxPrice, normalizedMinPrice);
 
         String orderBy = resolveSort(sort, admin);
 
@@ -253,10 +222,9 @@ public class ProductService {
             params.add(activeFilter);
         }
 
-        String normalizedKeyword = QueryUtils.normalizeNullable(keyword);
+        String normalizedKeyword = QueryUtils.nullableTrim(keyword);
         if (normalizedKeyword != null) {
-            where.append(" AND (LOWER(p.name) LIKE ? OR LOWER(IFNULL(p.description, '')) LIKE ?) ");
-            params.add("%" + normalizedKeyword + "%");
+            where.append(" AND p.name LIKE ? ");
             params.add("%" + normalizedKeyword + "%");
         }
 
@@ -271,14 +239,12 @@ public class ProductService {
             params.add(normalizedGender.name());
         }
 
-        if (minPrice != null) {
-            where.append(" AND p.price >= ? ");
-            params.add(minPrice);
-        }
+        where.append(" AND p.price >= ? ");
+        params.add(normalizedMinPrice);
 
-        if (maxPrice != null) {
+        if (normalizedMaxPrice != null) {
             where.append(" AND p.price <= ? ");
-            params.add(maxPrice);
+            params.add(normalizedMaxPrice);
         }
 
         String normalizedColor = QueryUtils.normalizeNullable(color);
@@ -419,85 +385,32 @@ public class ProductService {
                 .toList();
     }
 
-    private static class ProductSearchResult {
-        private final List<ProductSearchRow> items;
-        private final Integer page;
-        private final Integer pageSize;
-        private final Long total;
-        private final Long totalActiveProducts;
-        private final Long totalOutOfStockProducts;
-
-        private ProductSearchResult(List<ProductSearchRow> items,
-                                    Integer page,
-                                    Integer pageSize,
-                                    Long total,
-                                    Long totalActiveProducts,
-                                    Long totalOutOfStockProducts) {
-            this.items = items;
-            this.page = page;
-            this.pageSize = pageSize;
-            this.total = total;
-            this.totalActiveProducts = totalActiveProducts;
-            this.totalOutOfStockProducts = totalOutOfStockProducts;
-        }
+    private record ProductSearchResult(List<ProductSearchRow> items,
+                                       Integer page,
+                                       Integer pageSize,
+                                       Long total,
+                                       Long totalActiveProducts,
+                                       Long totalOutOfStockProducts) {
     }
 
-    private static class ProductSearchRow {
-        private final Long id;
-        private final String name;
-        private final String thumbnail;
-        private final Long price;
-        private final Long soldCount;
-        private final Long totalStock;
-        private final Boolean isActive;
-
-        private ProductSearchRow(Long id,
-                                 String name,
-                                 String thumbnail,
-                                 Long price,
-                                 Long soldCount,
-                                 Long totalStock,
-                                 Boolean isActive) {
-            this.id = id;
-            this.name = name;
-            this.thumbnail = thumbnail;
-            this.price = price;
-            this.soldCount = soldCount;
-            this.totalStock = totalStock;
-            this.isActive = isActive;
-        }
+    private record ProductSearchRow(Long id,
+                                    String name,
+                                    String thumbnail,
+                                    Long price,
+                                    Long soldCount,
+                                    Long totalStock,
+                                    Boolean isActive) {
     }
 
-    private static class ProductDetailRow {
-        private final Long id;
-        private final String name;
-        private final String description;
-        private final String thumbnail;
-        private final String category;
-        private final String gender;
-        private final Long price;
-        private final Long soldCount;
-        private final Boolean isActive;
-
-        private ProductDetailRow(Long id,
-                                 String name,
-                                 String description,
-                                 String thumbnail,
-                                 String category,
-                                 String gender,
-                                 Long price,
-                                 Long soldCount,
-                                 Boolean isActive) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.thumbnail = thumbnail;
-            this.category = category;
-            this.gender = gender;
-            this.price = price;
-            this.soldCount = soldCount;
-            this.isActive = isActive;
-        }
+    private record ProductDetailRow(Long id,
+                                    String name,
+                                    String description,
+                                    String thumbnail,
+                                    String category,
+                                    String gender,
+                                    Long price,
+                                    Long soldCount,
+                                    Boolean isActive) {
     }
 
     private record ExistingVariantKey(Long id, String key) {
@@ -599,12 +512,7 @@ public class ProductService {
     }
 
     private ProductGender validateGender(String genderValue) {
-        ProductGender gender = parseGender(genderValue);
-        if (!VALID_GENDERS.contains(gender)) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("gender", "Giới tính không hợp lệ")));
-        }
-        return gender;
+        return parseGender(genderValue, INVALID_GENDER_MESSAGE, false);
     }
 
     private void validateUniqueVariantKeysForCreate(List<ProductCreateVariantRequest> variants) {
@@ -670,15 +578,6 @@ public class ProductService {
 
         for (ProductUpdateVariantRequest variant : variants) {
             String newKey = normalizeVariantKey(variant.getColor(), variant.getSize());
-            Long variantId = variant.getId();
-
-            if (variantId != null && existingKeysById.containsKey(variantId)) {
-                if (!finalKeys.add(newKey)) {
-                    throwDuplicateVariantKeyError();
-                }
-                continue;
-            }
-
             if (!finalKeys.add(newKey)) {
                 throwDuplicateVariantKeyError();
             }
@@ -746,7 +645,23 @@ public class ProductService {
         );
     }
 
-    private ProductGender parseNullableGenderForQuery(String value) {
+    private ProductGender parseGender(String value, String errorMessage, boolean nullable) {
+        String normalized = QueryUtils.normalizeNullable(value);
+        if (normalized == null) {
+            if (nullable) {
+                return null;
+            }
+            throw invalidFieldError("gender", errorMessage);
+        }
+
+        try {
+            return ProductGender.valueOf(normalized);
+        } catch (IllegalArgumentException ex) {
+            throw invalidFieldError("gender", errorMessage);
+        }
+    }
+
+    private ProductGender parseGenderFilter(String value) {
         String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
@@ -755,23 +670,13 @@ public class ProductService {
         try {
             return ProductGender.valueOf(normalized);
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("gender", "Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)")));
+            return null;
         }
     }
 
-    private ProductGender parseGender(String value) {
-        if (value == null) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("gender", "Giới tính không hợp lệ")));
-        }
-
-        try {
-            return ProductGender.valueOf(value.trim().toLowerCase(Locale.ROOT));
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("gender", "Giới tính không hợp lệ")));
-        }
+    private BadRequestException invalidFieldError(String field, String errorMessage) {
+        return new BadRequestException(INVALID_REQUEST_MESSAGE,
+                List.of(new ErrorDetail(field, errorMessage)));
     }
 
     private void insertImages(Long productId, List<ProductCreateImageRequest> images) {
@@ -923,53 +828,61 @@ public class ProductService {
         String defaultSort = admin ? "newest" : "best_selling";
         String normalizedSort = QueryUtils.normalizeNullable(sort);
         String finalSort = normalizedSort == null ? defaultSort : normalizedSort;
-        String invalidSortMessage = "Giá trị sắp xếp (sort) không được hỗ trợ (chỉ hỗ trợ: best_selling, newest, price_asc, price_desc)";
 
         return switch (finalSort) {
             case "best_selling" -> "sold_count DESC, p.created_at DESC";
             case "newest" -> "p.created_at DESC";
             case "price_asc" -> "p.price ASC, p.created_at DESC";
             case "price_desc" -> "p.price DESC, p.created_at DESC";
-            default -> throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("sort", invalidSortMessage)));
+            default -> admin ? "p.created_at DESC" : "sold_count DESC, p.created_at DESC";
         };
     }
 
-    private void validatePriceRange(boolean admin, Long minPrice, Long maxPrice) {
-        if (admin) {
-            if ((minPrice != null && minPrice < 0)
-                    || (maxPrice != null && maxPrice < 0)
-                    || (minPrice != null && maxPrice != null && maxPrice < minPrice)) {
-                throw new BadRequestException("Dữ liệu không hợp lệ",
-                        List.of(new ErrorDetail("minPrice", "Giá trị khoảng giá không hợp lệ")));
-            }
-            return;
+    private Long normalizeMinPrice(String value) {
+        Long parsed = parseLongFilterValue(value);
+        if (parsed == null || parsed < 0) {
+            return 0L;
+        }
+        return parsed;
+    }
+
+    private Long normalizeMaxPrice(String value, Long minPrice) {
+        Long parsed = parseLongFilterValue(value);
+        if (parsed == null || parsed < 0) {
+            return null;
         }
 
-        if (minPrice != null && minPrice < 0) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("minPrice", "Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0")));
+        if (parsed < minPrice) {
+            return null;
         }
 
-        if ((maxPrice != null && maxPrice < 0)
-                || (minPrice != null && maxPrice != null && maxPrice < minPrice)) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("maxPrice", "Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice")));
+        return parsed;
+    }
+
+    private Long parseLongFilterValue(String value) {
+        String normalized = QueryUtils.nullableTrim(value);
+        if (normalized == null) {
+            return null;
+        }
+
+        try {
+            return Long.parseLong(normalized);
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 
-    private Boolean parseNullableBoolean(String value) {
-        if (value == null || value.isBlank()) {
+    private Boolean parseNullableBooleanFilter(String value) {
+        String normalized = QueryUtils.normalizeNullable(value);
+        if (normalized == null) {
             return null;
         }
-        if ("true".equalsIgnoreCase(value)) {
-            return true;
-        }
-        if ("false".equalsIgnoreCase(value)) {
-            return false;
-        }
-        throw new BadRequestException("Dữ liệu không hợp lệ",
-                List.of(new ErrorDetail("isActive", "isActive phải là true hoặc false")));
+
+        return switch (normalized) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> null;
+        };
     }
 
 }

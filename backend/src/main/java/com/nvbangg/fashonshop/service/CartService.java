@@ -12,6 +12,7 @@ import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.repository.CartItemRepository;
 import com.nvbangg.fashonshop.repository.ProductVariantRepository;
 import com.nvbangg.fashonshop.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
     private final JdbcTemplate jdbcTemplate;
     private final CartItemRepository cartItemRepository;
     private final ProductVariantRepository productVariantRepository;
-
-    public CartService(JdbcTemplate jdbcTemplate,
-                       CartItemRepository cartItemRepository,
-                       ProductVariantRepository productVariantRepository) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.cartItemRepository = cartItemRepository;
-        this.productVariantRepository = productVariantRepository;
-    }
 
     public void addItem(CartAddRequest request) {
         Long userId = SecurityUtils.getCurrentUser().getId();
@@ -97,6 +91,7 @@ public class CartService {
         cartItemRepository.save(cartItem);
     }
 
+    @Transactional
     public void deleteItem(Long itemId) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         long deleted = cartItemRepository.deleteByIdAndUserId(itemId, userId);

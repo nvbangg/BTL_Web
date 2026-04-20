@@ -4,7 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,13 +17,14 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private static final String ADMIN_PATH = "/api/admin";
+    private static final String ADMIN_PATH_PREFIX = "/api/admin/";
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
+    private final JwtService jwtService;
+    private final RestAccessDeniedHandler accessDeniedHandler;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -45,7 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 jwtService.getRole(token)
         );
 
-        String role = user.getRole() == null ? "user" : user.getRole();
+        String role = normalizeRole(user.getRole());
+        if (isAdminRequest(request) && !"admin".equals(role)) {
+            SecurityContextHolder.clearContext();
+            accessDeniedHandler.handle(request, response, new AccessDeniedException("Không có quyền truy cập"));
+            return;
+        }
+
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
@@ -55,5 +64,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isAdminRequest(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        if (contextPath != null && !contextPath.isBlank() && path.startsWith(contextPath)) {
+            path = path.substring(contextPath.length());
+        }
+
+        return ADMIN_PATH.equals(path) || path.startsWith(ADMIN_PATH_PREFIX);
+    }
+
+    private String normalizeRole(String role) {
+        if (role == null) {
+            return "user";
+        }
+
+        String normalized = role.trim().toLowerCase();
+        return normalized.isEmpty() ? "user" : normalized;
     }
 }

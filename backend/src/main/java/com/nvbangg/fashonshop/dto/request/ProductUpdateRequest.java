@@ -29,7 +29,7 @@ public class ProductUpdateRequest {
     private String gender;
 
     @NotNull(message = "Giá sản phẩm là bắt buộc")
-    @Min(value = 1, message = "Giá sản phẩm phải là số nguyên dương")
+    @Min(value = 1, message = "Giá sản phẩm không hợp lệ")
     private Long price;
 
     private Boolean isActive;

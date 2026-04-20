@@ -10,24 +10,20 @@ import com.nvbangg.fashonshop.entity.UserRole;
 import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AdminUserService {
-
-    private static final Set<UserRole> VALID_ROLES = EnumSet.allOf(UserRole.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    public AdminUserService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     public AdminUserListResponse getUsers(String keyword, String role, String page, String pageSize) {
-        UserRole normalizedRole = parseNullableRole(role, "Dữ liệu không hợp lệ", "Bộ lọc vai trò (role) không hợp lệ");
+        UserRole normalizedRole = parseRoleFilter(role);
 
         int pageValue = QueryUtils.parsePositiveOrDefault(page, 1);
         int pageSizeValue = QueryUtils.parsePositiveOrDefault(pageSize, 10);
@@ -92,7 +88,7 @@ public class AdminUserService {
     }
 
     public void updateRole(Long id, AdminUpdateUserRoleRequest request) {
-        UserRole role = parseRole(request.getRole(), "Dữ liệu không hợp lệ", "Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân");
+        UserRole role = parseRole(request.getRole(), "Dữ liệu không hợp lệ", "Vai trò không hợp lệ hoặc không thể thay đổi vai trò của bản thân", false);
 
         Long currentUserId = SecurityUtils.getCurrentUser().getId();
         if (currentUserId.equals(id)) {
@@ -106,40 +102,38 @@ public class AdminUserService {
         }
     }
 
-    private UserRole parseNullableRole(String value, String message, String errorMessage) {
+    private UserRole parseRole(String value, String message, String errorMessage, boolean nullable) {
+        String normalized = QueryUtils.normalizeNullable(value);
+        if (normalized == null) {
+            if (nullable) {
+                return null;
+            }
+            throw roleBadRequest(message, errorMessage);
+        }
+
+        try {
+            return UserRole.valueOf(normalized);
+        } catch (IllegalArgumentException ex) {
+            throw roleBadRequest(message, errorMessage);
+        }
+    }
+
+    private UserRole parseRoleFilter(String value) {
         String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
         }
 
         try {
-            UserRole role = UserRole.valueOf(normalized);
-            if (!VALID_ROLES.contains(role)) {
-                throw new IllegalArgumentException("Unsupported role");
-            }
-            return role;
+            return UserRole.valueOf(normalized);
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException(message,
-                    List.of(new ErrorDetail("role", errorMessage)));
+            return null;
         }
     }
 
-    private UserRole parseRole(String value, String message, String errorMessage) {
-        if (value == null) {
-            throw new BadRequestException(message,
-                    List.of(new ErrorDetail("role", errorMessage)));
-        }
-
-        try {
-            UserRole role = UserRole.valueOf(value.trim().toLowerCase(Locale.ROOT));
-            if (!VALID_ROLES.contains(role)) {
-                throw new IllegalArgumentException("Unsupported role");
-            }
-            return role;
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException(message,
-                    List.of(new ErrorDetail("role", errorMessage)));
-        }
+    private BadRequestException roleBadRequest(String message, String errorMessage) {
+        return new BadRequestException(message,
+                List.of(new ErrorDetail("role", errorMessage)));
     }
 
 }

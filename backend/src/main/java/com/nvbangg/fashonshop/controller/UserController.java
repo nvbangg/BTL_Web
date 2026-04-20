@@ -6,17 +6,15 @@ import com.nvbangg.fashonshop.dto.request.UpdateProfileRequest;
 import com.nvbangg.fashonshop.dto.response.UserResponse;
 import com.nvbangg.fashonshop.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/me")
     public ApiResponse<UserResponse> me() {

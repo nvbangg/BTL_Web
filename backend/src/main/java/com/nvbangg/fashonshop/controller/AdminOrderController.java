@@ -5,17 +5,15 @@ import com.nvbangg.fashonshop.dto.request.AdminUpdateOrderStatusRequest;
 import com.nvbangg.fashonshop.dto.response.AdminOrderListResponse;
 import com.nvbangg.fashonshop.service.OrderService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/orders")
+@RequiredArgsConstructor
 public class AdminOrderController {
 
     private final OrderService orderService;
-
-    public AdminOrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @GetMapping
     public ApiResponse<AdminOrderListResponse> getOrders(@RequestParam(required = false) String keyword,

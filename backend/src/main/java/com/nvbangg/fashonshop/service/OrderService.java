@@ -10,6 +10,7 @@ import com.nvbangg.fashonshop.exception.BadRequestException;
 import com.nvbangg.fashonshop.exception.NotFoundException;
 import com.nvbangg.fashonshop.repository.OrderRepository;
 import com.nvbangg.fashonshop.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
@@ -21,18 +22,11 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
-
-    private static final Set<OrderStatus> VALID_ORDER_STATUS = EnumSet.allOf(OrderStatus.class);
 
     private final JdbcTemplate jdbcTemplate;
     private final OrderRepository orderRepository;
-
-    public OrderService(JdbcTemplate jdbcTemplate,
-                        OrderRepository orderRepository) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.orderRepository = orderRepository;
-    }
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
@@ -65,7 +59,7 @@ public class OrderService {
 
         if (cartItems.size() != cartItemIds.size()) {
             throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("cartItemIds", "Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa")));
+                    List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm không hợp lệ hoặc vượt quá số lượng tồn kho")));
         }
 
         long totalPrice = 0L;
@@ -74,7 +68,7 @@ public class OrderService {
             int stock = ((Number) item.get("stock")).intValue();
             if (quantity > stock) {
                 throw new BadRequestException("Dữ liệu không hợp lệ",
-                        List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm trong giỏ đã hết hàng")));
+                        List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm không hợp lệ hoặc vượt quá số lượng tồn kho")));
             }
 
             long unitPrice = ((Number) item.get("unit_price")).longValue();
@@ -127,7 +121,7 @@ public class OrderService {
             );
             if (updated == 0) {
                 throw new BadRequestException("Dữ liệu không hợp lệ",
-                        List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm trong giỏ đã hết hàng")));
+                        List.of(new ErrorDetail("cartItemIds", "Một số sản phẩm không hợp lệ hoặc vượt quá số lượng tồn kho")));
             }
         }
 
@@ -154,60 +148,31 @@ public class OrderService {
     public OrderListResponse getMyOrders(String page, String pageSize) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         OrderSearchResult result = getOrdersInternal(false, userId, null, null, page, pageSize);
-        List<OrderSummaryResponse> items = result.items.stream()
+        List<OrderSummaryResponse> items = result.items().stream()
                 .map(item -> new OrderSummaryResponse(
-                        item.id,
-                        item.shippingName,
-                        item.shippingPhone,
-                        item.shippingAddress,
-                        item.totalPrice,
-                        item.status,
-                        item.createdAt,
-                        item.updatedAt,
-                        item.orderDetails
-                ))
+                        item.id(), item.shippingName(), item.shippingPhone(), item.shippingAddress(),
+                        item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()))
                 .toList();
 
-        return new OrderListResponse(
-                items,
-                result.page,
-                result.pageSize,
-                result.total
-        );
+        return new OrderListResponse(items, result.page(), result.pageSize(), result.total());
     }
 
     @Transactional(readOnly = true)
     public AdminOrderListResponse getAdminOrders(String keyword, String status, String page, String pageSize) {
-        validateOrderStatusIfPresent(status);
         OrderSearchResult result = getOrdersInternal(true, null, keyword, status, page, pageSize);
-        List<AdminOrderSummaryResponse> items = result.items.stream()
+        List<AdminOrderSummaryResponse> items = result.items().stream()
                 .map(item -> new AdminOrderSummaryResponse(
-                        item.id,
-                        item.userId,
-                        item.email,
-                        item.shippingName,
-                        item.shippingPhone,
-                        item.shippingAddress,
-                        item.totalPrice,
-                        item.status,
-                        item.createdAt,
-                        item.updatedAt,
-                        item.orderDetails
+                        item.id(), item.userId(), item.email(), item.shippingName(), item.shippingPhone(),
+                        item.shippingAddress(), item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()
                 ))
                 .toList();
 
         return new AdminOrderListResponse(
-                result.totalPendingOrders,
-                result.totalIncompleteOrders,
-                items,
-                result.page,
-                result.pageSize,
-                result.total
-        );
+                result.totalPendingOrders(), result.totalIncompleteOrders(), items, result.page(), result.pageSize(), result.total());
     }
 
     public void updateOrderStatus(Long id, AdminUpdateOrderStatusRequest request) {
-        OrderStatus status = parseOrderStatus(request.getStatus(), "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
+        OrderStatus status = parseOrderStatus(request.getStatus(), "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ", false);
 
         int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status.name(), id);
         if (updated == 0) {
@@ -290,7 +255,7 @@ public class OrderService {
             params.add(pattern);
         }
 
-        OrderStatus normalizedStatus = parseNullableOrderStatus(status, "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
+        OrderStatus normalizedStatus = parseOrderStatusFilter(status);
         if (normalizedStatus != null) {
             where.append(" AND o.status = ? ");
             params.add(normalizedStatus.name());
@@ -336,22 +301,22 @@ public class OrderService {
         ), queryParams.toArray());
 
         Map<Long, List<OrderItemResponse>> orderItemsByOrderId = loadOrderItemsByOrderIds(
-                baseRows.stream().map(row -> row.id).toList()
+                baseRows.stream().map(OrderBaseRow::id).toList()
         );
 
         List<OrderSearchRow> items = baseRows.stream()
                 .map(baseRow -> new OrderSearchRow(
-                        baseRow.id,
-                        baseRow.userId,
-                        baseRow.email,
-                        baseRow.shippingName,
-                        baseRow.shippingPhone,
-                        baseRow.shippingAddress,
-                        baseRow.totalPrice,
-                        baseRow.status,
-                        baseRow.createdAt,
-                        baseRow.updatedAt,
-                        orderItemsByOrderId.getOrDefault(baseRow.id, Collections.emptyList())
+                        baseRow.id(),
+                        baseRow.userId(),
+                        baseRow.email(),
+                        baseRow.shippingName(),
+                        baseRow.shippingPhone(),
+                        baseRow.shippingAddress(),
+                        baseRow.totalPrice(),
+                        baseRow.status(),
+                        baseRow.createdAt(),
+                        baseRow.updatedAt(),
+                        orderItemsByOrderId.getOrDefault(baseRow.id(), Collections.emptyList())
                 ))
                 .toList();
 
@@ -375,100 +340,37 @@ public class OrderService {
         );
     }
 
-    private static class OrderSearchResult {
-        private final List<OrderSearchRow> items;
-        private final Integer page;
-        private final Integer pageSize;
-        private final Long total;
-        private final Long totalPendingOrders;
-        private final Long totalIncompleteOrders;
-
-        private OrderSearchResult(List<OrderSearchRow> items,
-                                  Integer page,
-                                  Integer pageSize,
-                                  Long total,
-                                  Long totalPendingOrders,
-                                  Long totalIncompleteOrders) {
-            this.items = items;
-            this.page = page;
-            this.pageSize = pageSize;
-            this.total = total;
-            this.totalPendingOrders = totalPendingOrders;
-            this.totalIncompleteOrders = totalIncompleteOrders;
-        }
+    private record OrderSearchResult(List<OrderSearchRow> items,
+                                     Integer page,
+                                     Integer pageSize,
+                                     Long total,
+                                     Long totalPendingOrders,
+                                     Long totalIncompleteOrders) {
     }
 
-    private static class OrderBaseRow {
-        private final Long id;
-        private final Long userId;
-        private final String email;
-        private final String shippingName;
-        private final String shippingPhone;
-        private final String shippingAddress;
-        private final Long totalPrice;
-        private final String status;
-        private final java.time.LocalDateTime createdAt;
-        private final java.time.LocalDateTime updatedAt;
-
-        private OrderBaseRow(Long id,
-                             Long userId,
-                             String email,
-                             String shippingName,
-                             String shippingPhone,
-                             String shippingAddress,
-                             Long totalPrice,
-                             String status,
-                             java.time.LocalDateTime createdAt,
-                             java.time.LocalDateTime updatedAt) {
-            this.id = id;
-            this.userId = userId;
-            this.email = email;
-            this.shippingName = shippingName;
-            this.shippingPhone = shippingPhone;
-            this.shippingAddress = shippingAddress;
-            this.totalPrice = totalPrice;
-            this.status = status;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-        }
+    private record OrderBaseRow(Long id,
+                                Long userId,
+                                String email,
+                                String shippingName,
+                                String shippingPhone,
+                                String shippingAddress,
+                                Long totalPrice,
+                                String status,
+                                java.time.LocalDateTime createdAt,
+                                java.time.LocalDateTime updatedAt) {
     }
 
-    private static class OrderSearchRow {
-        private final Long id;
-        private final Long userId;
-        private final String email;
-        private final String shippingName;
-        private final String shippingPhone;
-        private final String shippingAddress;
-        private final Long totalPrice;
-        private final String status;
-        private final java.time.LocalDateTime createdAt;
-        private final java.time.LocalDateTime updatedAt;
-        private final List<OrderItemResponse> orderDetails;
-
-        private OrderSearchRow(Long id,
-                               Long userId,
-                               String email,
-                               String shippingName,
-                               String shippingPhone,
-                               String shippingAddress,
-                               Long totalPrice,
-                               String status,
-                               java.time.LocalDateTime createdAt,
-                               java.time.LocalDateTime updatedAt,
-                               List<OrderItemResponse> orderDetails) {
-            this.id = id;
-            this.userId = userId;
-            this.email = email;
-            this.shippingName = shippingName;
-            this.shippingPhone = shippingPhone;
-            this.shippingAddress = shippingAddress;
-            this.totalPrice = totalPrice;
-            this.status = status;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-            this.orderDetails = orderDetails;
-        }
+    private record OrderSearchRow(Long id,
+                                  Long userId,
+                                  String email,
+                                  String shippingName,
+                                  String shippingPhone,
+                                  String shippingAddress,
+                                  Long totalPrice,
+                                  String status,
+                                  java.time.LocalDateTime createdAt,
+                                  java.time.LocalDateTime updatedAt,
+                                  List<OrderItemResponse> orderDetails) {
     }
 
     private Map<Long, List<OrderItemResponse>> loadOrderItemsByOrderIds(List<Long> orderIds) {
@@ -521,15 +423,13 @@ public class OrderService {
 
     private List<Long> normalizeCartItemIds(List<Long> cartItemIds) {
         if (cartItemIds == null || cartItemIds.isEmpty()) {
-            throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
+            throw cartItemIdsRequiredError();
         }
 
         LinkedHashSet<Long> uniqueIds = new LinkedHashSet<>();
         for (Long itemId : cartItemIds) {
             if (itemId == null || itemId <= 0) {
-                throw new BadRequestException("Dữ liệu không hợp lệ",
-                        List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
+                throw cartItemIdsRequiredError();
             }
             uniqueIds.add(itemId);
         }
@@ -545,41 +445,46 @@ public class OrderService {
         return value.trim();
     }
 
-    private void validateOrderStatusIfPresent(String status) {
-        parseNullableOrderStatus(status, "Dữ liệu không hợp lệ", "Trạng thái đơn hàng không hợp lệ");
+    private OrderStatus parseOrderStatus(String value, String message, String errorMessage, boolean nullable) {
+        String normalized = QueryUtils.normalizeNullable(value);
+        if (normalized == null) {
+            if (nullable) {
+                return null;
+            }
+            throw statusBadRequest(message, errorMessage);
+        }
+
+        try {
+            return OrderStatus.valueOf(normalized);
+        } catch (IllegalArgumentException ex) {
+            throw statusBadRequest(message, errorMessage);
+        }
     }
 
-    private OrderStatus parseNullableOrderStatus(String value, String message, String errorMessage) {
+    private OrderStatus parseOrderStatusFilter(String value) {
         String normalized = QueryUtils.normalizeNullable(value);
         if (normalized == null) {
             return null;
         }
 
-        return parseOrderStatus(normalized, message, errorMessage);
+        try {
+            return OrderStatus.valueOf(normalized);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
-    private OrderStatus parseOrderStatus(String value, String message, String errorMessage) {
-        if (value == null) {
-            throw new BadRequestException(message,
-                    List.of(new ErrorDetail("status", errorMessage)));
-        }
+    private BadRequestException statusBadRequest(String message, String errorMessage) {
+        return new BadRequestException(message,
+                List.of(new ErrorDetail("status", errorMessage)));
+    }
 
-        try {
-            OrderStatus status = OrderStatus.valueOf(value.trim().toLowerCase(Locale.ROOT));
-            if (!VALID_ORDER_STATUS.contains(status)) {
-                throw new IllegalArgumentException("Unsupported status");
-            }
-            return status;
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException(message,
-                    List.of(new ErrorDetail("status", errorMessage)));
-        }
+    private BadRequestException cartItemIdsRequiredError() {
+        return new BadRequestException("Dữ liệu không hợp lệ",
+                List.of(new ErrorDetail("cartItemIds", "Danh sách sản phẩm là bắt buộc")));
     }
 
     private long toLong(Object value) {
-        if (value == null) {
-            return 0L;
-        }
-        return ((Number) value).longValue();
+        return value == null ? 0L : ((Number) value).longValue();
     }
 }

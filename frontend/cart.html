@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng - Fashon Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <main class="page-body">
+    <div class="container">
+      <h2 class="cart-title">Giỏ hàng của bạn</h2>
+
+      <div class="cart-layout" id="cart-layout" style="display:none">
+        <section class="cart-items">
+          <div class="cart-select-all" id="cart-select-all-row">
+            <label class="checkbox-wrap cart-check-wrap">
+              <input type="checkbox" id="select-all" checked>
+              <span id="select-all-label">Chọn tất cả</span>
+            </label>
+          </div>
+          <div id="cart-list"></div>
+        </section>
+
+        <aside class="cart-summary" id="cart-summary">
+          <div class="inline-order-panel" id="inline-order-panel" style="display:none">
+            <h3>Chi tiết đơn hàng</h3>
+            <div class="form-group">
+              <label for="order-name">Tên người nhận</label>
+              <input class="form-input" id="order-name" placeholder="Nhập tên người nhận...">
+            </div>
+            <div class="form-group">
+              <label for="order-phone">Số điện thoại liên hệ</label>
+              <input class="form-input" id="order-phone" placeholder="Nhập số điện thoại...">
+            </div>
+            <div class="form-group">
+              <label for="order-address">Địa chỉ nhận</label>
+              <input class="form-input" id="order-address" placeholder="Nhập địa chỉ nhận hàng...">
+            </div>
+            <button class="btn btn-primary" id="btn-save-default-profile" type="button" style="height:36px;padding:0 16px">Lưu làm mặc định</button>
+            <hr class="order-form-divider">
+          </div>
+
+          <div class="cart-summary-total-row">
+            <h3>Tổng tiền</h3>
+            <div class="cart-summary-price" id="cart-summary-price">0đ</div>
+          </div>
+
+          <button class="btn-checkout" id="btn-place-order" type="button">
+            <span class="btn-checkout-label">Đặt hàng</span>
+            <i class="bi bi-arrow-right btn-checkout-icon"></i>
+          </button>
+        </aside>
+      </div>
+
+      <div class="empty-state" id="cart-empty" style="display:none">
+        <h3>Giỏ hàng trống</h3>
+        <p>Hãy thêm sản phẩm vào giỏ hàng</p>
+        <a href="index.html" class="btn btn-primary">Mua sắm ngay</a>
+      </div>
+    </div>
+  </main>
+
+  <div id="app-auth"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

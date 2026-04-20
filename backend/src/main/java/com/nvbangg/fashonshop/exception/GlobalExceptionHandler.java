@@ -2,7 +2,6 @@ package com.nvbangg.fashonshop.exception;
 
 import com.nvbangg.fashonshop.common.dto.ApiResponse;
 import com.nvbangg.fashonshop.common.dto.ErrorDetail;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import java.util.Locale;
 public class GlobalExceptionHandler {
 
     private static final String VALIDATION_MESSAGE = "Dữ liệu không hợp lệ";
+    private static final String SYSTEM_MESSAGE = "Lỗi hệ thống";
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse<Void>> handleAppException(AppException ex) {
@@ -39,49 +39,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex,
-                                                                HttpServletRequest request) {
-        String uri = request.getRequestURI();
+    public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String field = ex.getName();
-
-        if ("/api/products".equals(uri)) {
-            if ("minPrice".equals(field)) {
-                return ResponseEntity.badRequest().body(ApiResponse.error(
-                        VALIDATION_MESSAGE,
-                        List.of(new ErrorDetail("minPrice", "Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0"))
-                ));
-            }
-            if ("maxPrice".equals(field)) {
-                return ResponseEntity.badRequest().body(ApiResponse.error(
-                        VALIDATION_MESSAGE,
-                        List.of(new ErrorDetail("maxPrice", "Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice"))
-                ));
-            }
-            return ResponseEntity.badRequest().body(ApiResponse.error(
-                    VALIDATION_MESSAGE,
-                    List.of(new ErrorDetail(field, "Giá trị truy vấn không hợp lệ"))
-            ));
+        if (field == null || field.isBlank()) {
+            field = "request";
         }
-
-        if ("/api/admin/products".equals(uri)) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(
-                    VALIDATION_MESSAGE,
-                    List.of(new ErrorDetail("minPrice", "Giá trị khoảng giá không hợp lệ"))
-            ));
-        }
-
-        return ResponseEntity.badRequest().body(ApiResponse.error(
-                VALIDATION_MESSAGE,
-                List.of(new ErrorDetail(field, "Giá trị không hợp lệ"))
-        ));
+        return badRequest(VALIDATION_MESSAGE, field, "Giá trị không hợp lệ");
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotReadableBody(HttpMessageNotReadableException ex) {
-        return ResponseEntity.badRequest().body(ApiResponse.error(
-                VALIDATION_MESSAGE,
-                List.of(new ErrorDetail("body", "JSON không hợp lệ hoặc sai định dạng"))
-        ));
+        return badRequest(VALIDATION_MESSAGE, "body", "JSON không hợp lệ hoặc sai định dạng");
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -96,26 +64,25 @@ public class GlobalExceptionHandler {
         }
 
         if (rootMessage.contains("duplicate") || rootMessage.contains("unique")) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(
-                    VALIDATION_MESSAGE,
-                    List.of(new ErrorDetail("data", "Dữ liệu bị trùng hoặc xung đột"))
-            ));
+            return badRequest(VALIDATION_MESSAGE, "data", "Dữ liệu bị trùng hoặc xung đột");
         }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Vui lòng thử lại sau"))));
+        return serverError();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex, HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        if ("/api/products/filters".equals(uri)) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Không thể tải bộ lọc lúc này"))));
-        }
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+        return serverError();
+    }
 
+    private ResponseEntity<ApiResponse<Void>> badRequest(String message, String field, String detail) {
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.error(message, List.of(new ErrorDetail(field, detail))));
+    }
+
+    private ResponseEntity<ApiResponse<Void>> serverError() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Lỗi hệ thống", List.of(new ErrorDetail("server", "Vui lòng thử lại sau"))));
+                .body(ApiResponse.error(SYSTEM_MESSAGE));
     }
 
     private ErrorDetail toErrorDetail(FieldError error) {

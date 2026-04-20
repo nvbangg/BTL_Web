@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class AdminProductDetailResponse {
-    private final Long id;
     private final String name;
     private final String description;
     private final String thumbnail;

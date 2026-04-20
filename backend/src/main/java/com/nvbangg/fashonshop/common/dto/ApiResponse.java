@@ -22,6 +22,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(true, message, null, Collections.emptyList());
     }
 
+    public static ApiResponse<Void> error(String message) {
+        return new ApiResponse<>(false, message, null, Collections.emptyList());
+    }
+
     public static ApiResponse<Void> error(String message, List<ErrorDetail> errors) {
         return new ApiResponse<>(false, message, null, errors);
     }

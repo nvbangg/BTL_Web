@@ -10,6 +10,7 @@ import com.nvbangg.fashonshop.exception.UnauthorizedException;
 import com.nvbangg.fashonshop.repository.UserRepository;
 import com.nvbangg.fashonshop.security.AuthUser;
 import com.nvbangg.fashonshop.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +18,11 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public UserResponse getMyProfile() {
         User user = getCurrentUserEntity();
@@ -53,7 +50,7 @@ public class UserService {
 
         if (request.getCurrentPassword().equals(request.getNewPassword())) {
             throw new BadRequestException("Dữ liệu không hợp lệ",
-                    List.of(new ErrorDetail("newPassword", "Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự")));
+                    List.of(new ErrorDetail("newPassword", "Mật khẩu mới không được trùng với mật khẩu hiện tại và ít nhất 6 ký tự")));
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -65,7 +62,7 @@ public class UserService {
         return userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new UnauthorizedException(
                         "Chưa xác thực hoặc phiên đăng nhập hết hạn",
-                        List.of(new ErrorDetail("authorization", "Vui lòng đăng nhập để thực hiện chức năng này"))
+                        List.of(new ErrorDetail("authorization", "Chưa xác thực hoặc phiên đăng nhập hết hạn"))
                 ));
     }
 

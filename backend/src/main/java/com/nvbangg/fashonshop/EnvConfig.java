@@ -3,8 +3,6 @@ package com.nvbangg.fashonshop;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Objects;
-
 @Configuration
 public class EnvConfig {
     static {
@@ -20,7 +18,7 @@ public class EnvConfig {
     }
 
     private static void setIfPresent(String key, String value) {
-        if (!Objects.isNull(value) && !value.isBlank()) {
+        if (value != null && !value.isBlank()) {
             System.setProperty(key, value);
         }
     }

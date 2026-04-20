@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đơn hàng của tôi - Fashon Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/orders.css">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <main class="page-body">
+    <div class="container orders-page">
+      <h2 class="orders-title">Đơn hàng của bạn</h2>
+
+      <section class="admin-card user-orders-card">
+        <div class="admin-card-header">
+          <h3>Danh sách đơn hàng</h3>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã đơn hàng</th>
+                <th>Ngày đặt</th>
+                <th>Ngày cập nhật</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+        <div id="orders-pagination"></div>
+      </section>
+
+      <div class="empty-state" id="orders-empty" style="display:none">
+        <h3>Chưa có đơn hàng nào</h3>
+        <p>Hãy mua sắm và đặt hàng</p>
+        <a href="index.html" class="btn btn-primary">Mua sắm ngay</a>
+      </div>
+    </div>
+  </main>
+
+  <div id="app-auth"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/orders.js"></script>
+</body>
+</html>

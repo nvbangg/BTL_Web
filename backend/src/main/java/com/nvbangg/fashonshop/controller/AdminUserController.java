@@ -5,17 +5,15 @@ import com.nvbangg.fashonshop.dto.request.AdminUpdateUserRoleRequest;
 import com.nvbangg.fashonshop.dto.response.AdminUserListResponse;
 import com.nvbangg.fashonshop.service.AdminUserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/users")
+@RequiredArgsConstructor
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
-
-    public AdminUserController(AdminUserService adminUserService) {
-        this.adminUserService = adminUserService;
-    }
 
     @GetMapping
     public ApiResponse<AdminUserListResponse> getUsers(@RequestParam(required = false) String keyword,
