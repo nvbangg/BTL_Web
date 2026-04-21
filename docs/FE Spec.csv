@@ -1,29 +1,30 @@
 STT,Name,Route,APIs Used,Note,Status
 1,Popup đăng ký/đăng nhập,(popup),"POST /api/auth/register
 POST /api/auth/login
-GET /api/users/me",Hiển thị username (không có phần @domain) trên nút account navbar.Kiểm tra Mật khẩu có ít nhất 6 ký tự và xác nhận mật khẩu trùng với mật khẩu trước khi gửi đến backend,Progress
-2,Popup đổi mật khẩu,(popup),PUT /api/users/password,User only. Kiểm tra Mật khẩu mới có ít nhất 6 ký tự và xác nhận mật khẩu trùng với mật khẩu trước khi gửi đến backend,Progress
-3,Đăng xuất,account navbar,POST /api/auth/logout,User only. Nếu không đăng nhập sẽ không hiển thị nút đăng xuất,Progress
+GET /api/users/me",Hiển thị username (không có phần @domain) trên nút account navbar.Kiểm tra Mật khẩu có ít nhất 6 ký tự và xác nhận mật khẩu trùng với mật khẩu trước khi gửi đến backend,Done
+2,Popup đổi mật khẩu,(popup),PUT /api/users/password,User only. Kiểm tra Mật khẩu mới có ít nhất 6 ký tự và xác nhận mật khẩu trùng với mật khẩu trước khi gửi đến backend,Done
+3,Đăng xuất,account navbar,POST /api/auth/logout,User only. Nếu không đăng nhập sẽ không hiển thị nút đăng xuất,Done
 4,Trang chủ (tìm kiếm + sản phẩm),/?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=&page=1&pageSize=16,"GET /api/products
-GET /api/products/filters",,Progress
+GET /api/products/filters",,Done
 5,Trang chi tiết sản phẩm,/products/{id},"GET /api/products/{id}
-POST /api/cart",Bắt buộc chọn đủ size + color trước khi gọi api thêm vào giỏ hàng,Progress
+POST /api/cart",Bắt buộc chọn đủ size + color trước khi gọi api thêm vào giỏ hàng,Done
 6,Trang giỏ hàng + đặt hàng + cập nhật thông tin bản thân,/cart,"GET /api/cart
 PUT /api/cart/{itemId}
 DELETE /api/cart/{itemId}
 POST /api/orders
 GET /api/users/me
-PUT /api/users/me","User only, Cart + Checkout cùng  trang, có thể cập nhật luôn thông tin bản thân. reload lại trang sau khi đặt hàng",Progress
-7,Trang đơn hàng đã đặt,/orders?page=1&pageSize=10,GET /api/orders,User only,Progress
-8,Trang Xem thống kê (admin),/admin,GET /api/admin/statistics,Admin only,Progress
+PUT /api/users/me","User only, Cart + Checkout cùng  trang, có thể cập nhật luôn thông tin bản thân. reload lại trang sau khi đặt hàng",Done
+7,Trang đơn hàng đã đặt,/orders?page=1&pageSize=10,GET /api/orders,User only,Done
+8,Trang Xem thống kê (admin),/admin,GET /api/admin/statistics,Admin only,Done
 9,Trang quản lý đơn hàng (admin),/admin/orders?keyword=&status=&page=1&pageSize=10,"GET /api/admin/orders
-PUT /api/admin/orders/{id}",Admin only,Progress
-10,Trang quản lý sản phẩm (admin),/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=newest&isActive=&page=1&pageSize=10,GET /api/admin/products,Admin only,Progress
+PUT /api/admin/orders/{id}",Admin only,Done
+10,Trang quản lý sản phẩm (admin),/admin/products?keyword=&category=&gender=&color=&size=&minPrice=&maxPrice=&sort=newest&isActive=&page=1&pageSize=10,GET /api/admin/products,Admin only,Done
 11,"Popup thêm, sửa sản phẩm (admin)",(popup) trên trang /admin/products,"GET /api/admin/products/{id}
 PUT /api/admin/products/{id}
 POST /api/admin/products
-GET /api/products/filters","Admin only, cần lấy bộ lọc để hiển thị danh sách danh mục và giới tính để lựa chọn sẵn, danh mục có thể nhập thủ công hoặc chọn từ có sẵn (dạng <datalist>)",Progress
+GET /api/products/filters
+POST /api/admin/images/upload","Admin only, cần lấy bộ lọc để hiển thị danh sách danh mục và giới tính để lựa chọn sẵn, danh mục có thể nhập thủ công hoặc chọn từ có sẵn (dạng <datalist>)",Done
 12,Trang quản lý người dùng (admin),/admin/users?keyword=&role=&page=1&pageSize=10,"GET /api/admin/users
-PUT /api/admin/users/{id}",Admin only,Progress
+PUT /api/admin/users/{id}",Admin only,Done
 ,,,,,
 ,,, Lưu ý các giá trị điền sẵn trong query của các API đều là giá trị mặc định ứng với api đó. page và pageSize được xử lý để luôn trả về mặc định nếu truyền lỗi,Tất cả các API yêu cầu xác thực (User only / Admin only) nếu trả về mã lỗi 401 thì Frontend tự động xóa token và hiển thị message kèm hiển thị Popup Đăng nhập.,

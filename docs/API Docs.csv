@@ -545,7 +545,32 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
 }",[i] là thứ tự trong mảng request chứ không phải id,Done
-22,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},Admin,"{
+22,Tải ảnh lên (admin),POST /api/admin/images/upload,Admin,"Content-Type: multipart/form-data
+
+Key     : file
+Value   : (file ảnh từ máy)
+","{
+  ""success"": true,
+  ""message"": ""Tải ảnh thành công"",
+  ""data"": {
+    ""fileName"": ""anh_ao_phong.jpg""
+  },
+  ""errors"": []
+}","401 Unauthorized
+403 Forbidden
+400 Bad Request
+{
+  ""success"": false,
+  ""message"": ""Dữ liệu không hợp lệ"",
+  ""data"": null,
+  ""errors"": [
+    {
+      ""field"": ""file"",
+      ""message"": ""Vui lòng chọn ảnh""
+    }
+  ]
+}",,Done
+23,Cập nhật sản phẩm (admin),PUT /api/admin/products/{id},Admin,"{
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
     ""thumbnail"": ""url"",
@@ -604,7 +629,7 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
 }","Ở variants thì không thể xóa variants đã tồn tại, nếu có id và id chưa tồn tại thì báo lỗi. Nếu có id và id đã tồn tại thì cập nhật variant đấy. Nếu không có id thì sẽ check (color,size) cho product, nếu trùng thì báo lỗi, không trùng thì insert mới",Done
-23,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,Admin,,"{
+24,Lấy danh sách user (admin),GET /api/admin/users?keyword=&role=&page=1&pageSize=10,Admin,,"{
   ""success"": true,
   ""message"": ""Lấy danh sách người dùng thành công"",
   ""data"": {
@@ -629,7 +654,7 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
 }","401 Unauthorized
 403 Forbidden
 ",,Done
-24,Cập nhật role user (admin),PUT /api/admin/users/{id},Admin,"{
+25,Cập nhật role user (admin),PUT /api/admin/users/{id},Admin,"{
   ""role"": ""admin""
 }","{
   ""success"": true,
