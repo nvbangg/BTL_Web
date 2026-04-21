@@ -14,7 +14,9 @@ let productState = {
   data: null,
   modalProductId: null,
   modalImages: [],
-  modalVariants: []
+  modalVariants: [],
+  modalThumbnail: "",
+  modalUploading: false
 };
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -76,19 +78,31 @@ async function loadFilters() {
   try {
     productState.filters = await AppApi.getProductFilters();
     fillSelect("admin-filter-category", productState.filters.categories || [], productState.category, true);
-    fillSelect("admin-filter-gender", ["male", "female", "unisex"], productState.gender, true);
+    fillSelect("admin-filter-gender", productState.filters.genders || ["male", "female", "unisex"], productState.gender, true);
     fillSelect("admin-filter-color", productState.filters.colors || [], productState.color, true);
     fillSelect("admin-filter-size", productState.filters.sizes || [], productState.size, true);
 
-    const categoryList = document.getElementById("modal-category-list");
-    if (categoryList) {
-      categoryList.innerHTML = (productState.filters.categories || []).map(function (item) {
-        return '<option value="' + App.escapeHtml(item) + '"></option>';
-      }).join("");
-    }
+    updateModalCategoryList(productState.filters.categories || []);
   } catch (error) {
     App.showToast(App.getApiErrorMessage(error, "Không tải được bộ lọc"), "error");
   }
+}
+
+function updateModalCategoryList(categoryItems) {
+  const categoryList = document.getElementById("modal-category-list");
+  if (!categoryList) return;
+
+  const unique = [];
+  (categoryItems || []).forEach(function (item) {
+    const value = String(item || "").trim();
+    if (!value) return;
+    if (unique.includes(value)) return;
+    unique.push(value);
+  });
+
+  categoryList.innerHTML = unique.map(function (item) {
+    return '<option value="' + App.escapeHtml(item) + '"></option>';
+  }).join("");
 }
 
 function fillSelect(selectId, items, selected, hasAllOption) {
@@ -122,6 +136,10 @@ async function loadProducts() {
     productState.data = data;
     renderStats(data);
 
+    const mergedCategories = (productState.filters && productState.filters.categories ? productState.filters.categories : [])
+      .concat((data.items || []).map(function (item) { return item.category; }));
+    updateModalCategoryList(mergedCategories);
+
     if (!(data.items || []).length) {
       body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#64748B">Không có sản phẩm</td></tr>';
       paging.innerHTML = "";
@@ -131,12 +149,13 @@ async function loadProducts() {
     body.innerHTML = (data.items || []).map(function (item) {
       const stockColor = Number(item.totalStock || 0) === 0 ? "#EF4444" : "#16A34A";
       const rowClass = item.isActive === false ? "admin-product-row inactive" : "admin-product-row";
+      const productHref = "product.html?id=" + encodeURIComponent(item.id);
       return '' +
         '<tr class="' + rowClass + '">' +
         '  <td>' +
         '    <div style="display:flex;align-items:center;gap:12px">' +
-        '      <img class="table-product-img" src="' + AppConfig.buildImageUrl(item.thumbnail) + '" alt="' + App.escapeHtml(item.name) + '">' +
-        '      <strong>' + App.escapeHtml(item.name) + '</strong>' +
+        '      <a class="admin-product-link-thumb" href="' + productHref + '"><img class="table-product-img" src="' + AppConfig.buildImageUrl(item.thumbnail) + '" alt="' + App.escapeHtml(item.name) + '"></a>' +
+        '      <a class="admin-product-link-name" href="' + productHref + '"><strong>' + App.escapeHtml(item.name) + '</strong></a>' +
         '    </div>' +
         '  </td>' +
         '  <td style="font-weight:700">' + App.formatPrice(item.price) + '</td>' +
@@ -172,15 +191,13 @@ function renderStats(data) {
 }
 
 function bindSearchAndSort() {
+  const searchForm = document.getElementById("product-search-form");
   const searchInput = document.getElementById("product-search");
-  let timer = null;
 
-  if (searchInput) {
-    searchInput.addEventListener("input", function () {
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        App.updateQuery({ keyword: searchInput.value.trim(), page: 1 });
-      }, 350);
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      App.updateQuery({ keyword: (searchInput ? searchInput.value : "").trim(), page: 1 });
     });
   }
 
@@ -262,11 +279,19 @@ function bindModalEvents() {
   const closeButton = document.getElementById("edit-product-close");
   const saveButton = document.getElementById("modal-save-product");
   const addVariantButton = document.getElementById("modal-add-variant");
-  const addImageButton = document.getElementById("modal-add-image");
+  const uploadInput = document.getElementById("modal-image-upload");
+  const activeToggle = document.getElementById("modal-is-active");
+  const cancelButton = document.getElementById("modal-cancel-product");
 
-  if (!modal || !closeButton || !saveButton || !addVariantButton || !addImageButton) return;
+  if (!modal || !closeButton || !saveButton || !addVariantButton || !uploadInput) return;
+
+  uploadInput.multiple = true;
 
   closeButton.addEventListener("click", closeProductModal);
+  if (cancelButton) {
+    cancelButton.addEventListener("click", closeProductModal);
+  }
+
   modal.addEventListener("click", function (event) {
     if (event.target === modal) {
       closeProductModal();
@@ -278,12 +303,17 @@ function bindModalEvents() {
     renderVariantRows();
   });
 
-  addImageButton.addEventListener("click", function () {
-    productState.modalImages.push({ id: null, image: "", sortOrder: productState.modalImages.length + 1 });
-    renderImageRows();
+  uploadInput.addEventListener("change", async function () {
+    const files = Array.from(uploadInput.files || []);
+    uploadInput.value = "";
+    await uploadSelectedImages(files);
   });
 
   saveButton.addEventListener("click", saveProduct);
+
+  if (activeToggle) {
+    activeToggle.addEventListener("change", updateModalActiveLabel);
+  }
 }
 
 async function openProductModal(productId) {
@@ -291,21 +321,19 @@ async function openProductModal(productId) {
   const modal = document.getElementById("edit-product-modal");
   if (!title || !modal) return;
 
-  productState.modalProductId = productId;
-  productState.modalImages = [];
-  productState.modalVariants = [];
+  resetModalState(productId);
 
   if (!productId) {
     title.textContent = "Thêm sản phẩm";
     fillModalFields({
       name: "",
       description: "",
-      thumbnail: "",
       category: "",
       gender: "male",
       price: "",
       isActive: true,
       images: [],
+      thumbnail: "",
       variants: [{ id: null, color: "", size: "", stock: 0, priceOverride: "" }]
     });
     modal.classList.add("show");
@@ -323,16 +351,25 @@ async function openProductModal(productId) {
   }
 }
 
+function resetModalState(productId) {
+  productState.modalProductId = productId;
+  productState.modalImages = [];
+  productState.modalVariants = [];
+  productState.modalThumbnail = "";
+  productState.modalUploading = false;
+  setModalUploadingState(false);
+}
+
 function fillModalFields(product) {
   document.getElementById("modal-name").value = product.name || "";
   document.getElementById("modal-description").value = product.description || "";
-  document.getElementById("modal-thumbnail").value = product.thumbnail || "";
   document.getElementById("modal-category").value = product.category || "";
   document.getElementById("modal-gender").value = product.gender || "male";
   document.getElementById("modal-price").value = product.price || "";
   document.getElementById("modal-is-active").checked = product.isActive !== false;
+  updateModalActiveLabel();
 
-  productState.modalImages = (product.images || []).map(function (item, index) {
+  const images = (product.images || []).map(function (item, index) {
     return {
       id: item.id || null,
       image: item.image || "",
@@ -340,9 +377,12 @@ function fillModalFields(product) {
     };
   });
 
-  if (!productState.modalImages.length && product.thumbnail) {
-    productState.modalImages.push({ id: null, image: product.thumbnail, sortOrder: 1 });
+  if (product.thumbnail && !images.some(function (item) { return item.image === product.thumbnail; })) {
+    images.unshift({ id: null, image: product.thumbnail, sortOrder: 1 });
   }
+
+  productState.modalImages = images;
+  productState.modalThumbnail = product.thumbnail || ((images[0] && images[0].image) || "");
 
   productState.modalVariants = (product.variants || []).map(function (variant) {
     return {
@@ -354,26 +394,151 @@ function fillModalFields(product) {
     };
   });
 
+  if (!productState.modalVariants.length) {
+    productState.modalVariants = [{ id: null, color: "", size: "", stock: 0, priceOverride: "" }];
+  }
+
   renderImageRows();
   renderVariantRows();
+}
+
+function updateModalActiveLabel() {
+  const toggle = document.getElementById("modal-is-active");
+  const label = document.getElementById("modal-is-active-label");
+  if (!toggle || !label) return;
+  label.textContent = toggle.checked ? "Đang bật" : "Đang tắt";
+}
+
+async function uploadSelectedImages(files) {
+  const selectedFiles = (files || []).filter(function (file) {
+    return !!file;
+  });
+  if (!selectedFiles.length) return;
+
+  setModalUploadingState(true);
+  let uploadedCount = 0;
+  let failedCount = 0;
+
+  try {
+    const responses = await Promise.allSettled(selectedFiles.map(function (file) {
+      return AppApi.uploadAdminProductImage(file);
+    }));
+
+    responses.forEach(function (item) {
+      if (item.status !== "fulfilled") {
+        failedCount += 1;
+        return;
+      }
+
+      const result = item.value;
+      const fileName = result && result.fileName ? String(result.fileName).trim() : "";
+      if (!fileName) {
+        failedCount += 1;
+        return;
+      }
+
+      productState.modalImages.push({
+        id: null,
+        image: fileName,
+        sortOrder: productState.modalImages.length + 1
+      });
+
+      if (!productState.modalThumbnail) {
+        productState.modalThumbnail = fileName;
+      }
+
+      uploadedCount += 1;
+    });
+
+    if (uploadedCount > 0) {
+      App.showToast("Đã tải lên " + uploadedCount + " ảnh", "success");
+    }
+    if (failedCount > 0) {
+      App.showToast("Có " + failedCount + " ảnh tải thất bại", "warning");
+    }
+  } catch (error) {
+    App.showToast(App.getApiErrorMessage(error, "Tải ảnh thất bại"), "error");
+  } finally {
+    setModalUploadingState(false);
+    renderImageRows();
+  }
+}
+
+function setModalUploadingState(isUploading) {
+  productState.modalUploading = !!isUploading;
+
+  const imageRows = document.getElementById("modal-image-rows");
+  const saveButton = document.getElementById("modal-save-product");
+
+  if (imageRows) {
+    imageRows.classList.toggle("is-uploading", !!isUploading);
+  }
+
+  if (saveButton) {
+    saveButton.disabled = !!isUploading;
+  }
 }
 
 function renderImageRows() {
   const body = document.getElementById("modal-image-rows");
   if (!body) return;
 
-  body.innerHTML = productState.modalImages.map(function (image, index) {
+  const isUploading = !!productState.modalUploading;
+
+  const imageTiles = productState.modalImages.map(function (image, index) {
+    const canRemove = true;
+    const isThumbnail = image.image === productState.modalThumbnail;
+    const imageUrl = AppConfig.buildImageUrl(image.image);
+
     return '' +
-      '<div class="modal-row-inline">' +
-      '  <input class="form-input" data-image-index="' + index + '" value="' + App.escapeHtml(image.image) + '" placeholder="Tên file ảnh, vd: ao-nam1.1.png">' +
-      '  <span class="modal-row-hint">Thứ tự: ' + (index + 1) + '</span>' +
-      '</div>';
+      '<button type="button" class="modal-image-tile ' + (isThumbnail ? 'is-thumbnail' : '') + '" data-image-action="set-thumbnail" data-image-index="' + index + '" title="Chọn làm thumbnail">' +
+      '  <img class="modal-image-thumb" src="' + App.escapeHtml(imageUrl) + '" alt="' + App.escapeHtml(image.image) + '">' +
+      (isThumbnail ? '  <span class="modal-image-badge">Thumbnail</span>' : '') +
+      (canRemove ? '  <span class="modal-image-remove" data-image-action="remove" data-image-index="' + index + '" title="Xóa ảnh"><i class="bi bi-x"></i></span>' : '') +
+      '</button>';
   }).join("");
 
-  Array.from(body.querySelectorAll("[data-image-index]")).forEach(function (input) {
-    input.addEventListener("input", function () {
-      const index = Number(input.getAttribute("data-image-index"));
-      productState.modalImages[index].image = input.value.trim();
+  body.innerHTML = '' +
+    '<div class="modal-image-strip">' +
+    imageTiles +
+    '<button class="modal-image-add-tile ' + (isUploading ? 'is-disabled' : '') + '" type="button" data-image-action="upload" title="Tải thêm ảnh" ' + (isUploading ? 'disabled aria-disabled="true"' : '') + '>' +
+    '  <i class="bi bi-plus-lg"></i>' +
+    '</button>' +
+    '</div>' +
+    (productState.modalImages.length
+      ? '<div class="modal-image-empty-note">Bấm vào ảnh để chọn thumbnail. Có thể chọn nhiều ảnh cùng lúc khi bấm dấu +.</div>'
+      : '<div class="modal-image-empty">Chưa có ảnh nào. Bấm dấu + để tải ảnh lên.</div>');
+
+  Array.from(body.querySelectorAll("[data-image-action]")).forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      const index = Number(button.getAttribute("data-image-index"));
+      const action = button.getAttribute("data-image-action");
+
+      if (action === "upload") {
+        const uploadInput = document.getElementById("modal-image-upload");
+        if (uploadInput && !productState.modalUploading) {
+          uploadInput.click();
+        }
+        return;
+      }
+
+      if (!Number.isInteger(index) || index < 0 || index >= productState.modalImages.length) {
+        return;
+      }
+
+      if (action === "set-thumbnail") {
+        productState.modalThumbnail = productState.modalImages[index].image;
+      }
+
+      if (action === "remove") {
+        event.stopPropagation();
+        const removed = productState.modalImages.splice(index, 1)[0];
+        if (removed && removed.image === productState.modalThumbnail) {
+          productState.modalThumbnail = productState.modalImages[0] ? productState.modalImages[0].image : "";
+        }
+      }
+
+      renderImageRows();
     });
   });
 }
@@ -423,7 +588,10 @@ function renderVariantRows() {
 
 function closeProductModal() {
   const modal = document.getElementById("edit-product-modal");
+  const uploadInput = document.getElementById("modal-image-upload");
+  if (uploadInput) uploadInput.value = "";
   if (modal) modal.classList.remove("show");
+  resetModalState(null);
 }
 
 async function saveProduct() {
@@ -449,7 +617,6 @@ async function saveProduct() {
 function buildProductPayload() {
   const name = String(document.getElementById("modal-name").value || "").trim();
   const description = String(document.getElementById("modal-description").value || "").trim();
-  const thumbnail = String(document.getElementById("modal-thumbnail").value || "").trim();
   const category = String(document.getElementById("modal-category").value || "").trim();
   const gender = String(document.getElementById("modal-gender").value || "").trim();
   const priceRaw = String(document.getElementById("modal-price").value || "").trim();
@@ -457,7 +624,7 @@ function buildProductPayload() {
 
   const price = Number(priceRaw || 0);
 
-  if (!name || !thumbnail || !category || !gender || price <= 0) {
+  if (!name || !category || !gender || price <= 0) {
     App.showToast("Vui lòng điền đầy đủ thông tin bắt buộc", "warning");
     return null;
   }
@@ -500,6 +667,12 @@ function buildProductPayload() {
       }
       return payloadImage;
     });
+
+  const thumbnail = String(productState.modalThumbnail || (images[0] && images[0].image) || "").trim();
+  if (!images.length || !thumbnail) {
+    App.showToast("Vui lòng tải lên ít nhất một ảnh sản phẩm", "warning");
+    return null;
+  }
 
   return {
     name: name,

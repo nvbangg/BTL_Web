@@ -204,12 +204,7 @@
   function renderPagination(container, page, pageSize, total, onChange) {
     if (!container) return;
     const totalPages = Math.max(1, Math.ceil(Number(total || 0) / Number(pageSize || 1)));
-    if (totalPages <= 1) {
-      container.innerHTML = "";
-      return;
-    }
-
-    const current = Number(page || 1);
+    const current = Math.min(totalPages, Math.max(1, Number(page || 1)));
     let html = '<div class="pagination">';
     html += '<button ' + (current <= 1 ? "disabled" : "") + ' data-page="' + (current - 1) + '">' + icon("chevronLeft") + "</button>";
     for (let i = 1; i <= totalPages; i += 1) {
@@ -419,17 +414,14 @@
       '    </div>' +
       '    <div class="auth-step" data-step="login" style="display:block">' +
       '      <h2>Đăng nhập</h2>' +
-      '      <p class="subtitle">Nhập email và mật khẩu để đăng nhập.</p>' +
       '      <form id="auth-login-form">' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("mail") + '</span>' +
-      '            <input type="email" name="email" placeholder="Nhập email" required>' +
+      '            <input type="email" name="email" placeholder="Nhập Email" required>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-login-password" name="password" placeholder="Nhập mật khẩu" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-login-password" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
@@ -441,30 +433,25 @@
       '    </div>' +
       '    <div class="auth-step" data-step="register" style="display:none">' +
       '      <h2>Đăng ký</h2>' +
-      '      <p class="subtitle">Nhập thông tin để tạo tài khoản mới.</p>' +
       '      <form id="auth-register-form">' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("mail") + '</span>' +
-      '            <input type="email" name="email" placeholder="Nhập email" required>' +
+      '            <input type="email" name="email" placeholder="Nhập Email" required>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("user") + '</span>' +
       '            <input type="text" name="name" placeholder="Nhập tên hiển thị" required>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-register-password" name="password" placeholder="Nhập mật khẩu" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-register-password" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-register-confirm" name="confirmPassword" placeholder="Xác nhận lại mật khẩu" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-register-confirm" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
@@ -480,21 +467,18 @@
       '      <form id="auth-change-password-form">' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-current-password" name="currentPassword" placeholder="Mật khẩu hiện tại" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-current-password" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-new-password" name="newPassword" placeholder="Mật khẩu mới" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-new-password" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
       '        </div>' +
       '        <div class="form-group">' +
       '          <div class="auth-input-wrap">' +
-      '            <span class="auth-input-icon">' + icon("lock") + '</span>' +
       '            <input type="password" id="auth-confirm-password" name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>' +
       '            <button type="button" class="auth-toggle-password" data-toggle-password="auth-confirm-password" aria-label="Hiện mật khẩu">' + icon("eye") + '</button>' +
       '          </div>' +
@@ -739,39 +723,49 @@
 
     root.innerHTML = '' +
       '<aside class="admin-sidebar">' +
+      '  <a class="admin-brand" href="admin.html" aria-label="Fashon Shop Admin">' +
+      '    <img class="admin-brand-logo" src="' + escapeHtml(AppConfig.buildImageUrl("logo-and-text.svg")) + '" alt="Fashon Shop" onerror="this.style.display=\'none\';if(this.nextElementSibling){this.nextElementSibling.style.display=\'inline\';}">' +
+      '    <span class="admin-brand-text">Fashon Shop</span>' +
+      '  </a>' +
       '  <nav class="admin-sidebar-nav">' +
       '    <a href="admin.html" class="admin-nav-link ' + (activeTab === "statistics" ? "active" : "") + '"><span class="admin-nav-icon">' + icon("chart") + '</span><span class="admin-nav-text">Xem thống kê</span></a>' +
       '    <a href="admin-orders.html" class="admin-nav-link ' + (activeTab === "orders" ? "active" : "") + '"><span class="admin-nav-icon">' + icon("orders") + '</span><span class="admin-nav-text">Quản lý đơn hàng</span><span class="admin-nav-badge" id="admin-order-badge" style="display:none"></span></a>' +
       '    <a href="admin-products.html" class="admin-nav-link ' + (activeTab === "products" ? "active" : "") + '"><span class="admin-nav-icon">' + icon("bag") + '</span><span class="admin-nav-text">Quản lý sản phẩm</span></a>' +
       '    <a href="admin-users.html" class="admin-nav-link ' + (activeTab === "users" ? "active" : "") + '"><span class="admin-nav-icon">' + icon("users") + '</span><span class="admin-nav-text">Quản lý người dùng</span></a>' +
       '    <div class="sidebar-divider"></div>' +
-      '    <div class="admin-account">' +
-      '      <button type="button" class="admin-account-trigger" id="admin-account-trigger">' +
+      '    <div class="admin-account-menu">' +
+      '      <button type="button" class="admin-account-toggle" id="admin-account-toggle" aria-expanded="false">' +
       '        <span class="admin-account-avatar">' + icon("userCircle") + '</span>' +
       '        <span class="admin-account-name">' + accountName + '</span>' +
       '        <span class="admin-account-caret">' + icon("chevronDown") + '</span>' +
       '      </button>' +
-      '      <div class="admin-account-dropdown" id="admin-account-dropdown">' +
+      '      <div class="admin-account-panel" id="admin-account-panel">' +
       '        <a href="index.html" class="admin-account-item">' + icon("user") + '<span>Trang người dùng</span></a>' +
       '        <button type="button" class="admin-account-item" id="admin-change-password">' + icon("lock") + '<span>Đổi mật khẩu</span></button>' +
-      '        <button type="button" class="admin-account-item admin-account-logout" id="admin-logout">' + icon("logout") + '<span>Đăng xuất</span></button>' +
+      '        <button type="button" class="admin-account-item admin-account-item-danger" id="admin-logout">' + icon("logout") + '<span>Đăng xuất</span></button>' +
       '      </div>' +
       '    </div>' +
       '  </nav>' +
       '</aside>';
 
-    const accountTrigger = document.getElementById("admin-account-trigger");
-    const accountDropdown = document.getElementById("admin-account-dropdown");
-    if (accountTrigger && accountDropdown) {
-      accountTrigger.addEventListener("click", function (event) {
+    const accountToggle = document.getElementById("admin-account-toggle");
+    const accountPanel = document.getElementById("admin-account-panel");
+    if (accountToggle && accountPanel) {
+      const setAccountMenuOpen = function (open) {
+        accountToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        accountPanel.classList.toggle("show", open);
+      };
+
+      accountToggle.addEventListener("click", function (event) {
         event.stopPropagation();
-        accountDropdown.classList.toggle("show");
+        const isOpen = accountToggle.getAttribute("aria-expanded") === "true";
+        setAccountMenuOpen(!isOpen);
       });
 
       document.addEventListener("click", function (event) {
-        if (!event.target.closest(".admin-account")) {
-          accountDropdown.classList.remove("show");
-        }
+        if (!accountPanel.classList.contains("show")) return;
+        if (accountToggle.contains(event.target) || accountPanel.contains(event.target)) return;
+        setAccountMenuOpen(false);
       });
     }
 
@@ -933,6 +927,7 @@
     escapeHtml,
     icon,
     renderPagination,
+    refreshAdminSidebarBadge,
     getApiErrorMessage
   };
 })(window, document);

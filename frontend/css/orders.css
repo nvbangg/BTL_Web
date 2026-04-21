@@ -111,6 +111,14 @@
   flex-shrink: 0;
 }
 
+.order-item-thumb-link {
+  display: block;
+}
+
+.order-item-thumb-link:hover .order-item-img {
+  opacity: 0.92;
+}
+
 .order-item-info {
   flex: 1;
   min-width: 0;
@@ -120,6 +128,17 @@
   font-size: 14px;
   font-weight: 700;
   color: #0F172A;
+}
+
+.order-item-name-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.order-item-name-link:hover {
+  color: #1D4ED8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .order-item-variant {

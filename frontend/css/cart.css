@@ -79,6 +79,14 @@
   background: #FCE7F3;
 }
 
+.cart-item-link {
+  display: block;
+}
+
+.cart-item-link:hover .cart-item-img {
+  opacity: 0.92;
+}
+
 .cart-item-info { min-width: 0; }
 
 .cart-item-top {
@@ -94,6 +102,17 @@
   font-weight: 700;
   color: #0F172A;
   max-width: 90%;
+}
+
+.cart-item-name-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cart-item-name-link:hover {
+  color: #1D4ED8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .cart-item-remove {

@@ -23,11 +23,11 @@
           <div class="admin-card-header">
             <h3>Danh sách sản phẩm</h3>
             <div class="admin-card-tools">
-              <div class="product-search-pill">
-                <i class="bi bi-search product-search-icon"></i>
-                <input id="product-search" placeholder="Tìm kiếm sản phẩm...">
-              </div>
-              <button class="sort-chip filter-chip" id="btn-open-admin-filter" type="button"><i class="bi bi-funnel"></i><span>Lọc</span></button>
+              <form class="admin-search-form" id="product-search-form">
+                <span class="admin-search-form-icon"><i class="bi bi-search"></i></span>
+                <input id="product-search" class="admin-search-form-input" placeholder="Tìm kiếm sản phẩm...">
+                <button class="admin-search-form-btn" type="submit"><span>Tìm kiếm</span></button>
+              </form>
               <button class="btn-add-product" id="btn-add-product" type="button"><i class="bi bi-plus-lg"></i><span>Thêm sản phẩm</span></button>
             </div>
           </div>
@@ -38,6 +38,8 @@
             <button class="sort-chip" type="button" data-sort="newest">Mới nhất</button>
             <button class="sort-chip" type="button" data-sort="price_asc">Giá tăng</button>
             <button class="sort-chip" type="button" data-sort="price_desc">Giá giảm</button>
+            <span class="product-sort-spacer"></span>
+            <button class="sort-chip filter-chip" id="btn-open-admin-filter" type="button"><i class="bi bi-funnel"></i><span>Lọc</span></button>
           </div>
 
           <div class="table-wrap">
@@ -145,14 +147,9 @@
                 <input id="modal-is-active" type="checkbox" checked>
                 <span class="toggle-slider"></span>
               </label>
-              <span class="toggle-label">Đang bật</span>
+              <span class="toggle-label" id="modal-is-active-label">Đang bật</span>
             </div>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="modal-thumbnail">Thumbnail (tên file ảnh) *</label>
-          <input class="form-input" id="modal-thumbnail" placeholder="VD: ao-nam1.1.png">
         </div>
 
         <div class="form-group">
@@ -161,9 +158,9 @@
         </div>
 
         <div class="form-group">
-          <label>Hình ảnh (ảnh đầu tiên là thumbnail)</label>
+          <label>Hình ảnh sản phẩm *</label>
+          <input id="modal-image-upload" type="file" accept="image/*" multiple style="display:none">
           <div id="modal-image-rows"></div>
-          <button class="btn btn-outline" id="modal-add-image" type="button" style="margin-top:10px"><i class="bi bi-plus-lg"></i><span>Thêm ảnh</span></button>
         </div>
 
         <div class="form-group">
@@ -184,7 +181,7 @@
 
         <div class="edit-form-divider"></div>
         <div style="display:flex;justify-content:flex-end;gap:10px">
-          <button class="btn-cancel" id="modal-cancel-product" type="button" onclick="document.getElementById('edit-product-modal').classList.remove('show')">Hủy</button>
+          <button class="btn-cancel" id="modal-cancel-product" type="button">Hủy</button>
           <button class="btn-save" id="modal-save-product" type="button">Lưu thay đổi</button>
         </div>
       </div>

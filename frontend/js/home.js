@@ -143,7 +143,7 @@ async function loadFilterOptions(state) {
     const filters = await AppApi.getProductFilters();
 
     fillSelect("filter-category", filters.categories || [], state.category);
-    fillSelect("filter-gender", ["male", "female", "unisex"], state.gender);
+    fillSelect("filter-gender", filters.genders || ["male", "female", "unisex"], state.gender);
     fillSelect("filter-color", filters.colors || [], state.color);
     fillSelect("filter-size", filters.sizes || [], state.size);
   } catch (error) {
@@ -191,24 +191,18 @@ async function loadProducts(state) {
       .map(function (item, index) {
         const imageUrl = AppConfig.buildImageUrl(item.thumbnail);
         const pastel = ["#FCE7F3", "#FFE4E6", "#FBCFE8", "#E2E8F0"][index % 4];
+        const productHref = "product.html?id=" + encodeURIComponent(item.id);
 
         return '' +
-          '<article class="product-card" data-product-id="' + item.id + '">' +
+          '<a class="product-card" href="' + productHref + '">' +
           '  <img class="product-card-img" src="' + imageUrl + '" alt="' + App.escapeHtml(item.name) + '" style="background:' + pastel + '" onerror="this.style.background=\'' + pastel + '\';this.removeAttribute(\'src\')">' +
           '  <div class="product-card-body">' +
           '    <div class="product-card-price">' + App.formatPrice(item.price) + '</div>' +
           '    <div class="product-card-name">' + App.escapeHtml(item.name) + '</div>' +
           '  </div>' +
-          '</article>';
+          '</a>';
       })
       .join("");
-
-    Array.from(grid.querySelectorAll("[data-product-id]")).forEach(function (node) {
-      node.addEventListener("click", function () {
-        const productId = node.getAttribute("data-product-id");
-        window.location.href = "product.html?id=" + productId;
-      });
-    });
 
     App.renderPagination(paging, data.page, data.pageSize, data.total, function (nextPage) {
       App.updateQuery({ page: nextPage });

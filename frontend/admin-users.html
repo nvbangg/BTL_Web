@@ -23,10 +23,11 @@
           <div class="admin-card-header">
             <h3>Danh sách người dùng</h3>
             <div class="admin-card-tools">
-              <div class="admin-search-pill">
-                <i class="bi bi-search"></i>
-                <input id="user-search" placeholder="Tìm tên, email, SĐT...">
-              </div>
+              <form class="admin-search-form" id="user-search-form">
+                <span class="admin-search-form-icon"><i class="bi bi-search"></i></span>
+                <input id="user-search" class="admin-search-form-input" placeholder="Tìm tên, email, SĐT...">
+                <button class="admin-search-form-btn" type="submit"><span>Tìm kiếm</span></button>
+              </form>
               <select class="admin-filter-select" id="user-role-filter">
                 <option value="">Tất cả vai trò</option>
                 <option value="user">user</option>

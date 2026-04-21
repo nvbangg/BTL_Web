@@ -461,26 +461,47 @@ public class ProductService {
 
         List<ProductImage> existingImages = productImageRepository.findByProductIdOrderBySortOrderAscIdAsc(productId);
         Map<Long, Integer> existingSortById = new HashMap<>();
-        Map<Long, Integer> finalSortByOwner = new HashMap<>();
 
         for (ProductImage existingImage : existingImages) {
             existingSortById.put(existingImage.getId(), existingImage.getSortOrder());
-            finalSortByOwner.put(existingImage.getId(), existingImage.getSortOrder());
         }
 
         Set<Long> seenImageIds = new HashSet<>();
+        Map<Long, Integer> retainedExistingSortById = new HashMap<>();
+
+        for (int i = 0; i < images.size(); i++) {
+            ProductUpdateImageRequest image = images.get(i);
+            Long imageId = image.getId();
+            if (imageId == null) {
+                continue;
+            }
+
+            Integer currentSortOrder = existingSortById.get(imageId);
+            if (currentSortOrder == null) {
+                continue;
+            }
+
+            if (!seenImageIds.add(imageId)) {
+                throwDuplicateImageIdError(i);
+            }
+
+            retainedExistingSortById.put(imageId, currentSortOrder);
+        }
+
+        Map<Long, Integer> finalSortByOwner = new HashMap<>();
+        for (Map.Entry<Long, Integer> retained : retainedExistingSortById.entrySet()) {
+            finalSortByOwner.put(retained.getKey(), retained.getValue());
+        }
+
         Map<Long, Integer> payloadIndexByOwner = new HashMap<>();
 
         for (int i = 0; i < images.size(); i++) {
             ProductUpdateImageRequest image = images.get(i);
             Long imageId = image.getId();
-            int resolvedSortOrder = resolveImageSortOrderForUpdate(i, image, existingSortById);
+            int resolvedSortOrder = resolveImageSortOrderForUpdate(i, image, retainedExistingSortById);
 
             Long ownerId;
-            if (imageId != null && existingSortById.containsKey(imageId)) {
-                if (!seenImageIds.add(imageId)) {
-                    throwDuplicateImageIdError(i);
-                }
+            if (imageId != null && retainedExistingSortById.containsKey(imageId)) {
                 ownerId = imageId;
             } else {
                 ownerId = -1L - i;
@@ -715,9 +736,34 @@ public class ProductService {
         }
 
         List<ProductImage> existingImages = productImageRepository.findByProductIdOrderBySortOrderAscIdAsc(productId);
+        Map<Long, Integer> existingSortByIdAll = new HashMap<>();
+        for (ProductImage existingImage : existingImages) {
+            existingSortByIdAll.put(existingImage.getId(), existingImage.getSortOrder());
+        }
+
+        Set<Long> retainedExistingImageIds = new HashSet<>();
+        for (ProductUpdateImageRequest image : images) {
+            Long imageId = image.getId();
+            if (imageId != null && existingSortByIdAll.containsKey(imageId)) {
+                retainedExistingImageIds.add(imageId);
+            }
+        }
+
+        for (ProductImage existingImage : existingImages) {
+            if (!retainedExistingImageIds.contains(existingImage.getId())) {
+                jdbcTemplate.update(
+                        "DELETE FROM product_images WHERE id = ? AND product_id = ?",
+                        existingImage.getId(),
+                        productId
+                );
+            }
+        }
+
         Map<Long, Integer> existingSortById = new HashMap<>();
         for (ProductImage existingImage : existingImages) {
-            existingSortById.put(existingImage.getId(), existingImage.getSortOrder());
+            if (retainedExistingImageIds.contains(existingImage.getId())) {
+                existingSortById.put(existingImage.getId(), existingImage.getSortOrder());
+            }
         }
 
         List<ImageUpsertInstruction> instructions = new ArrayList<>();

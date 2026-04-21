@@ -33,9 +33,8 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""email"", ""message"": ""Email là bắt buộc"" },
-    { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
+    { ""field"": ""email"", ""message"": ""Email không hợp lệ"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu phải có ít nhất 6 ký tự"" },
     { ""field"": ""name"", ""message"": ""Tên hiển thị là bắt buộc"" }
@@ -73,9 +72,8 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""email"", ""message"": ""Email là bắt buộc"" },
-    { ""field"": ""email"", ""message"": ""Email không đúng định dạng"" },
+    { ""field"": ""email"", ""message"": ""Email không hợp lệ"" },
     { ""field"": ""password"", ""message"": ""Mật khẩu là bắt buộc"" }
   ]
 }",hạn accessToken = 7 ngày,Done
@@ -98,12 +96,7 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
   ""success"": false,
   ""message"": ""Chưa xác thực hoặc phiên đăng nhập hết hạn"",
   ""data"": null,
-  ""errors"": [
-    {
-      ""field"": ""authorization"",
-      ""message"": ""Vui lòng đăng nhập để thực hiện chức năng này""
-    }
-  ]
+  ""errors"": []
 }
 400 Bad Request
 {
@@ -111,10 +104,9 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại là bắt buộc"" },
     { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới là bắt buộc"" },
-    { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới không được trùng với mật khẩu hiện tại và phải >= 6 ký tự"" },
+    { ""field"": ""newPassword"", ""message"": ""Mật khẩu mới không được trùng với mật khẩu hiện tại và ít nhất 6 ký tự"" },
 
     { ""field"": ""currentPassword"", ""message"": ""Mật khẩu hiện tại không chính xác"" }
   ]
@@ -148,10 +140,9 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""name"", ""message"": ""Tên người dùng là bắt buộc"" },
     { ""field"": ""phone"", ""message"": ""Số điện thoại là bắt buộc"" },
-    { ""field"": ""phone"", ""message"": ""Số điện thoại không đúng định dạng"" },
+    { ""field"": ""phone"", ""message"": ""Số điện thoại không hợp lệ"" },
     { ""field"": ""address"", ""message"": ""Địa chỉ là bắt buộc"" }
   ]
 }",,Done
@@ -172,30 +163,7 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
     ""total"": 1
   },
   ""errors"": []
-}","400 Bad Request
-{
-  ""success"": false,
-  ""message"": ""Dữ liệu không hợp lệ"",
-  ""data"": null,
-  ""errors"": [
-    {
-      ""field"": ""minPrice"",
-      ""message"": ""Giá trị minPrice phải là số nguyên và lớn hơn hoặc bằng 0""
-    },
-    {
-      ""field"": ""maxPrice"",
-      ""message"": ""Giá trị maxPrice phải là số nguyên, lớn hơn hoặc bằng 0, và không được nhỏ hơn minPrice""
-    },
-    {
-      ""field"": ""gender"",
-      ""message"": ""Giới tính (gender) không hợp lệ (chỉ hỗ trợ: male, female, unisex)""
-    },
-    {
-      ""field"": ""sort"",
-      ""message"": ""Giá trị sắp xếp (sort) không được hỗ trợ (chỉ hỗ trợ: best_selling, newest, price_asc, price_desc)""
-    }
-  ]
-}",Không trả sản phẩm isActive=false.,Done
+}",,Không trả sản phẩm isActive=false.,Done
 8,Lấy bộ lọc sản phẩm,GET /api/products/filters,"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy dữ liệu bộ lọc thành công"",
@@ -206,24 +174,11 @@ STT,Name,API,Phân quyền,Request Body,Response Body,Error Cases,Note,Status
     ""sizes"": [""S"", ""M"", ""L"", ""XL"", ""XXL""]
   },
   ""errors"": []
-}","500 Internal Server Error
-{
-  ""success"": false,
-  ""message"": ""Lỗi hệ thống"",
-  ""data"": null,
-  ""errors"": [
-    {
-      ""field"": ""server"",
-      ""message"": ""Không thể tải bộ lọc lúc này""
-    }
-  ]
-}","dùng để lấy giá trị lựa chọn cho bộ lọc. genders cố định: ""male"", ""female"", ""unisex""
-các dữ liệu khác sắp xếp theo abc",Done
+}",,dùng để lấy giá trị lựa chọn cho bộ lọc. các dữ liệu sắp xếp theo abc,Done
 9,Lấy chi tiết sản phẩm,GET /api/products/{id},"User, Admin",,"{
   ""success"": true,
   ""message"": ""Lấy chi tiết sản phẩm thành công"",
   ""data"": {
-    ""id"": 1,
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
     ""thumbnail"": ""url"",
@@ -254,12 +209,7 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""success"": false,
   ""message"": ""Không tìm thấy dữ liệu yêu cầu"",
   ""data"": null,
-  ""errors"": [
-    {
-      ""field"": ""id"",
-      ""message"": ""Dữ liệu không tồn tại trong hệ thống hoặc đã bị ẩn/xóa""
-    }
-  ]
+  ""errors"": []
 }","số lượng đã bán là tính số  order có sản phẩm đẩy đang ""delivered""",Done
 10,Thêm vào giỏ hàng,POST /api/cart,"User, Admin","{
   ""productVariantId"": 10,
@@ -270,21 +220,12 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""data"": null,
   ""errors"": []
 }","401 Unauthorized
-{
-  ""success"": false,
-  ""message"": ""Thao tác thất bại"",
-  ""data"": null,
-  ""errors"": [
-    { ""field"": ""authorization"", ""message"": ""Vui lòng đăng nhập để thêm vào giỏ hàng"" }
-  ]
-}
 400 Bad Request
 {
   ""success"": false,
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""productVariantId"", ""message"": ""Phân loại sản phẩm là bắt buộc"" },
     { ""field"": ""quantity"", ""message"": ""Số lượng là bắt buộc"" },
     { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
@@ -327,7 +268,6 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
      { ""field"": ""quantity"", ""message"": ""Số lượng là bắt buộc"" },
      { ""field"": ""quantity"", ""message"": ""Số lượng yêu cầu vượt quá tồn kho hoặc không hợp lệ"" }
   ]
@@ -362,16 +302,12 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""shippingName"", ""message"": ""Họ và tên người nhận là bắt buộc"" },
     { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại là bắt buộc"" },
-    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại không đúng định dạng"" },
+    { ""field"": ""shippingPhone"", ""message"": ""Số điện thoại không hợp lệ"" },
     { ""field"": ""shippingAddress"", ""message"": ""Địa chỉ nhận hàng là bắt buộc"" },
     { ""field"": ""cartItemIds"", ""message"": ""Danh sách sản phẩm là bắt buộc"" },
-
-    { ""field"": ""cartItemIds"", ""message"": ""Một số sản phẩm trong giỏ đã hết hàng"" },
-    { ""field"": ""cartItemIds"", ""message"": ""Một số phân loại sản phẩm không hợp lệ hoặc đã bị xóa"" }
-    
+    { ""field"": ""cartItemIds"", ""message"": ""Một số sản phẩm không hợp lệ hoặc vượt quá số lượng tồn kho"" }
   ]
 }",Checkout ngay tại trang giỏ hàng.,Done
 15,Lấy danh sách đơn hàng,GET /api/orders?page=1&pageSize=10,"User, Admin",,"{
@@ -438,12 +374,7 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""success"": false,
   ""message"": ""Không có quyền truy cập"",
   ""data"": null,
-  ""errors"": [
-    {
-      ""field"": ""role"",
-      ""message"": ""Tài khoản của bạn không có quyền thực hiện thao tác này""
-    }
-  ]
+  ""errors"": []
 }",,Done
 17,Lấy đơn hàng (admin),GET /api/admin/orders?keyword=&status=&page=1&pageSize=10,Admin,,"{
   ""success"": true,
@@ -484,16 +415,7 @@ các dữ liệu khác sắp xếp theo abc",Done
   },
   ""errors"": []
 }","401 Unauthorized
-403 Forbidden
-400 Bad Request
-{
-  ""success"": false,
-  ""message"": ""Dữ liệu không hợp lệ"",
-  ""data"": null,
-  ""errors"": [
-    { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
-  ]
-}",,Done
+403 Forbidden",,Done
 18,Cập nhật trạng thái đơn hàng (admin),PUT /api/admin/orders/{id},Admin,"{
   ""status"": ""shipped""
 }","{
@@ -509,9 +431,7 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng là bắt buộc"" },
-
     { ""field"": ""status"", ""message"": ""Trạng thái đơn hàng không hợp lệ"" }
   ]
 }
@@ -525,8 +445,8 @@ các dữ liệu khác sắp xếp theo abc",Done
     ""items"": [
       {
         ""id"": 1,
-        ""thumbnail"": ""url"",
         ""name"": ""Áo thun"",
+        ""thumbnail"": ""url"",
         ""price"": 200000,
         ""soldCount"": 1200,
         ""totalStock"": 350,
@@ -539,22 +459,11 @@ các dữ liệu khác sắp xếp theo abc",Done
   },
   ""errors"": []
 }","401 Unauthorized
-403 Forbidden
-400 Bad Request
-{
-  ""success"": false,
-  ""message"": ""Dữ liệu không hợp lệ"",
-  ""data"": null,
-  ""errors"": [
-    { ""field"": ""minPrice"", ""message"": ""Giá trị khoảng giá không hợp lệ"" },
-    { ""field"": ""isActive"", ""message"": ""isActive phải là true hoặc false"" }
-  ]
-}",,Done
+403 Forbidden",,Done
 20,Lấy chi tiết sản phẩm (admin),GET /api/admin/products/{id},Admin,,"{
   ""success"": true,
   ""message"": ""Lấy chi tiết sản phẩm thành công"",
   ""data"": {
-    ""id"": 1,
     ""name"": ""Áo thun"",
     ""description"": ""Mô tả"",
     ""thumbnail"": ""url"",
@@ -620,19 +529,18 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
     { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
     { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
     { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
-    { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
+    { ""field"": ""price"", ""message"": ""Giá sản phẩm không hợp lệ"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
     { ""field"": ""images[i].image"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
     { ""field"": ""images[i].sortOrder"", ""message"": ""Thứ tự ảnh bị trùng"" },
     { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
     { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },
-    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
-    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho không hợp lệ"" },
+    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh không hợp lệ"" },
 
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
@@ -675,12 +583,11 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""message"": ""Dữ liệu không hợp lệ"",
   ""data"": null,
   ""errors"": [
-    { ""field"": ""body"", ""message"": ""JSON không hợp lệ hoặc sai định dạng"" },
     { ""field"": ""name"", ""message"": ""Tên sản phẩm là bắt buộc"" },
     { ""field"": ""thumbnail"", ""message"": ""Ảnh sản phẩm là bắt buộc"" },
     { ""field"": ""category"", ""message"": ""Danh mục sản phẩm là bắt buộc"" },
     { ""field"": ""gender"", ""message"": ""Giới tính là bắt buộc"" },
-    { ""field"": ""price"", ""message"": ""Giá sản phẩm phải là số nguyên dương"" },
+    { ""field"": ""price"", ""message"": ""Giá sản phẩm không hợp lệ"" },
     { ""field"": ""variants"", ""message"": ""Sản phẩm phải có ít nhất một phân loại"" },
     { ""field"": ""variants"", ""message"": ""Không thể xóa phân loại đã tồn tại"" },
     { ""field"": ""variants"", ""message"": ""Phân loại color + size bị trùng"" },
@@ -691,8 +598,8 @@ các dữ liệu khác sắp xếp theo abc",Done
     { ""field"": ""variants[i].id"", ""message"": ""ID phân loại bị trùng trong request"" },
     { ""field"": ""variants[i].color"", ""message"": ""Màu phân loại là bắt buộc"" },
     { ""field"": ""variants[i].size"", ""message"": ""Size phân loại là bắt buộc"" },
-    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho phải là số nguyên >= 0"" },
-    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh phải là số nguyên >= 0"" },
+    { ""field"": ""variants[i].stock"", ""message"": ""Số lượng tồn kho không hợp lệ"" },
+    { ""field"": ""variants[i].priceOverride"", ""message"": ""Giá tùy chỉnh không hợp lệ"" },
 
     { ""field"": ""gender"", ""message"": ""Giới tính không hợp lệ"" }
   ]
@@ -721,15 +628,7 @@ các dữ liệu khác sắp xếp theo abc",Done
   ""errors"": []
 }","401 Unauthorized
 403 Forbidden
-400 Bad Request
-{
-  ""success"": false,
-  ""message"": ""Dữ liệu không hợp lệ"",
-  ""data"": null,
-  ""errors"": [
-    { ""field"": ""role"", ""message"": ""Bộ lọc vai trò (role) không hợp lệ"" }
-  ]
-}",,Done
+",,Done
 24,Cập nhật role user (admin),PUT /api/admin/users/{id},Admin,"{
   ""role"": ""admin""
 }","{

@@ -82,7 +82,7 @@ function renderOrdersTable() {
       '  <td><span class="order-id-link">#ORD-' + order.id + '</span></td>' +
       '  <td>' + App.formatDate(order.createdAt) + '</td>' +
       '  <td>' + App.formatDate(order.updatedAt) + '</td>' +
-      '  <td>' + App.formatPrice(order.totalPrice) + '</td>' +
+      '  <td><span class="order-total-price">' + App.formatPrice(order.totalPrice) + '</span></td>' +
       '  <td><span class="status-badge ' + getStatusClass(order.status) + '">' + App.getStatusText(order.status) + '</span></td>' +
       '</tr>' +
       (expanded
@@ -112,6 +112,18 @@ function renderExpandedOrder(order) {
     details.map(function (detail) {
       const thumbnail = AppConfig.buildImageUrl(detail.thumbnail);
       const name = App.escapeHtml(detail.productName || "Sản phẩm");
+      const hasProductId = detail.productId !== undefined && detail.productId !== null && detail.productId !== "";
+      const keywordFallback = String(detail.productName || "").trim();
+      const hasProductLink = hasProductId || keywordFallback !== "";
+      const productHref = hasProductId
+        ? "product.html?id=" + encodeURIComponent(detail.productId)
+        : "index.html?keyword=" + encodeURIComponent(keywordFallback);
+      const imageHtml = hasProductLink
+        ? '<a class="order-item-thumb-link" href="' + productHref + '"><img class="order-item-img" src="' + thumbnail + '" alt="' + name + '"></a>'
+        : '<img class="order-item-img" src="' + thumbnail + '" alt="' + name + '">';
+      const nameHtml = hasProductLink
+        ? '<a class="order-item-name-link" href="' + productHref + '">' + name + '</a>'
+        : name;
       const color = App.escapeHtml(detail.color || "-");
       const size = App.escapeHtml(detail.size || "-");
       const quantity = Number(detail.quantity) || 0;
@@ -120,9 +132,9 @@ function renderExpandedOrder(order) {
 
       return '' +
         '<div class="order-item">' +
-        '  <img class="order-item-img" src="' + thumbnail + '" alt="' + name + '">' +
+        '  ' + imageHtml +
         '  <div class="order-item-info">' +
-        '    <div class="order-item-name">' + name + '</div>' +
+        '    <div class="order-item-name">' + nameHtml + '</div>' +
         '    <div class="order-item-variant">Phân loại: ' + color + ' - ' + size + ' | SL: ' + quantity + '</div>' +
         '  </div>' +
         '  <div class="order-item-price">' + App.formatPrice(linePrice) + '</div>' +
@@ -140,15 +152,9 @@ function renderExpandedOrder(order) {
 
 function isClosedOrderStatus(status) {
   const normalized = String(status || "").toLowerCase();
-  return normalized === "shipped" || normalized === "cancelled";
+  return normalized === "delivered" || normalized === "cancelled";
 }
 
 function getStatusClass(status) {
-  const normalized = String(status || "").toLowerCase();
-  if (normalized === "shipped") return "shipped";
-  if (normalized === "cancelled") return "cancelled";
-  if (normalized === "shipping") return "shipping";
-  if (normalized === "processing") return "processing";
-  if (normalized === "pending") return "pending";
   return App.getStatusClass(status);
 }

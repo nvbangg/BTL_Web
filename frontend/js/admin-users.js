@@ -34,17 +34,14 @@ function initUserState() {
 }
 
 function bindUserFilters() {
+  const searchForm = document.getElementById("user-search-form");
   const searchInput = document.getElementById("user-search");
   const roleSelect = document.getElementById("user-role-filter");
 
-  let timer = null;
-
-  if (searchInput) {
-    searchInput.addEventListener("input", function () {
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        App.updateQuery({ keyword: searchInput.value.trim(), page: 1 });
-      }, 350);
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      App.updateQuery({ keyword: (searchInput ? searchInput.value : "").trim(), page: 1 });
     });
   }
 

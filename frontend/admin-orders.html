@@ -23,10 +23,11 @@
           <div class="admin-card-header">
             <h3>Danh sách đơn hàng</h3>
             <div class="admin-card-tools">
-              <div class="admin-search-pill">
-                <i class="bi bi-search"></i>
-                <input id="order-search" placeholder="Tìm mã đơn hàng...">
-              </div>
+              <form class="admin-search-form" id="order-search-form">
+                <span class="admin-search-form-icon"><i class="bi bi-search"></i></span>
+                <input id="order-search" class="admin-search-form-input" placeholder="Tìm mã đơn hàng...">
+                <button class="admin-search-form-btn" type="submit"><span>Tìm kiếm</span></button>
+              </form>
               <select class="admin-filter-select" id="order-status-filter">
                 <option value="">Tất cả trạng thái</option>
                 <option value="pending">Đang chờ</option>

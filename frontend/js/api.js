@@ -62,6 +62,43 @@
     return payload.data;
   }
 
+  async function requestFormData(path, formData, options) {
+    const settings = options || {};
+    const method = settings.method || "POST";
+    const requiresAuth = !!settings.auth;
+    const suppressUnauthorizedEvent = !!settings.suppressUnauthorizedEvent;
+
+    const headers = {
+      Accept: "application/json"
+    };
+
+    if (requiresAuth && getToken()) {
+      headers.Authorization = "Bearer " + getToken();
+    }
+
+    const response = await fetch(AppConfig.buildApiUrl(path), {
+      method,
+      headers,
+      body: formData
+    });
+
+    const payload = await parseJsonSafely(response);
+
+    if (response.status === 401 && !suppressUnauthorizedEvent) {
+      window.dispatchEvent(new CustomEvent("app:unauthorized", { detail: payload }));
+    }
+
+    if (!response.ok) {
+      throw toApiError(response, payload);
+    }
+
+    if (!payload || payload.success !== true) {
+      throw toApiError(response, payload);
+    }
+
+    return payload.data;
+  }
+
   function authRegister(email, password, name) {
     return request("/api/auth/register", {
       method: "POST",
@@ -198,6 +235,15 @@
     });
   }
 
+  function uploadAdminProductImage(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    return requestFormData("/api/admin/images/upload", formData, {
+      method: "POST",
+      auth: true
+    });
+  }
+
   function getAdminUsers(queryString) {
     return request("/api/admin/users" + (queryString || ""), { auth: true });
   }
@@ -234,6 +280,7 @@
     getAdminProductDetail,
     createAdminProduct,
     updateAdminProduct,
+    uploadAdminProductImage,
     getAdminUsers,
     updateAdminUserRole
   };

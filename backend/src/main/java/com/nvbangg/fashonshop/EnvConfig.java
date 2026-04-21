@@ -15,6 +15,8 @@ public class EnvConfig {
         setIfPresent("DB_URL", dotenv.get("DB_URL"));
         setIfPresent("JWT_SECRET", dotenv.get("JWT_SECRET"));
         setIfPresent("JWT_EXPIRATION_SECONDS", dotenv.get("JWT_EXPIRATION_SECONDS"));
+        setIfPresent("PRODUCT_IMAGES_DIR", dotenv.get("PRODUCT_IMAGES_DIR"));
+        setIfPresent("PRODUCT_IMAGE_MAX_SIZE_BYTES", dotenv.get("PRODUCT_IMAGE_MAX_SIZE_BYTES"));
     }
 
     private static void setIfPresent(String key, String value) {

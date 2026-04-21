@@ -7,6 +7,12 @@ let cartState = {
 document.addEventListener("DOMContentLoaded", async function () {
   await App.mountPublicPage({ showSearch: false, withWhyChoose: false, withFooter: false });
 
+  const persistedToast = sessionStorage.getItem("fashon.cart.toast");
+  if (persistedToast) {
+    sessionStorage.removeItem("fashon.cart.toast");
+    App.showToast(persistedToast, "success");
+  }
+
   document.addEventListener("app:auth-changed", async function () {
     if (!App.getUser()) return;
     await loadCartAndProfile();
@@ -27,7 +33,7 @@ async function loadCartAndProfile() {
     const cart = result[0];
     const profile = result[1];
 
-    const sourceItems = cart.items || cart.cartItems || cart.cartItemResponses || [];
+    const sourceItems = cart.items || [];
 
     cartState.items = sourceItems.map(function (item) {
       const idCandidates = collectCartItemIdCandidates(item);
@@ -36,7 +42,7 @@ async function loadCartAndProfile() {
         id: resolvedId,
         removeIds: idCandidates,
         productId: item.productId,
-        variantId: item.variantId != null ? item.variantId : item.productVariantId,
+        variantId: item.variantId,
         productName: item.productName,
         thumbnail: item.thumbnail,
         color: item.color,
@@ -124,18 +130,31 @@ function renderCart() {
   list.innerHTML = cartState.items.map(function (item, index) {
     const itemId = item.id == null ? "" : String(item.id);
     const escapedItemId = App.escapeHtml(itemId);
+    const hasProductId = item.productId !== undefined && item.productId !== null && item.productId !== "";
+    const hasProductName = String(item.productName || "").trim() !== "";
+    const hasProductLink = hasProductId || hasProductName;
+    const productHref = hasProductId
+      ? "product.html?id=" + encodeURIComponent(item.productId)
+      : "index.html?keyword=" + encodeURIComponent(String(item.productName || "").trim());
+    const imageHtml = hasProductLink
+      ? '<a class="cart-item-link" href="' + productHref + '" aria-label="Xem chi tiết sản phẩm ' + App.escapeHtml(item.productName) + '"><img class="cart-item-img" src="' + AppConfig.buildImageUrl(item.thumbnail) + '" alt="' + App.escapeHtml(item.productName) + '"></a>'
+      : '<img class="cart-item-img" src="' + AppConfig.buildImageUrl(item.thumbnail) + '" alt="' + App.escapeHtml(item.productName) + '">';
+    const nameHtml = hasProductLink
+      ? '<a class="cart-item-name-link" href="' + productHref + '">' + App.escapeHtml(item.productName) + '</a>'
+      : App.escapeHtml(item.productName);
+
     return '' +
       '<div class="cart-item" data-item-id="' + escapedItemId + '">' +
       '  <div class="cart-item-check">' +
       '    <input type="checkbox" class="item-check" data-item-id="' + escapedItemId + '" data-item-index="' + index + '" ' + (item.checked ? "checked" : "") + '>' +
       '  </div>' +
-      '  <img class="cart-item-img" src="' + AppConfig.buildImageUrl(item.thumbnail) + '" alt="' + App.escapeHtml(item.productName) + '">' +
+      '  ' + imageHtml +
       '  <div class="cart-item-info">' +
       '    <div class="cart-item-top">' +
-      '      <div class="cart-item-name">' + App.escapeHtml(item.productName) + '</div>' +
+      '      <div class="cart-item-name">' + nameHtml + '</div>' +
       '      <button type="button" class="cart-item-remove" data-remove-id="' + escapedItemId + '" data-item-index="' + index + '" aria-label="Xóa sản phẩm">' + App.icon("trash") + '</button>' +
       '    </div>' +
-      '    <div class="cart-item-variant">Màu sắc: ' + App.escapeHtml(item.color) + ' - Size: ' + App.escapeHtml(item.size) + '</div>' +
+      '    <div class="cart-item-variant">Phân loại: ' + App.escapeHtml(item.color) + ' - ' + App.escapeHtml(item.size) + '</div>' +
       '    <div class="cart-item-unit-price">Đơn giá: <strong>' + App.formatPrice(item.price) + '</strong></div>' +
       '    <div class="cart-item-bottom">' +
       '      <div class="cart-qty-row">' +
@@ -283,38 +302,19 @@ function bindListEvents() {
 }
 
 function collectCartItemIdCandidates(item) {
-  const ids = [];
-
-  [
-    item && item.id,
-    item && item.itemId,
-    item && item.cartItemId,
-    item && item.cartItemResponseId
-  ].forEach(function (value) {
-    if (value === null || value === undefined || value === "") return;
-    const normalized = String(value);
-    if (!ids.includes(normalized)) {
-      ids.push(normalized);
-    }
-  });
-
-  return ids;
+  if (!item || item.id === null || item.id === undefined || item.id === "") {
+    return [];
+  }
+  return [String(item.id)];
 }
 
 function getDeleteIdCandidates(item, preferredId) {
-  const ids = [];
-
-  [preferredId, item && item.id]
-    .concat(item && Array.isArray(item.removeIds) ? item.removeIds : [])
-    .forEach(function (value) {
-      if (value === null || value === undefined || value === "") return;
-      const normalized = String(value);
-      if (!ids.includes(normalized)) {
-        ids.push(normalized);
-      }
-    });
-
-  return ids;
+  const fallback = item && item.id !== undefined && item.id !== null && item.id !== "" ? item.id : null;
+  const resolved = preferredId !== undefined && preferredId !== null && preferredId !== "" ? preferredId : fallback;
+  if (resolved === null || resolved === undefined || resolved === "") {
+    return [];
+  }
+  return [String(resolved)];
 }
 
 function getSelectedItems() {
@@ -370,7 +370,7 @@ async function submitOrder() {
 
   const selectedCartItemIds = selectedItems
     .map(function (item) {
-      return item.id || (Array.isArray(item.removeIds) ? item.removeIds[0] : null);
+      return item.id || null;
     })
     .filter(function (id) {
       return id !== null && id !== undefined && id !== "";
@@ -392,9 +392,8 @@ async function submitOrder() {
       shippingAddress: shippingAddress
     });
 
-    App.showToast("Đặt hàng thành công", "success");
-    cartState.checkoutExpanded = false;
-    await loadCartAndProfile();
+    sessionStorage.setItem("fashon.cart.toast", "Đặt hàng thành công");
+    window.location.reload();
   } catch (error) {
     App.showToast(App.getApiErrorMessage(error, "Đặt hàng thất bại"), "error");
   }

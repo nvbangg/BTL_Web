@@ -6,16 +6,10 @@ sequenceDiagram
     participant DB as Database
 
     Actor->>FE: (1) Nhấn nút Đăng nhập
-    FE-->>Actor: (2) Hiển thị form nhập Email
-    Actor->>FE: (3) Nhập Email và nhấn Tiếp tục
-    FE->>BE: (4) Kiểm tra Email
-    BE->>DB: (5) Query User by Email
-    DB-->>BE: (6) Email tồn tại
-    BE-->>FE: (7) Phản hồi Email hợp lệ
-    FE-->>Actor: (8) Hiển thị form nhập Mật khẩu
-    Actor->>FE: (9) Nhập Mật khẩu và nhấn Đăng nhập
-    FE->>BE: (10) Gửi thông tin đăng nhập
-    BE->>DB: (11) Đối soát mật khẩu
-    DB-->>BE: (12) Xác nhận đúng mật khẩu
-    BE-->>FE: (13) Trả về Token và thông tin
-    FE-->>Actor: (14) Thông báo thành công và chuyển hướng
+    FE-->>Actor: (2) Hiển thị form Email & Mật khẩu
+    Actor->>FE: (3) Nhập thông tin và nhấn Đăng nhập
+    FE->>BE: (4) Gửi yêu cầu đăng nhập (Login)
+    BE->>DB: (5) Đối soát Email và Mật khẩu
+    DB-->>BE: (6) Xác nhận thông tin hợp lệ
+    BE-->>FE: (7) Trả về mã Token và thành công
+    FE-->>Actor: (8) Thông báo và chuyển hướng trang chủ

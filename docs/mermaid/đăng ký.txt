@@ -5,15 +5,13 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
 
-    Actor->>FE: (1) Nhập Email mới
-    FE->>BE: (2) Kiểm tra Email
-    BE->>DB: (3) Kiểm tra sự tồn tại
-    DB-->>BE: (3) Email chưa tồn tại
-    BE-->>FE: (4) Trả về trạng thái Email mới
-    FE-->>Actor: (5) Hiển thị form Đăng ký
-    Actor->>FE: (6) Nhập Họ tên, Mật khẩu và nhấn Đăng ký
-    FE->>BE: (7) Gửi dữ liệu đăng ký
-    BE->>DB: (8) Lưu người dùng mới
-    DB-->>BE: (9) Xác nhận lưu thành công
-    BE-->>FE: (10) Trả về Token thành công
-    FE-->>Actor: (11) Thông báo và chuyển hướng trang chủ
+    Actor->>FE: (1) Nhấn vào "Đăng ký" trên popup
+    FE-->>Actor: (2) Hiển thị form Đăng ký
+    Actor->>FE: (3) Nhập thông tin và nhấn Đăng ký
+    FE->>BE: (4) Gửi yêu cầu đăng ký
+    BE->>DB: (5) Kiểm tra Email trùng lặp
+    DB-->>BE: (6) Xác nhận Email hợp lệ
+    BE->>DB: (7) Lưu thông tin người dùng mới
+    DB-->>BE: (8) Xác nhận lưu thành công
+    BE-->>FE: (9) Trả về mã Token và thành công
+    FE-->>Actor: (10) Thông báo và chuyển hướng trang chủ

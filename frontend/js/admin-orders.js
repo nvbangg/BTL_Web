@@ -35,17 +35,14 @@ function initOrderState() {
 }
 
 function bindOrderFilters() {
+  const searchForm = document.getElementById("order-search-form");
   const searchInput = document.getElementById("order-search");
   const statusSelect = document.getElementById("order-status-filter");
 
-  let timer = null;
-
-  if (searchInput) {
-    searchInput.addEventListener("input", function () {
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        App.updateQuery({ keyword: searchInput.value.trim(), page: 1 });
-      }, 350);
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      App.updateQuery({ keyword: (searchInput ? searchInput.value : "").trim(), page: 1 });
     });
   }
 
@@ -118,7 +115,7 @@ function renderOrderRows(items) {
       '  <td><strong style="color:#2563EB">#ORD-' + rowId + '</strong></td>' +
       '  <td>' + App.formatDate(order.createdAt) + '</td>' +
       '  <td>' + App.formatDate(order.updatedAt) + '</td>' +
-      '  <td><strong style="color:#EF4444">' + App.formatPrice(order.totalPrice) + '</strong></td>' +
+      '  <td><strong class="order-total-price">' + App.formatPrice(order.totalPrice) + '</strong></td>' +
       '  <td>' + renderStatusSelect(order) + '</td>' +
       '</tr>' +
       (expanded ? renderExpandedOrder(order) : "");
@@ -136,10 +133,22 @@ function renderOrderRows(items) {
   Array.from(body.querySelectorAll(".status-badge-select")).forEach(function (select) {
     select.addEventListener("change", async function () {
       const orderId = Number(select.getAttribute("data-order-id"));
+      const nextStatus = String(select.value || "").trim();
+      const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+
+      if (!validStatuses.includes(nextStatus)) {
+        App.showToast("Trạng thái không hợp lệ", "error");
+        await loadAdminOrders();
+        return;
+      }
+
       try {
-        await AppApi.updateAdminOrderStatus(orderId, select.value);
+        await AppApi.updateAdminOrderStatus(orderId, nextStatus);
         App.showToast("Đã cập nhật trạng thái đơn hàng", "success");
         await loadAdminOrders();
+        if (typeof App.refreshAdminSidebarBadge === "function") {
+          await App.refreshAdminSidebarBadge();
+        }
       } catch (error) {
         App.showToast(App.getApiErrorMessage(error, "Cập nhật trạng thái thất bại"), "error");
         await loadAdminOrders();
@@ -165,11 +174,24 @@ function renderExpandedOrder(order) {
     '      <div class="order-expanded-products">' +
     '        <div class="order-section-title">Sản phẩm (' + (order.orderDetails || []).length + ')</div>' +
     (order.orderDetails || []).map(function (detail) {
+      const hasProductId = detail.productId !== undefined && detail.productId !== null && detail.productId !== "";
+      const keywordFallback = String(detail.productName || "").trim();
+      const hasProductLink = hasProductId || keywordFallback !== "";
+      const productHref = hasProductId
+        ? "product.html?id=" + encodeURIComponent(detail.productId)
+        : "index.html?keyword=" + encodeURIComponent(keywordFallback);
+      const imageHtml = hasProductLink
+        ? '<a class="od-item-thumb-link" href="' + productHref + '"><img class="od-item-img" src="' + AppConfig.buildImageUrl(detail.thumbnail) + '" alt="' + App.escapeHtml(detail.productName) + '"></a>'
+        : '<img class="od-item-img" src="' + AppConfig.buildImageUrl(detail.thumbnail) + '" alt="' + App.escapeHtml(detail.productName) + '">';
+      const nameHtml = hasProductLink
+        ? '<a class="od-item-name-link" href="' + productHref + '">' + App.escapeHtml(detail.productName) + '</a>'
+        : App.escapeHtml(detail.productName);
+
       return '' +
         '<div class="od-item">' +
-        '  <img class="od-item-img" src="' + AppConfig.buildImageUrl(detail.thumbnail) + '" alt="' + App.escapeHtml(detail.productName) + '">' +
+        '  ' + imageHtml +
         '  <div class="od-item-info">' +
-        '    <div class="od-item-name">' + App.escapeHtml(detail.productName) + '</div>' +
+        '    <div class="od-item-name">' + nameHtml + '</div>' +
         '    <div class="od-item-variant">Phân loại: ' + App.escapeHtml(detail.color) + ' - ' + App.escapeHtml(detail.size) + ' | Số lượng: ' + detail.quantity + '</div>' +
         '  </div>' +
         '  <div class="od-item-right">' + App.formatPrice(detail.price * detail.quantity) + '</div>' +
