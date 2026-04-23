@@ -34,8 +34,9 @@ public class AdminUserService {
 
         String normalizedKeyword = QueryUtils.normalizeNullable(keyword);
         if (normalizedKeyword != null) {
-            where.append(" AND (LOWER(u.email) LIKE ? OR LOWER(IFNULL(u.name, '')) LIKE ?) ");
+            where.append(" AND (LOWER(u.email) LIKE ? OR LOWER(IFNULL(u.name, '')) LIKE ? OR u.phone LIKE ?) ");
             String pattern = "%" + normalizedKeyword + "%";
+            params.add(pattern);
             params.add(pattern);
             params.add(pattern);
         }
