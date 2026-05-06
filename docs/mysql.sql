@@ -92,3 +92,6 @@ CREATE TABLE order_items (
     REFERENCES product_variants(id)
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Thêm tính năng Sản phẩm Hot
+ALTER TABLE products ADD COLUMN is_hot BOOLEAN NOT NULL DEFAULT FALSE;

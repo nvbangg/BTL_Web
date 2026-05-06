@@ -314,6 +314,11 @@ function bindModalEvents() {
   if (activeToggle) {
     activeToggle.addEventListener("change", updateModalActiveLabel);
   }
+
+  const hotToggle = document.getElementById("modal-is-hot");
+  if (hotToggle) {
+    hotToggle.addEventListener("change", updateModalHotLabel);
+  }
 }
 
 async function openProductModal(productId) {
@@ -369,6 +374,9 @@ function fillModalFields(product) {
   document.getElementById("modal-is-active").checked = product.isActive !== false;
   updateModalActiveLabel();
 
+  document.getElementById("modal-is-hot").checked = product.isHot === true;
+  updateModalHotLabel();
+
   const images = (product.images || []).map(function (item, index) {
     return {
       id: item.id || null,
@@ -405,6 +413,13 @@ function fillModalFields(product) {
 function updateModalActiveLabel() {
   const toggle = document.getElementById("modal-is-active");
   const label = document.getElementById("modal-is-active-label");
+  if (!toggle || !label) return;
+  label.textContent = toggle.checked ? "Đang bật" : "Đang tắt";
+}
+
+function updateModalHotLabel() {
+  const toggle = document.getElementById("modal-is-hot");
+  const label = document.getElementById("modal-is-hot-label");
   if (!toggle || !label) return;
   label.textContent = toggle.checked ? "Đang bật" : "Đang tắt";
 }
@@ -621,6 +636,7 @@ function buildProductPayload() {
   const gender = String(document.getElementById("modal-gender").value || "").trim();
   const priceRaw = String(document.getElementById("modal-price").value || "").trim();
   const isActive = !!document.getElementById("modal-is-active").checked;
+  const isHot = !!document.getElementById("modal-is-hot").checked;
 
   const price = Number(priceRaw || 0);
 
@@ -682,6 +698,7 @@ function buildProductPayload() {
     gender: gender,
     price: price,
     isActive: isActive,
+    isHot: isHot,
     images: images,
     variants: variants
   };

@@ -15,6 +15,7 @@ public class AdminProductDetailResponse {
     private final String gender;
     private final Long price;
     private final Boolean isActive;
+    private final Boolean isHot;
     private final List<ProductImageResponse> images;
     private final List<ProductVariantResponse> variants;
 }

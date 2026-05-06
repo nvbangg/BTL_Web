@@ -22,7 +22,7 @@ function readStateFromQuery() {
     size: params.get("size") || "",
     minPrice: params.get("minPrice") || "",
     maxPrice: params.get("maxPrice") || "",
-    sort: params.get("sort") || "best_selling",
+    sort: params.get("sort") || "hot",
     page: Number(params.get("page") || 1),
     pageSize: Number(params.get("pageSize") || 16)
   };

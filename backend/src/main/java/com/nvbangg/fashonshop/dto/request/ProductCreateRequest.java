@@ -34,6 +34,8 @@ public class ProductCreateRequest {
 
     private Boolean isActive;
 
+    private Boolean isHot;
+
     @Valid
     private List<ProductCreateImageRequest> images;
 

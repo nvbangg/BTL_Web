@@ -122,6 +122,7 @@ public class ProductService {
                 product.gender(),
                 product.price(),
                 product.isActive(),
+                product.isHot(),
                 getProductImages(id),
                 getProductVariants(id)
         );
@@ -135,8 +136,8 @@ public class ProductService {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     """
-                            INSERT INTO products(name, description, thumbnail, category, gender, price, is_active)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            INSERT INTO products(name, description, thumbnail, category, gender, price, is_active, is_hot)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                             """,
                     Statement.RETURN_GENERATED_KEYS
             );
@@ -147,6 +148,7 @@ public class ProductService {
             ps.setString(5, gender.name());
             ps.setLong(6, request.getPrice());
             ps.setBoolean(7, request.getIsActive() == null || request.getIsActive());
+            ps.setBoolean(8, request.getIsHot() != null && request.getIsHot());
             return ps;
         }, keyHolder);
 
@@ -169,7 +171,7 @@ public class ProductService {
         jdbcTemplate.update(
                 """
                         UPDATE products
-                        SET name = ?, description = ?, thumbnail = ?, category = ?, gender = ?, price = ?, is_active = ?
+                        SET name = ?, description = ?, thumbnail = ?, category = ?, gender = ?, price = ?, is_active = ?, is_hot = ?
                         WHERE id = ?
                         """,
                 request.getName().trim(),
@@ -179,6 +181,7 @@ public class ProductService {
                 gender.name(),
                 request.getPrice(),
                 request.getIsActive() == null || request.getIsActive(),
+                request.getIsHot() != null && request.getIsHot(),
                 id
         );
 
@@ -341,6 +344,7 @@ public class ProductService {
                                p.gender,
                                p.price,
                                p.is_active,
+                               p.is_hot,
                                COALESCE((
                                    SELECT SUM(oi.quantity)
                                    FROM order_items oi
@@ -361,7 +365,8 @@ public class ProductService {
                 rs.getString("gender"),
                 rs.getLong("price"),
                 rs.getLong("sold_count"),
-                rs.getBoolean("is_active")
+                rs.getBoolean("is_active"),
+                rs.getBoolean("is_hot")
         ), id);
 
         if (products.isEmpty()) {
@@ -410,7 +415,8 @@ public class ProductService {
                                     String gender,
                                     Long price,
                                     Long soldCount,
-                                    Boolean isActive) {
+                                    Boolean isActive,
+                                    Boolean isHot) {
     }
 
     private record ExistingVariantKey(Long id, String key) {
@@ -871,16 +877,17 @@ public class ProductService {
     }
 
     private String resolveSort(String sort, boolean admin) {
-        String defaultSort = admin ? "newest" : "best_selling";
+        String defaultSort = admin ? "newest" : "hot";
         String normalizedSort = QueryUtils.normalizeNullable(sort);
         String finalSort = normalizedSort == null ? defaultSort : normalizedSort;
 
         return switch (finalSort) {
+            case "hot" -> "p.is_hot DESC, sold_count DESC, p.created_at DESC";
             case "best_selling" -> "sold_count DESC, p.created_at DESC";
             case "newest" -> "p.created_at DESC";
             case "price_asc" -> "p.price ASC, p.created_at DESC";
             case "price_desc" -> "p.price DESC, p.created_at DESC";
-            default -> admin ? "p.created_at DESC" : "sold_count DESC, p.created_at DESC";
+            default -> admin ? "p.created_at DESC" : "p.is_hot DESC, sold_count DESC, p.created_at DESC";
         };
     }
 

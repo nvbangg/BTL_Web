@@ -34,6 +34,8 @@ public class ProductUpdateRequest {
 
     private Boolean isActive;
 
+    private Boolean isHot;
+
     @Valid
     private List<ProductUpdateImageRequest> images;
 
