@@ -15,6 +15,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("payos_success") === "true") {
+    App.showToast("Thanh toán đơn hàng thành công!", "success");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   await loadOrders();
 });
 

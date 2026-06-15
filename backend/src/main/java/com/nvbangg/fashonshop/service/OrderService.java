@@ -26,7 +26,8 @@ import java.util.*;
 public class OrderService {
 
     private final JdbcTemplate jdbcTemplate;
-    private final OrderRepository orderRepository;
+    private final com.nvbangg.fashonshop.repository.OrderRepository orderRepository;
+    private final vn.payos.PayOS payOS;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
@@ -136,11 +137,46 @@ public class OrderService {
                 orderId
         );
 
+        String checkoutUrl = null;
+        try {
+            List<vn.payos.model.v2.paymentRequests.PaymentLinkItem> payOSItems = new java.util.ArrayList<>();
+            for (Map<String, Object> item : cartItems) {
+                String name = (String) item.get("product_name");
+                int quantity = ((Number) item.get("quantity")).intValue();
+                int unitPrice = ((Number) item.get("unit_price")).intValue();
+                payOSItems.add(vn.payos.model.v2.paymentRequests.PaymentLinkItem.builder()
+                        .name(name != null && name.length() > 0 ? name : "San pham")
+                        .quantity(quantity)
+                        .price((long) unitPrice)
+                        .build());
+            }
+
+            String desc = "Don hang " + orderId;
+            if (desc.length() > 25) {
+                desc = desc.substring(0, 25);
+            }
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest paymentData = vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest.builder()
+                    .orderCode(orderId)
+                    .amount(finalTotalPrice)
+                    .description(desc)
+                    .returnUrl("http://localhost:5500/orders.html?payos_success=true")
+                    .cancelUrl("http://localhost:5500/cart.html?payos_cancel=true")
+                    .items(payOSItems)
+                    .build();
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkResponse paymentResponse = payOS.paymentRequests().create(paymentData);
+            checkoutUrl = paymentResponse.getCheckoutUrl();
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo link thanh toán: " + e.getMessage(), e);
+        }
+
         return new CreateOrderResponse(
                 orderId,
                 totalPrice,
                 OrderStatus.pending.name(),
-                createdAt == null ? null : createdAt.toLocalDateTime()
+                createdAt == null ? null : createdAt.toLocalDateTime(),
+                checkoutUrl
         );
     }
 

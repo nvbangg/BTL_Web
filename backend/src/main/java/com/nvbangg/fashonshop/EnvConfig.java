@@ -17,6 +17,9 @@ public class EnvConfig {
         setIfPresent("JWT_EXPIRATION_SECONDS", dotenv.get("JWT_EXPIRATION_SECONDS"));
         setIfPresent("PRODUCT_IMAGES_DIR", dotenv.get("PRODUCT_IMAGES_DIR"));
         setIfPresent("PRODUCT_IMAGE_MAX_SIZE_BYTES", dotenv.get("PRODUCT_IMAGE_MAX_SIZE_BYTES"));
+        setIfPresent("PAYOS_CLIENT_ID", dotenv.get("PAYOS_CLIENT_ID"));
+        setIfPresent("PAYOS_API_KEY", dotenv.get("PAYOS_API_KEY"));
+        setIfPresent("PAYOS_CHECKSUM_KEY", dotenv.get("PAYOS_CHECKSUM_KEY"));
     }
 
     private static void setIfPresent(String key, String value) {

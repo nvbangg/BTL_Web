@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     App.showToast(persistedToast, "success");
   }
 
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("payos_cancel") === "true") {
+    App.showToast("Bạn đã huỷ quá trình thanh toán", "warning");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   document.addEventListener("app:auth-changed", async function () {
     if (!App.getUser()) return;
     await loadCartAndProfile();
@@ -385,15 +391,19 @@ async function submitOrder() {
   }
 
   try {
-    await AppApi.createOrder({
+    const orderResponse = await AppApi.createOrder({
       cartItemIds: selectedCartItemIds,
       shippingName: shippingName,
       shippingPhone: shippingPhone,
       shippingAddress: shippingAddress
     });
 
-    sessionStorage.setItem("fashon.cart.toast", "Đặt hàng thành công");
-    window.location.reload();
+    if (orderResponse && orderResponse.checkoutUrl) {
+      window.location.href = orderResponse.checkoutUrl;
+    } else {
+      sessionStorage.setItem("fashon.cart.toast", "Đặt hàng thành công");
+      window.location.href = "orders.html";
+    }
   } catch (error) {
     App.showToast(App.getApiErrorMessage(error, "Đặt hàng thất bại"), "error");
   }
