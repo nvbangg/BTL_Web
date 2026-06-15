@@ -134,7 +134,7 @@ function renderOrderRows(items) {
     select.addEventListener("change", async function () {
       const orderId = Number(select.getAttribute("data-order-id"));
       const nextStatus = String(select.value || "").trim();
-      const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+      const validStatuses = ["pending", "paid", "shipped", "delivered", "cancelled"];
 
       if (!validStatuses.includes(nextStatus)) {
         App.showToast("Trạng thái không hợp lệ", "error");
@@ -158,7 +158,7 @@ function renderOrderRows(items) {
 }
 
 function renderStatusSelect(order) {
-  const statuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+  const statuses = ["pending", "paid", "shipped", "delivered", "cancelled"];
   return '<select class="status-badge-select ' + App.getStatusClass(order.status) + '" data-order-id="' + order.id + '">' +
     statuses.map(function (status) {
       return '<option value="' + status + '" ' + (status === order.status ? "selected" : "") + '>' + App.getStatusText(status) + '</option>';

@@ -2,7 +2,7 @@ package com.nvbangg.fashonshop.entity;
 
 public enum OrderStatus {
     pending,
-    processing,
+    paid,
     shipped,
     delivered,
     cancelled

@@ -71,7 +71,7 @@ CREATE TABLE orders (
   shipping_phone VARCHAR(20) NOT NULL,
   shipping_address TEXT NOT NULL,
   total_price BIGINT UNSIGNED NOT NULL,
-  status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
+  status ENUM('pending', 'paid', 'shipped', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id)

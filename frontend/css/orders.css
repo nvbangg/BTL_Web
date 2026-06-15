@@ -29,7 +29,7 @@
   background: #FFFBEB;
 }
 
-.order-row.order-row-processing td {
+.order-row.order-row-paid td {
   background: #EEF2FF;
 }
 
@@ -50,7 +50,7 @@
   background: #FEF3C7;
 }
 
-.order-row.order-row-processing:hover td {
+.order-row.order-row-paid:hover td {
   background: #E0E7FF;
 }
 

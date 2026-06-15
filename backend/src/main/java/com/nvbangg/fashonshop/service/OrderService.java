@@ -324,10 +324,10 @@ public class OrderService {
         Long totalIncompleteOrders = null;
         if (admin) {
             long pendingOrders = orderRepository.countByStatus(OrderStatus.pending);
-            long processingOrders = orderRepository.countByStatus(OrderStatus.processing);
+            long paidOrders = orderRepository.countByStatus(OrderStatus.paid);
             long shippedOrders = orderRepository.countByStatus(OrderStatus.shipped);
             totalPendingOrders = pendingOrders;
-            totalIncompleteOrders = pendingOrders + processingOrders + shippedOrders;
+            totalIncompleteOrders = pendingOrders + paidOrders + shippedOrders;
         }
 
         return new OrderSearchResult(

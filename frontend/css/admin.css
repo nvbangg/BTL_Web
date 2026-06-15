@@ -177,7 +177,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 .status-badge-select.pending { background-color: #FEF3C7; color: #D97706; }
-.status-badge-select.processing { background-color: #E0E7FF; color: #4F46E5; }
+.status-badge-select.paid { background-color: #E0E7FF; color: #4F46E5; }
 .status-badge-select.shipping { background-color: #DBEAFE; color: #2563EB; }
 
 /* Status badges in admin */
@@ -191,8 +191,8 @@
 }
 .status-badge.pending { background: #FEF3C7; color: #D97706; }
 .status-badge.pending::before { background: #D97706; }
-.status-badge.processing { background: #E0E7FF; color: #4F46E5; }
-.status-badge.processing::before { background: #4F46E5; }
+.status-badge.paid { background: #E0E7FF; color: #4F46E5; }
+.status-badge.paid::before { background: #4F46E5; }
 .status-badge.shipping { background: #DBEAFE; color: #2563EB; }
 .status-badge.shipping::before { background: #2563EB; }
 .status-badge.delivered { background: #DCFCE7; color: #16A34A; }
