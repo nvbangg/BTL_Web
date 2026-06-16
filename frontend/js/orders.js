@@ -21,6 +21,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
+  if (urlParams.get("payos_cancel") === "true") {
+    var cancelOrderId = urlParams.get("orderId");
+    if (cancelOrderId) {
+      try {
+        await AppApi.cancelOrder(cancelOrderId);
+      } catch (e) {
+      }
+    }
+    App.showToast("Đã huỷ đơn hàng", "warning");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   await loadOrders();
 });
 
@@ -89,7 +101,14 @@ function renderOrdersTable() {
       '  <td>' + App.formatDate(order.createdAt) + '</td>' +
       '  <td>' + App.formatDate(order.updatedAt) + '</td>' +
       '  <td><span class="order-total-price">' + App.formatPrice(order.totalPrice) + '</span></td>' +
-      '  <td><span class="status-badge ' + getStatusClass(order.status) + '">' + App.getStatusText(order.status) + '</span></td>' +
+      '  <td>' +
+      '    <div style="display: inline-flex; align-items: center; gap: 8px;">' +
+      '      <span class="status-badge ' + statusClass + '">' + App.getStatusText(order.status) + '</span>' +
+      (order.status === "pending"
+        ? '      <button class="btn btn-primary btn-pay-now" data-order-id="' + order.id + '" style="padding: 2px 6px; font-size: 11px; margin: 0; line-height: 1.2; text-transform: none; height: auto;">Thanh toán</button>'
+        : '') +
+      '    </div>' +
+      '  </td>' +
       '</tr>' +
       (expanded
         ? '<tr class="order-expanded-row">' +
@@ -104,6 +123,30 @@ function renderOrdersTable() {
         const orderId = row.getAttribute("data-order-id");
         userOrdersState.expandedById[orderId] = !userOrdersState.expandedById[orderId];
         renderOrdersTable();
+      });
+    });
+
+  Array.from(tbody.querySelectorAll(".btn-pay-now"))
+    .forEach(function (btn) {
+      btn.addEventListener("click", async function (e) {
+        e.stopPropagation();
+        const orderId = btn.getAttribute("data-order-id");
+        btn.disabled = true;
+        btn.textContent = "Đang xử lý...";
+        try {
+          const res = await AppApi.getCheckoutUrl(orderId);
+          if (res && res.checkoutUrl) {
+            window.location.href = res.checkoutUrl;
+          } else {
+            App.showToast("Không lấy được liên kết thanh toán", "error");
+            btn.disabled = false;
+            btn.textContent = "Thanh toán";
+          }
+        } catch (err) {
+          App.showToast("Lỗi hệ thống: " + (err.message || err), "error");
+          btn.disabled = false;
+          btn.textContent = "Thanh toán";
+        }
       });
     });
 }

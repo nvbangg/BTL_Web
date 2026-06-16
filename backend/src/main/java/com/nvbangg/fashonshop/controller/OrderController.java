@@ -17,8 +17,19 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ApiResponse<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        return ApiResponse.success("Đặt hàng thành công", orderService.createOrder(request));
+    public ApiResponse<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        return ApiResponse.success("Đặt hàng thành công", orderService.createOrder(request, httpRequest));
+    }
+
+    @GetMapping("/{id}/checkout-url")
+    public ApiResponse<java.util.Map<String, String>> getCheckoutUrl(@PathVariable Long id, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        return ApiResponse.success("Lấy link thanh toán thành công", java.util.Map.of("checkoutUrl", orderService.getCheckoutUrl(id, httpRequest)));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ApiResponse<Void> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ApiResponse.success("Đã huỷ đơn hàng");
     }
 
     @GetMapping

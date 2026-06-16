@@ -20,6 +20,7 @@ public class EnvConfig {
         setIfPresent("PAYOS_CLIENT_ID", dotenv.get("PAYOS_CLIENT_ID"));
         setIfPresent("PAYOS_API_KEY", dotenv.get("PAYOS_API_KEY"));
         setIfPresent("PAYOS_CHECKSUM_KEY", dotenv.get("PAYOS_CHECKSUM_KEY"));
+        setIfPresent("FRONTEND_URL", dotenv.get("FRONTEND_URL"));
     }
 
     private static void setIfPresent(String key, String value) {

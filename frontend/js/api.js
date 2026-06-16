@@ -195,6 +195,19 @@
     });
   }
 
+  function getCheckoutUrl(id) {
+    return request("/api/orders/" + id + "/checkout-url", {
+      auth: true
+    });
+  }
+
+  function cancelOrder(id) {
+    return request("/api/orders/" + id + "/cancel", {
+      method: "POST",
+      auth: true
+    });
+  }
+
   function getAdminStatistics() {
     return request("/api/admin/statistics", { auth: true });
   }
@@ -273,6 +286,8 @@
     deleteCart,
     createOrder,
     getOrders,
+    getCheckoutUrl,
+    cancelOrder,
     getAdminStatistics,
     getAdminOrders,
     updateAdminOrderStatus,

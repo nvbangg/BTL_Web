@@ -13,11 +13,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     App.showToast(persistedToast, "success");
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("payos_cancel") === "true") {
-    App.showToast("Bạn đã huỷ quá trình thanh toán", "warning");
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
+
 
   document.addEventListener("app:auth-changed", async function () {
     if (!App.getUser()) return;

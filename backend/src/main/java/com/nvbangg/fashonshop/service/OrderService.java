@@ -29,8 +29,11 @@ public class OrderService {
     private final com.nvbangg.fashonshop.repository.OrderRepository orderRepository;
     private final vn.payos.PayOS payOS;
 
+    @org.springframework.beans.factory.annotation.Value("${FRONTEND_URL}")
+    private String frontendUrl;
+
     @Transactional
-    public CreateOrderResponse createOrder(CreateOrderRequest request) {
+    public CreateOrderResponse createOrder(CreateOrderRequest request, jakarta.servlet.http.HttpServletRequest httpRequest) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         List<Long> cartItemIds = normalizeCartItemIds(request.getCartItemIds());
 
@@ -145,7 +148,7 @@ public class OrderService {
                 int quantity = ((Number) item.get("quantity")).intValue();
                 int unitPrice = ((Number) item.get("unit_price")).intValue();
                 payOSItems.add(vn.payos.model.v2.paymentRequests.PaymentLinkItem.builder()
-                        .name(name != null && name.length() > 0 ? name : "San pham")
+                        .name(name != null && name.length() > 0 ? name : "Sản phẩm")
                         .quantity(quantity)
                         .price((long) unitPrice)
                         .build());
@@ -160,8 +163,8 @@ public class OrderService {
                     .orderCode(orderId)
                     .amount(finalTotalPrice)
                     .description(desc)
-                    .returnUrl("http://localhost:5500/orders.html?payos_success=true")
-                    .cancelUrl("http://localhost:5500/cart.html?payos_cancel=true")
+                    .returnUrl(buildFrontendUrl("/orders.html?payos_success=true", httpRequest))
+                    .cancelUrl(buildFrontendUrl("/orders.html?payos_cancel=true&orderId=" + orderId, httpRequest))
                     .items(payOSItems)
                     .build();
 
@@ -178,6 +181,159 @@ public class OrderService {
                 createdAt == null ? null : createdAt.toLocalDateTime(),
                 checkoutUrl
         );
+    }
+
+    @Transactional
+    public String getCheckoutUrl(Long orderId, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        Long userId = SecurityUtils.getCurrentUser().getId();
+
+        Map<String, Object> orderMap;
+        try {
+            orderMap = jdbcTemplate.queryForMap(
+                    "SELECT user_id, status, total_price FROM orders WHERE id = ?",
+                    orderId
+            );
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            throw new NotFoundException("Không tìm thấy đơn hàng");
+        }
+
+        Long orderUserId = ((Number) orderMap.get("user_id")).longValue();
+        if (!orderUserId.equals(userId)) {
+            throw new BadRequestException("Không có quyền truy cập đơn hàng này");
+        }
+
+        String status = (String) orderMap.get("status");
+        if (!"pending".equals(status)) {
+            throw new BadRequestException("Đơn hàng không ở trạng thái chờ thanh toán");
+        }
+
+        long finalTotalPrice = ((Number) orderMap.get("total_price")).longValue();
+
+        try {
+            vn.payos.model.v2.paymentRequests.PaymentLink existingLink = payOS.paymentRequests().get(orderId);
+            if (existingLink.getStatus() == vn.payos.model.v2.paymentRequests.PaymentLinkStatus.PENDING) {
+                return "https://pay.payos.vn/web/" + existingLink.getId();
+            }
+        } catch (Exception ignored) {
+        }
+
+        return createNewPaymentLink(orderId, finalTotalPrice, httpRequest);
+    }
+
+    private String createNewPaymentLink(Long orderId, long totalPrice, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        String itemsSql =
+                """
+                SELECT p.name AS product_name,
+                       oi.quantity,
+                       oi.price_at_purchase AS unit_price
+                FROM order_items oi
+                JOIN product_variants pv ON pv.id = oi.product_variant_id
+                JOIN products p ON p.id = pv.product_id
+                WHERE oi.order_id = ?
+                """;
+        List<Map<String, Object>> orderItems = jdbcTemplate.queryForList(itemsSql, orderId);
+
+        List<vn.payos.model.v2.paymentRequests.PaymentLinkItem> payOSItems = new java.util.ArrayList<>();
+        for (Map<String, Object> item : orderItems) {
+            String name = (String) item.get("product_name");
+            int quantity = ((Number) item.get("quantity")).intValue();
+            int unitPrice = ((Number) item.get("unit_price")).intValue();
+            payOSItems.add(vn.payos.model.v2.paymentRequests.PaymentLinkItem.builder()
+                    .name(name != null && name.length() > 0 ? name : "Sản phẩm")
+                    .quantity(quantity)
+                    .price((long) unitPrice)
+                    .build());
+        }
+
+        String desc = "Don hang " + orderId;
+        if (desc.length() > 25) {
+            desc = desc.substring(0, 25);
+        }
+
+        long newOrderCode = orderId * 10000 + (System.currentTimeMillis() % 10000);
+
+        try {
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest paymentData = vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest.builder()
+                    .orderCode(newOrderCode)
+                    .amount(totalPrice)
+                    .description(desc)
+                    .returnUrl(buildFrontendUrl("/orders.html?payos_success=true", httpRequest))
+                    .cancelUrl(buildFrontendUrl("/orders.html?payos_cancel=true&orderId=" + orderId, httpRequest))
+                    .items(payOSItems)
+                    .build();
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkResponse paymentResponse = payOS.paymentRequests().create(paymentData);
+            return paymentResponse.getCheckoutUrl();
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo link thanh toán: " + e.getMessage(), e);
+        }
+    }
+
+    private String buildFrontendUrl(String path, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        String base = null;
+        if (httpRequest != null) {
+            String referer = httpRequest.getHeader("Referer");
+            if (referer != null && referer.contains("/")) {
+                int lastSlash = referer.lastIndexOf('/');
+                if (lastSlash > 8) { 
+                    base = referer.substring(0, lastSlash);
+                }
+            }
+        }
+        
+        if (base == null || base.isEmpty()) {
+            base = frontendUrl != null ? frontendUrl : "http://localhost:5500";
+        }
+
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+
+        if (!base.endsWith("/frontend") && (base.contains("localhost") || base.contains("127.0.0.1"))) {
+            base += "/frontend";
+        }
+
+        return base + path;
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        Long userId = SecurityUtils.getCurrentUser().getId();
+
+        Map<String, Object> orderMap;
+        try {
+            orderMap = jdbcTemplate.queryForMap(
+                    "SELECT user_id, status FROM orders WHERE id = ?",
+                    orderId
+            );
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            throw new NotFoundException("Không tìm thấy đơn hàng");
+        }
+
+        Long orderUserId = ((Number) orderMap.get("user_id")).longValue();
+        if (!orderUserId.equals(userId)) {
+            throw new BadRequestException("Không có quyền truy cập đơn hàng này");
+        }
+
+        String status = (String) orderMap.get("status");
+        if (!"pending".equals(status)) {
+            return;
+        }
+
+        jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", OrderStatus.cancelled.name(), orderId);
+
+        List<Map<String, Object>> orderItems = jdbcTemplate.queryForList(
+                "SELECT product_variant_id, quantity FROM order_items WHERE order_id = ?",
+                orderId
+        );
+        for (Map<String, Object> item : orderItems) {
+            Long variantId = ((Number) item.get("product_variant_id")).longValue();
+            int quantity = ((Number) item.get("quantity")).intValue();
+            jdbcTemplate.update(
+                    "UPDATE product_variants SET stock = stock + ? WHERE id = ?",
+                    quantity, variantId
+            );
+        }
     }
 
     @Transactional(readOnly = true)
