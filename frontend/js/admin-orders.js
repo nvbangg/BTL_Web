@@ -204,6 +204,7 @@ function renderExpandedOrder(order) {
     '        <div class="od-info-row"><span>Người nhận:</span> <span>' + App.escapeHtml(order.shippingName) + '</span></div>' +
     '        <div class="od-info-row"><span>Số ĐT:</span> <span>' + App.escapeHtml(order.shippingPhone) + '</span></div>' +
     '        <div class="od-info-row"><span>Địa chỉ:</span> <span>' + App.escapeHtml(order.shippingAddress) + '</span></div>' +
+    '        <div class="od-info-row"><span>Ghi chú:</span> <span>' + App.escapeHtml(order.shippingNote || "Không có") + '</span></div>' +
     '      </div>' +
     '    </div>' +
     '  </td>' +

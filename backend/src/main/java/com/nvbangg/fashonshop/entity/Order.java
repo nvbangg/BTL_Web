@@ -33,6 +33,9 @@ public class Order {
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
 
+    @Column(name = "shipping_note")
+    private String shippingNote;
+
     @Column(name = "total_price", nullable = false)
     private Long totalPrice;
 

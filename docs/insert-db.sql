@@ -1,4 +1,4 @@
-﻿USE fashonshop;
+USE fashonshop;
 SET NAMES utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -31,9 +31,9 @@ INSERT INTO users (id, email, password, name, phone, address, role, created_at) 
 (15, 'user12@email.com', '$2a$10$jU1OwWsdTLQSS4p.MKVMKOgwT1lDXGd99xnOe6YsBMJz5Hv9nIohS', 'Đặng Khánh An', NULL, NULL, 'user', '2026-04-06 11:12:40');
 
 INSERT INTO products (id, name, description, thumbnail, category, gender, price, is_active, created_at) VALUES
-(1, 'Áo sơ mi Oxford nam Signature', 'Mẫu áo sơ mi Oxford nam dùng chất vải dệt hai lớp có độ đứng vừa phải, bề mặt mịn nhưng vẫn giữ cảm giác thoáng khí khi mặc cả ngày. Form regular được xử lý vai gọn, tay vừa và thân áo đủ dài để mặc thả ngoài quần hoặc sơ vin, phù hợp đi làm, đi gặp khách hàng lẫn phối đồ cuối tuần. Hàng khuy trước được may chắc, cổ áo giữ phom ổn định sau nhiều lần giặt và các đường mí nổi giúp tổng thể nhìn sạch, nam tính và chỉn chu.', 'ao-nam1.1.png', 'Áo', 'male', 329000, TRUE, '2025-11-20 10:15:00'),
-(2, 'Áo polo nam dệt nổi Urban Match', 'Áo polo nam chất pique dệt nổi với độ co giãn nhẹ, thấm hút ổn và giữ bề mặt ít nhăn hơn khi di chuyển nhiều. Thiết kế nhấn vào phần cổ bẻ và bo tay có độ đàn hồi vừa phải để phần vai ngực lên dáng gọn, hợp cho môi trường công sở trẻ, đi cafe hay mặc trong các set đồ smart casual. Thân áo được canh chiều dài an toàn cho nhiều vóc dáng, giúp mặc với quần short, jeans hoặc chinos đều cân đối.', 'ao-nam2.1.png', 'Áo', 'male', 275000, TRUE, '2025-11-24 15:42:00'),
-(3, 'Áo thun nam oversize Layer 7', 'Áo thun oversize nam có chất vải cotton dày vừa, rũ nhẹ và không quá ôm người, phù hợp với xu hướng layering hoặc mặc độc lập như item chủ đạo. Thiết kế tập trung vào phần vai rơi, ống tay rộng vừa và thân áo có độ dài hợp lý để tạo hiệu ứng streetwear nhưng không bị luộm thuộm.', 'ao-nam3.1.png', 'Áo', 'male', 419000, TRUE, '2025-12-02 08:30:00'),
+(1, 'Áo sơ mi Oxford nam Signature', 'Mẫu áo sơ mi Oxford nam dùng chất vải dệt hai lớp có độ đứng vừa phải, bề mặt mịn nhưng vẫn giữ cảm giác thoáng khí khi mặc cả ngày. Form regular được xử lý vai gọn, tay vừa và thân áo đủ dài để mặc thả ngoài quần hoặc sơ vin, phù hợp đi làm, đi gặp khách hàng lẫn phối đồ cuối tuần. Hàng khuy trước được may chắc, cổ áo giữ phom ổn định sau nhiều lần giặt và các đường mí nổi giúp tổng thể nhìn sạch, nam tính và chỉn chu.', 'ao-nam1.1.png', 'Áo', 'male', 5000, TRUE, '2025-11-20 10:15:00'),
+(2, 'Áo polo nam dệt nổi Urban Match', 'Áo polo nam chất pique dệt nổi với độ co giãn nhẹ, thấm hút ổn và giữ bề mặt ít nhăn hơn khi di chuyển nhiều. Thiết kế nhấn vào phần cổ bẻ và bo tay có độ đàn hồi vừa phải để phần vai ngực lên dáng gọn, hợp cho môi trường công sở trẻ, đi cafe hay mặc trong các set đồ smart casual. Thân áo được canh chiều dài an toàn cho nhiều vóc dáng, giúp mặc với quần short, jeans hoặc chinos đều cân đối.', 'ao-nam2.1.png', 'Áo', 'male', 10000, TRUE, '2025-11-24 15:42:00'),
+(3, 'Áo thun nam oversize Layer 7', 'Áo thun oversize nam có chất vải cotton dày vừa, rũ nhẹ và không quá ôm người, phù hợp với xu hướng layering hoặc mặc độc lập như item chủ đạo. Thiết kế tập trung vào phần vai rơi, ống tay rộng vừa và thân áo có độ dài hợp lý để tạo hiệu ứng streetwear nhưng không bị luộm thuộm.', 'ao-nam3.1.png', 'Áo', 'male', 15000, TRUE, '2025-12-02 08:30:00'),
 (4, 'Áo len nam cổ tròn Daily Form', 'Áo len cổ tròn nam sợi mềm, bề mặt đan đều và đủ ấm cho thời tiết se lạnh nhưng vẫn dễ mặc trong môi trường điều hòa hoặc khi di chuyển giữa các không gian trong ngày. Cấu trúc cổ bo, gấu áo và cổ tay được siết nhẹ để lên dáng gọn mà không tạo cảm giác bó, phù hợp cho người thích phong cách tối giản, lịch sự và dễ dùng hằng tuần.', 'ao-nam4.1.png', 'Áo', 'male', 188000, TRUE, '2025-12-19 20:10:00'),
 (5, 'Áo thun nam basic Mono Tee', 'Áo thun nam tối giản, dễ mặc hằng ngày và hợp cho người cần một mẫu cơ bản để phối nhanh.', 'ao-nam5.png', 'Áo', 'male', 231000, TRUE, '2026-01-05 09:05:00'),
 (6, 'Áo kiểu nữ cổ vuông Mây Trắng', 'Mẫu áo nữ cổ vuông nhẹ nhàng, hợp mặc đi làm hoặc đi chơi cuối tuần.', 'ao-nu6.png', 'Áo', 'female', 264000, TRUE, '2026-01-11 13:22:00'),
@@ -70,21 +70,21 @@ INSERT INTO product_images (id, product_id, image, sort_order) VALUES
 
 INSERT INTO product_variants (id, product_id, color, size, stock, price_override) VALUES
 (1, 1, 'Be', 'M', 42, NULL),
-(2, 1, 'Xanh dương', 'L', 18, 349000),
+(2, 1, 'Xanh dương', 'L', 18, NULL),
 (3, 1, 'Trắng', 'XL', 67, NULL),
-(4, 1, 'Tím than', '2XL', 9, 319000),
+(4, 1, 'Tím than', '2XL', 9, NULL),
 (5, 2, 'Be', 'L', 53, NULL),
-(6, 2, 'Xanh dương', 'M', 31, 289000),
+(6, 2, 'Xanh dương', 'M', 31, NULL),
 (7, 2, 'Trắng', 'XL', 88, NULL),
 (8, 2, 'Tím than', '2XL', 14, NULL),
-(9, 2, 'Be', '2XL', 5, 261000),
+(9, 2, 'Be', '2XL', 5, NULL),
 (10, 3, 'Be', 'M', 76, NULL),
-(11, 3, 'Be', 'L', 44, 399000),
+(11, 3, 'Be', 'L', 44, NULL),
 (12, 3, 'Xanh dương', 'M', 27, NULL),
-(13, 3, 'Xanh dương', 'XL', 61, 439000),
+(13, 3, 'Xanh dương', 'XL', 61, NULL),
 (14, 3, 'Trắng', 'L', 20, NULL),
 (15, 3, 'Tím than', 'XL', 11, NULL),
-(16, 3, 'Tím than', '2XL', 35, 409000),
+(16, 3, 'Tím than', '2XL', 35, NULL),
 (17, 4, 'Trắng', 'M', 58, NULL),
 (18, 4, 'Tím than', 'L', 22, 179000),
 (19, 5, 'Be', 'XL', 47, NULL),
@@ -113,32 +113,32 @@ INSERT INTO cart_items (id, user_id, product_variant_id, quantity, created_at) V
 (6, 4, 7, 1, '2026-01-18 11:27:00'),
 (7, 4, 12, 1, '2026-02-02 09:09:00');
 
-INSERT INTO orders (id, user_id, shipping_name, shipping_phone, shipping_address, total_price, status, created_at, updated_at) VALUES
-(1, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 1175000, 'pending', '2026-01-08 09:14:00', '2026-01-08 09:14:00'),
-(2, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 1388000, 'pending', '2026-04-10 14:25:00', '2026-04-12 10:03:00'),
-(3, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 1106000, 'paid', '2026-02-06 16:08:00', '2026-02-08 09:41:00'),
-(4, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 1314000, 'shipped', '2026-03-12 11:20:00', '2026-03-15 18:05:00'),
-(5, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 30, Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 1454000, 'delivered', '2025-12-28 19:46:00', '2026-01-03 08:30:00'),
-(6, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 20, ngõ 30 Cầu Giấy, Hà Nội', 906000, 'cancelled', '2025-11-29 10:11:00', '2025-12-01 15:00:00'),
-(7, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', 349000, 'paid', '2026-01-17 20:34:00', '2026-01-19 08:55:00'),
-(8, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', 578000, 'paid', '2026-02-24 07:12:00', '2026-02-25 13:10:00'),
-(9, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', 838000, 'shipped', '2026-03-03 12:40:00', '2026-03-06 17:26:00'),
-(10, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', 564000, 'shipped', '2026-04-04 18:22:00', '2026-04-07 09:15:00'),
-(11, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', 399000, 'delivered', '2025-12-11 08:52:00', '2025-12-18 16:30:00'),
-(12, 9, 'Lý Thu Hà', '0932123456', '110 Đống Đa, Quy Nhơn, Bình Định', 419000, 'delivered', '2026-01-30 15:05:00', '2026-02-04 10:14:00'),
-(13, 10, 'Phan Gia Bảo', '0919876543', '230 Trần Hưng Đạo, Ninh Kiều, Cần Thơ', 465000, 'cancelled', '2026-02-14 09:44:00', '2026-02-16 11:21:00'),
-(14, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', 658000, 'cancelled', '2026-03-27 13:18:00', '2026-03-28 14:48:00'),
-(15, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', 574000, 'pending', '2026-04-13 21:09:00', '2026-04-13 21:09:00'),
-(16, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', 275000, 'pending', '2025-12-05 17:16:00', '2025-12-05 17:16:00'),
-(17, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', 439000, 'paid', '2026-01-25 09:28:00', '2026-01-27 10:40:00'),
-(18, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', 358000, 'shipped', '2026-02-09 12:12:00', '2026-02-11 15:32:00'),
-(19, 9, 'Lý Thu Hà', '0932123456', '110 Đống Đa, Quy Nhơn, Bình Định', 322000, 'delivered', '2026-02-28 14:56:00', '2026-03-04 11:22:00'),
-(20, 10, 'Phan Gia Bảo', '0919876543', '230 Trần Hưng Đạo, Ninh Kiều, Cần Thơ', 239000, 'cancelled', '2026-03-08 08:31:00', '2026-03-09 16:10:00'),
-(21, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', 550000, 'pending', '2026-03-18 19:02:00', '2026-03-18 19:02:00'),
-(22, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', 329000, 'paid', '2026-03-23 10:48:00', '2026-03-24 09:05:00'),
-(23, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', 275000, 'shipped', '2026-04-02 13:36:00', '2026-04-03 16:44:00'),
-(24, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', 410000, 'delivered', '2026-04-06 07:40:00', '2026-04-09 18:27:00'),
-(25, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', 198000, 'cancelled', '2026-04-14 10:22:00', '2026-04-14 20:05:00');
+INSERT INTO orders (id, user_id, shipping_name, shipping_phone, shipping_address, shipping_note, total_price, status, created_at, updated_at) VALUES
+(1, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 'Giao giờ hành chính', 1175000, 'pending', '2026-01-08 09:14:00', '2026-01-08 09:14:00'),
+(2, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', 'Gọi trước khi giao 30 phút', 1388000, 'pending', '2026-04-10 14:25:00', '2026-04-12 10:03:00'),
+(3, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', NULL, 1106000, 'paid', '2026-02-06 16:08:00', '2026-02-08 09:41:00'),
+(4, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 10, ngõ 20 Khúc Thừa Dụ, Cầu Giấy, Hà Nội', NULL, 1314000, 'shipped', '2026-03-12 11:20:00', '2026-03-15 18:05:00'),
+(5, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 30, Khúc Thừa Dụ, Cầu Giấy, Hà Nội', NULL, 1454000, 'delivered', '2025-12-28 19:46:00', '2026-01-03 08:30:00'),
+(6, 1, 'Nguyễn Văn Bằng', '0987654321', 'Số 20, ngõ 30 Cầu Giấy, Hà Nội', NULL, 906000, 'cancelled', '2025-11-29 10:11:00', '2025-12-01 15:00:00'),
+(7, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', NULL, 349000, 'paid', '2026-01-17 20:34:00', '2026-01-19 08:55:00'),
+(8, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', NULL, 578000, 'paid', '2026-02-24 07:12:00', '2026-02-25 13:10:00'),
+(9, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', NULL, 838000, 'shipped', '2026-03-03 12:40:00', '2026-03-06 17:26:00'),
+(10, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', NULL, 564000, 'shipped', '2026-04-04 18:22:00', '2026-04-07 09:15:00'),
+(11, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', NULL, 399000, 'delivered', '2025-12-11 08:52:00', '2025-12-18 16:30:00'),
+(12, 9, 'Lý Thu Hà', '0932123456', '110 Đống Đa, Quy Nhơn, Bình Định', NULL, 419000, 'delivered', '2026-01-30 15:05:00', '2026-02-04 10:14:00'),
+(13, 10, 'Phan Gia Bảo', '0919876543', '230 Trần Hưng Đạo, Ninh Kiều, Cần Thơ', NULL, 465000, 'cancelled', '2026-02-14 09:44:00', '2026-02-16 11:21:00'),
+(14, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', NULL, 658000, 'cancelled', '2026-03-27 13:18:00', '2026-03-28 14:48:00'),
+(15, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', NULL, 574000, 'pending', '2026-04-13 21:09:00', '2026-04-13 21:09:00'),
+(16, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', NULL, 275000, 'pending', '2025-12-05 17:16:00', '2025-12-05 17:16:00'),
+(17, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', NULL, 439000, 'paid', '2026-01-25 09:28:00', '2026-01-27 10:40:00'),
+(18, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', NULL, 358000, 'shipped', '2026-02-09 12:12:00', '2026-02-11 15:32:00'),
+(19, 9, 'Lý Thu Hà', '0932123456', '110 Đống Đa, Quy Nhơn, Bình Định', NULL, 322000, 'delivered', '2026-02-28 14:56:00', '2026-03-04 11:22:00'),
+(20, 10, 'Phan Gia Bảo', '0919876543', '230 Trần Hưng Đạo, Ninh Kiều, Cần Thơ', NULL, 239000, 'cancelled', '2026-03-08 08:31:00', '2026-03-09 16:10:00'),
+(21, 4, 'Mai Văn Phát', '0978123456', '12/4 Tôn Đức Thắng, Quận 1, TP. Hồ Chí Minh', NULL, 550000, 'pending', '2026-03-18 19:02:00', '2026-03-18 19:02:00'),
+(22, 5, 'Bùi Thị Mai', '0943216789', '78 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh', NULL, 329000, 'paid', '2026-03-23 10:48:00', '2026-03-24 09:05:00'),
+(23, 6, 'Đỗ Tuấn Kiệt', '0988765432', '34 Nguyễn Trãi, Thanh Xuân, Hà Nội', NULL, 275000, 'shipped', '2026-04-02 13:36:00', '2026-04-03 16:44:00'),
+(24, 7, 'Hoàng Thanh Tùng', '0923456789', '90 Quang Trung, Hà Đông, Hà Nội', NULL, 410000, 'delivered', '2026-04-06 07:40:00', '2026-04-09 18:27:00'),
+(25, 8, 'Ngô Thị Hương', '0899123456', '55 Cầu Đất, Ngô Quyền, Hải Phòng', NULL, 198000, 'cancelled', '2026-04-14 10:22:00', '2026-04-14 20:05:00');
 
 INSERT INTO order_items (id, order_id, product_variant_id, quantity, price_at_purchase) VALUES
 (1, 1, 2, 2, 349000),

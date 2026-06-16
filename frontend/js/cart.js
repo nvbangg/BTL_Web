@@ -364,6 +364,7 @@ async function submitOrder() {
   const shippingName = String((document.getElementById("order-name") || {}).value || "").trim();
   const shippingPhone = String((document.getElementById("order-phone") || {}).value || "").trim();
   const shippingAddress = String((document.getElementById("order-address") || {}).value || "").trim();
+  const shippingNote = String((document.getElementById("order-note") || {}).value || "").trim();
 
   if (!shippingName || !shippingPhone || !shippingAddress) {
     App.showToast("Vui lòng điền đầy đủ thông tin giao hàng", "warning");
@@ -391,7 +392,8 @@ async function submitOrder() {
       cartItemIds: selectedCartItemIds,
       shippingName: shippingName,
       shippingPhone: shippingPhone,
-      shippingAddress: shippingAddress
+      shippingAddress: shippingAddress,
+      shippingNote: shippingNote
     });
 
     if (orderResponse && orderResponse.checkoutUrl) {

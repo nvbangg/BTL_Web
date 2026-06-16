@@ -85,8 +85,8 @@ public class OrderService {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     """
-                            INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, total_price, status)
-                            VALUES (?, ?, ?, ?, ?, ?)
+                            INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, shipping_note, total_price, status)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
                             """,
                     Statement.RETURN_GENERATED_KEYS
             );
@@ -94,8 +94,9 @@ public class OrderService {
             ps.setString(2, shippingName);
             ps.setString(3, shippingPhone);
             ps.setString(4, shippingAddress);
-            ps.setLong(5, finalTotalPrice);
-            ps.setString(6, OrderStatus.pending.name());
+            ps.setString(5, request.getShippingNote());
+            ps.setLong(6, finalTotalPrice);
+            ps.setString(7, OrderStatus.pending.name());
             return ps;
         }, keyHolder);
 
@@ -342,7 +343,7 @@ public class OrderService {
         OrderSearchResult result = getOrdersInternal(false, userId, null, null, page, pageSize);
         List<OrderSummaryResponse> items = result.items().stream()
                 .map(item -> new OrderSummaryResponse(
-                        item.id(), item.shippingName(), item.shippingPhone(), item.shippingAddress(),
+                        item.id(), item.shippingName(), item.shippingPhone(), item.shippingAddress(), item.shippingNote(),
                         item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()))
                 .toList();
 
@@ -355,7 +356,7 @@ public class OrderService {
         List<AdminOrderSummaryResponse> items = result.items().stream()
                 .map(item -> new AdminOrderSummaryResponse(
                         item.id(), item.userId(), item.email(), item.shippingName(), item.shippingPhone(),
-                        item.shippingAddress(), item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()
+                        item.shippingAddress(), item.shippingNote(), item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()
                 ))
                 .toList();
 
@@ -467,6 +468,7 @@ public class OrderService {
                             o.shipping_name,
                             o.shipping_phone,
                             o.shipping_address,
+                            o.shipping_note,
                             o.total_price,
                             o.status,
                             o.created_at,
@@ -486,6 +488,7 @@ public class OrderService {
                 rs.getString("shipping_name"),
                 rs.getString("shipping_phone"),
                 rs.getString("shipping_address"),
+                rs.getString("shipping_note"),
                 rs.getLong("total_price"),
                 rs.getString("status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
@@ -504,6 +507,7 @@ public class OrderService {
                         baseRow.shippingName(),
                         baseRow.shippingPhone(),
                         baseRow.shippingAddress(),
+                        baseRow.shippingNote(),
                         baseRow.totalPrice(),
                         baseRow.status(),
                         baseRow.createdAt(),
@@ -546,6 +550,7 @@ public class OrderService {
                                 String shippingName,
                                 String shippingPhone,
                                 String shippingAddress,
+                                String shippingNote,
                                 Long totalPrice,
                                 String status,
                                 java.time.LocalDateTime createdAt,
@@ -558,6 +563,7 @@ public class OrderService {
                                   String shippingName,
                                   String shippingPhone,
                                   String shippingAddress,
+                                  String shippingNote,
                                   Long totalPrice,
                                   String status,
                                   java.time.LocalDateTime createdAt,
