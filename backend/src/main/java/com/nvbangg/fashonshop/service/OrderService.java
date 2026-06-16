@@ -48,7 +48,8 @@ public class OrderService {
                                c.quantity,
                                pv.id AS product_variant_id,
                                pv.stock,
-                               COALESCE(pv.price_override, p.price) AS unit_price
+                               COALESCE(pv.price_override, p.price) AS unit_price,
+                               p.name AS product_name
                         FROM cart_items c
                         JOIN product_variants pv ON pv.id = c.product_variant_id
                         JOIN products p ON p.id = pv.product_id
