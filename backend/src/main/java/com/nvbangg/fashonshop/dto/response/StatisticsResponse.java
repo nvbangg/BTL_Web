@@ -12,4 +12,6 @@ public class StatisticsResponse {
     private final Long revenueYear;
     private final Long revenueAllTime;
     private final List<RevenueByMonthResponse> revenueByMonth;
+    private final List<RevenueByDayResponse> revenueByDay;
+    private final List<DeliveredOrderResponse> deliveredOrders;
 }

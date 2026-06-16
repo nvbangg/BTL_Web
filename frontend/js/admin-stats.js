@@ -1,4 +1,5 @@
 let revenueChart = null;
+let allRevenueByMonth = [];
 
 document.addEventListener("DOMContentLoaded", async function () {
   document.addEventListener("app:auth-changed", function () {
@@ -8,10 +9,18 @@ document.addEventListener("DOMContentLoaded", async function () {
   const user = await App.mountAdminPage({ activeTab: "statistics" });
   if (!user) return;
 
-  await loadStatistics();
+  const yearSelect = document.getElementById("chart-year");
+  const monthSelect = document.getElementById("chart-month");
+
+  if (yearSelect && monthSelect) {
+    yearSelect.addEventListener("change", fetchAndRender);
+    monthSelect.addEventListener("change", fetchAndRender);
+  }
+
+  await loadStatisticsInit();
 });
 
-async function loadStatistics() {
+async function loadStatisticsInit() {
   const statsRoot = document.getElementById("stats-grid");
   const yearSelect = document.getElementById("chart-year");
   const chartCanvas = document.getElementById("revenue-chart");
@@ -44,7 +53,8 @@ async function loadStatistics() {
       '  </div>' +
       '</div>';
 
-    const grouped = groupRevenueByYear(data.revenueByMonth || []);
+    allRevenueByMonth = data.revenueByMonth || [];
+    const grouped = groupRevenueByYear(allRevenueByMonth);
     const years = Object.keys(grouped).sort(function (a, b) {
       return Number(b) - Number(a);
     });
@@ -54,21 +64,82 @@ async function loadStatistics() {
     }).join("");
 
     if (!years.length) {
-      yearSelect.innerHTML = '<option value="">Không có dữ liệu</option>';
-      return;
+      const currentYear = new Date().getFullYear();
+      yearSelect.innerHTML = '<option value="' + currentYear + '">Năm ' + currentYear + "</option>";
     }
 
-    const render = function () {
-      const selectedYear = yearSelect.value;
-      const values = grouped[selectedYear] || Array(12).fill(0);
-      renderRevenueChart(chartCanvas, values);
-    };
-
-    yearSelect.addEventListener("change", render);
-    render();
+    await fetchAndRender();
   } catch (error) {
-    App.showToast(App.getApiErrorMessage(error, "Không tải được thống kê"), "error");
+    App.showToast(App.getApiErrorMessage(error, "Không tải được thống kê ban đầu"), "error");
   }
+}
+
+async function fetchAndRender() {
+  const yearSelect = document.getElementById("chart-year");
+  const monthSelect = document.getElementById("chart-month");
+  const chartCanvas = document.getElementById("revenue-chart");
+  const ordersListTbody = document.getElementById("delivered-orders-list");
+
+  if (!yearSelect || !monthSelect || !chartCanvas || !ordersListTbody) return;
+
+  const year = yearSelect.value;
+  const month = monthSelect.value;
+
+  let query = "?year=" + year;
+  if (month) {
+    query += "&month=" + month;
+  }
+
+  try {
+    const data = await AppApi.getAdminStatistics(query);
+
+    if (month) {
+      const daysInMonth = getDaysInMonth(Number(year), Number(month));
+      const labels = [];
+      const values = Array(daysInMonth).fill(0);
+      for (let d = 1; d <= daysInMonth; d++) {
+        labels.push("N" + d);
+      }
+      if (data.revenueByDay) {
+        data.revenueByDay.forEach(function (item) {
+          const dayIndex = Number(item.day) - 1;
+          if (dayIndex >= 0 && dayIndex < daysInMonth) {
+            values[dayIndex] = Number(item.revenue || 0);
+          }
+        });
+      }
+      renderRevenueChart(chartCanvas, labels, values);
+    } else {
+      const grouped = groupRevenueByYear(data.revenueByMonth || allRevenueByMonth);
+      const values = grouped[year] || Array(12).fill(0);
+      const labels = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
+      renderRevenueChart(chartCanvas, labels, values);
+    }
+
+    renderDeliveredOrders(ordersListTbody, data.deliveredOrders || []);
+  } catch (error) {
+    App.showToast(App.getApiErrorMessage(error, "Không tải được dữ liệu chi tiết"), "error");
+  }
+}
+
+function getDaysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function renderDeliveredOrders(tbody, orders) {
+  if (!orders || orders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 20px;">Không có đơn hàng đã giao nào trong khoảng thời gian này</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = orders.map(function (order) {
+    return '<tr>' +
+      '  <td><strong style="color:#2563EB">#ORD-' + order.id + '</strong></td>' +
+      '  <td>' + App.formatDate(order.createdAt) + '</td>' +
+      '  <td>' + App.formatDate(order.updatedAt) + '</td>' +
+      '  <td><strong style="color: #0F172A;">' + App.formatPrice(order.totalPrice) + '</strong></td>' +
+      '</tr>';
+  }).join("");
 }
 
 function groupRevenueByYear(rows) {
@@ -94,7 +165,7 @@ function groupRevenueByYear(rows) {
   return grouped;
 }
 
-function renderRevenueChart(canvas, values) {
+function renderRevenueChart(canvas, labels, values) {
   if (!window.Chart) {
     return;
   }
@@ -106,7 +177,7 @@ function renderRevenueChart(canvas, values) {
   revenueChart = new Chart(canvas.getContext("2d"), {
     type: "bar",
     data: {
-      labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
+      labels: labels,
       datasets: [{
         data: values,
         borderRadius: 8,

@@ -208,8 +208,8 @@
     });
   }
 
-  function getAdminStatistics() {
-    return request("/api/admin/statistics", { auth: true });
+  function getAdminStatistics(queryString) {
+    return request("/api/admin/statistics" + (queryString || ""), { auth: true });
   }
 
   function getAdminOrders(queryString) {

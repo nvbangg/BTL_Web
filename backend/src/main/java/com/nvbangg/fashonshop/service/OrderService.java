@@ -373,7 +373,7 @@ public class OrderService {
         }
     }
 
-    public StatisticsResponse getStatistics() {
+    public StatisticsResponse getStatistics(Integer year, Integer month) {
         String deliveredStatus = OrderStatus.delivered.name();
 
         Map<String, Object> summary = jdbcTemplate.queryForMap(
@@ -413,11 +413,59 @@ public class OrderService {
                 deliveredStatus
         );
 
+        int selectedYear = (year != null) ? year : java.time.LocalDate.now().getYear();
+
+        List<RevenueByDayResponse> revenueByDay = null;
+        if (month != null) {
+            revenueByDay = jdbcTemplate.query(
+                    """
+                            SELECT DAY(created_at) AS day,
+                                   COALESCE(SUM(total_price), 0) AS revenue
+                            FROM orders
+                            WHERE status = ?
+                              AND YEAR(created_at) = ?
+                              AND MONTH(created_at) = ?
+                            GROUP BY DAY(created_at)
+                            ORDER BY day
+                            """,
+                    (rs, rowNum) -> new RevenueByDayResponse(
+                            rs.getInt("day"),
+                            rs.getLong("revenue")
+                    ),
+                    deliveredStatus,
+                    selectedYear,
+                    month
+            );
+        }
+
+        List<DeliveredOrderResponse> deliveredOrders = jdbcTemplate.query(
+                """
+                        SELECT id, created_at, updated_at, total_price
+                        FROM orders
+                        WHERE status = ?
+                          AND YEAR(created_at) = ?
+                          AND (? IS NULL OR MONTH(created_at) = ?)
+                        ORDER BY updated_at DESC
+                        """,
+                (rs, rowNum) -> new DeliveredOrderResponse(
+                        rs.getLong("id"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getTimestamp("updated_at").toLocalDateTime(),
+                        rs.getLong("total_price")
+                ),
+                deliveredStatus,
+                selectedYear,
+                month,
+                month
+        );
+
         return new StatisticsResponse(
                 toLong(summary.get("revenue_this_month")),
                 toLong(summary.get("revenue_year")),
                 toLong(summary.get("revenue_all_time")),
-                revenueByMonth
+                revenueByMonth,
+                revenueByDay,
+                deliveredOrders
         );
     }
 
