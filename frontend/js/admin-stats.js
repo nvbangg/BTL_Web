@@ -134,7 +134,7 @@ function renderDeliveredOrders(tbody, orders) {
 
   tbody.innerHTML = orders.map(function (order) {
     return '<tr>' +
-      '  <td><strong style="color:#2563EB">#ORD-' + order.id + '</strong></td>' +
+      '  <td><a href="admin-orders.html?keyword=' + order.id + '" style="color:#2563EB; font-weight:700; text-decoration:none;">#ORD-' + order.id + '</a></td>' +
       '  <td>' + App.formatDate(order.createdAt) + '</td>' +
       '  <td>' + App.formatDate(order.updatedAt) + '</td>' +
       '  <td><strong style="color: #0F172A;">' + App.formatPrice(order.totalPrice) + '</strong></td>' +

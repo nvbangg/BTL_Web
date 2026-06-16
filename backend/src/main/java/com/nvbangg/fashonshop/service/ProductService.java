@@ -227,8 +227,13 @@ public class ProductService {
 
         String normalizedKeyword = QueryUtils.nullableTrim(keyword);
         if (normalizedKeyword != null) {
-            where.append(" AND p.name LIKE ? ");
-            params.add("%" + normalizedKeyword + "%");
+            String[] tokens = normalizedKeyword.split("\\s+");
+            for (String token : tokens) {
+                if (!token.isBlank()) {
+                    where.append(" AND p.name LIKE ? ");
+                    params.add("%" + token + "%");
+                }
+            }
         }
 
         String normalizedCategory = QueryUtils.normalizeNullable(category);
