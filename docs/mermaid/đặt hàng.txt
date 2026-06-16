@@ -5,11 +5,17 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
 
-    Actor->>FE: (1) Nhấn nút Đặt hàng
-    FE->>BE: (2) Gửi yêu cầu tạo đơn hàng
-    BE->>DB: (3) Xác thực tồn kho và giá
-    DB-->>BE: (4) Trả về thông tin xác thực
-    BE->>DB: (5) Lưu đơn hàng và trừ tồn kho
-    DB-->>BE: (6) Xác nhận lưu thành công
-    BE-->>FE: (7) Phản hồi đặt hàng thành công
-    FE-->>Actor: (8) Thông báo và chuyển hướng trang
+    Actor->>FE: (1) Kiểm tra thông tin nhận hàng và nhấn nút Đặt hàng.
+    FE->>BE: (2) Gửi yêu cầu tạo đơn hàng đến Backend.
+    BE->>DB: (3) Yêu cầu Database xác thực tồn kho và tính tổng tiền.
+    DB-->>BE: (4) Trả về thông tin sản phẩm và giá trị đơn hàng.
+    BE->>DB: (5) Yêu cầu tạo đơn hàng mới và trừ tồn kho cho Database.
+    DB-->>BE: (6) Xác nhận lưu đơn hàng và cập nhật kho thành công.
+    BE-->>FE: (7) Tạo link thanh toán để hiển thị.
+    FE-->>Actor: (8) Hiển thị trang thanh toán.
+    Actor->>FE: (9) Thực hiện thanh toán.
+    FE->>BE: (10) Xác nhận thanh toán thành công cho Backend.
+    BE->>DB: (11) Yêu cầu cập nhật trạng thái đơn hàng là đã thanh toán đến Database.
+    DB-->>BE: (12) Xác nhận cập nhật trạng thái đơn hàng.
+    BE-->>FE: (13) Phản hồi trạng thái đặt hàng thành công cho Frontend.
+    FE-->>Actor: (14) Hiển thị thông báo và chuyển hướng về trang đơn hàng.
