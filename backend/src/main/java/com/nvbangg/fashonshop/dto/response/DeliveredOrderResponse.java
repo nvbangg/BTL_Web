@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class CreateOrderResponse {
+public class DeliveredOrderResponse {
     private final Long id;
-    private final Long totalPrice;
-    private final String status;
     private final LocalDateTime createdAt;
-    private final String checkoutUrl;
+    private final LocalDateTime updatedAt;
+    private final Long totalPrice;
 }

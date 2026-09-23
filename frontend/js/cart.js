@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     App.showToast(persistedToast, "success");
   }
 
+
+
   document.addEventListener("app:auth-changed", async function () {
     if (!App.getUser()) return;
     await loadCartAndProfile();
@@ -362,6 +364,7 @@ async function submitOrder() {
   const shippingName = String((document.getElementById("order-name") || {}).value || "").trim();
   const shippingPhone = String((document.getElementById("order-phone") || {}).value || "").trim();
   const shippingAddress = String((document.getElementById("order-address") || {}).value || "").trim();
+  const shippingNote = String((document.getElementById("order-note") || {}).value || "").trim();
 
   if (!shippingName || !shippingPhone || !shippingAddress) {
     App.showToast("Vui lòng điền đầy đủ thông tin giao hàng", "warning");
@@ -385,15 +388,20 @@ async function submitOrder() {
   }
 
   try {
-    await AppApi.createOrder({
+    const orderResponse = await AppApi.createOrder({
       cartItemIds: selectedCartItemIds,
       shippingName: shippingName,
       shippingPhone: shippingPhone,
-      shippingAddress: shippingAddress
+      shippingAddress: shippingAddress,
+      shippingNote: shippingNote
     });
 
-    sessionStorage.setItem("fashon.cart.toast", "Đặt hàng thành công");
-    window.location.reload();
+    if (orderResponse && orderResponse.checkoutUrl) {
+      window.location.href = orderResponse.checkoutUrl;
+    } else {
+      sessionStorage.setItem("fashon.cart.toast", "Đặt hàng thành công");
+      window.location.href = "orders.html";
+    }
   } catch (error) {
     App.showToast(App.getApiErrorMessage(error, "Đặt hàng thất bại"), "error");
   }

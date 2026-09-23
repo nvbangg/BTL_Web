@@ -4,7 +4,7 @@
 
   const STATUS_TEXT = {
     pending: "Đang chờ",
-    processing: "Đang xử lý",
+    paid: "Đã thanh toán",
     shipped: "Đang giao",
     delivered: "Đã giao",
     cancelled: "Đã hủy"
@@ -12,7 +12,7 @@
 
   const STATUS_CLASS = {
     pending: "pending",
-    processing: "processing",
+    paid: "paid",
     shipped: "shipping",
     delivered: "delivered",
     cancelled: "cancelled"

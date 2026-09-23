@@ -13,6 +13,7 @@ public class OrderSummaryResponse {
     private final String shippingName;
     private final String shippingPhone;
     private final String shippingAddress;
+    private final String shippingNote;
     private final Long totalPrice;
     private final String status;
     private final LocalDateTime createdAt;

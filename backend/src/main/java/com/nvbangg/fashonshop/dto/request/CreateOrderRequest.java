@@ -25,4 +25,6 @@ public class CreateOrderRequest {
 
     @NotBlank(message = "Địa chỉ nhận hàng là bắt buộc")
     private String shippingAddress;
+
+    private String shippingNote;
 }

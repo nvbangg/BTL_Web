@@ -292,7 +292,7 @@ function bindModalEvents() {
     cancelButton.addEventListener("click", closeProductModal);
   }
 
-  modal.addEventListener("click", function (event) {
+  modal.addEventListener("mousedown", function (event) {
     if (event.target === modal) {
       closeProductModal();
     }

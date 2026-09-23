@@ -26,10 +26,14 @@ import java.util.*;
 public class OrderService {
 
     private final JdbcTemplate jdbcTemplate;
-    private final OrderRepository orderRepository;
+    private final com.nvbangg.fashonshop.repository.OrderRepository orderRepository;
+    private final vn.payos.PayOS payOS;
+
+    @org.springframework.beans.factory.annotation.Value("${FRONTEND_URL}")
+    private String frontendUrl;
 
     @Transactional
-    public CreateOrderResponse createOrder(CreateOrderRequest request) {
+    public CreateOrderResponse createOrder(CreateOrderRequest request, jakarta.servlet.http.HttpServletRequest httpRequest) {
         Long userId = SecurityUtils.getCurrentUser().getId();
         List<Long> cartItemIds = normalizeCartItemIds(request.getCartItemIds());
 
@@ -44,7 +48,8 @@ public class OrderService {
                                c.quantity,
                                pv.id AS product_variant_id,
                                pv.stock,
-                               COALESCE(pv.price_override, p.price) AS unit_price
+                               COALESCE(pv.price_override, p.price) AS unit_price,
+                               p.name AS product_name
                         FROM cart_items c
                         JOIN product_variants pv ON pv.id = c.product_variant_id
                         JOIN products p ON p.id = pv.product_id
@@ -81,8 +86,8 @@ public class OrderService {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     """
-                            INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, total_price, status)
-                            VALUES (?, ?, ?, ?, ?, ?)
+                            INSERT INTO orders(user_id, shipping_name, shipping_phone, shipping_address, shipping_note, total_price, status)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
                             """,
                     Statement.RETURN_GENERATED_KEYS
             );
@@ -90,8 +95,9 @@ public class OrderService {
             ps.setString(2, shippingName);
             ps.setString(3, shippingPhone);
             ps.setString(4, shippingAddress);
-            ps.setLong(5, finalTotalPrice);
-            ps.setString(6, OrderStatus.pending.name());
+            ps.setString(5, request.getShippingNote());
+            ps.setLong(6, finalTotalPrice);
+            ps.setString(7, OrderStatus.pending.name());
             return ps;
         }, keyHolder);
 
@@ -136,12 +142,200 @@ public class OrderService {
                 orderId
         );
 
+        String checkoutUrl = null;
+        try {
+            List<vn.payos.model.v2.paymentRequests.PaymentLinkItem> payOSItems = new java.util.ArrayList<>();
+            for (Map<String, Object> item : cartItems) {
+                String name = (String) item.get("product_name");
+                int quantity = ((Number) item.get("quantity")).intValue();
+                int unitPrice = ((Number) item.get("unit_price")).intValue();
+                payOSItems.add(vn.payos.model.v2.paymentRequests.PaymentLinkItem.builder()
+                        .name(name != null && name.length() > 0 ? name : "Sản phẩm")
+                        .quantity(quantity)
+                        .price((long) unitPrice)
+                        .build());
+            }
+
+            String desc = "Don hang " + orderId;
+            if (desc.length() > 25) {
+                desc = desc.substring(0, 25);
+            }
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest paymentData = vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest.builder()
+                    .orderCode(orderId)
+                    .amount(finalTotalPrice)
+                    .description(desc)
+                    .returnUrl(buildFrontendUrl("/orders.html?payos_success=true", httpRequest))
+                    .cancelUrl(buildFrontendUrl("/orders.html?payos_cancel=true&orderId=" + orderId, httpRequest))
+                    .items(payOSItems)
+                    .build();
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkResponse paymentResponse = payOS.paymentRequests().create(paymentData);
+            checkoutUrl = paymentResponse.getCheckoutUrl();
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo link thanh toán: " + e.getMessage(), e);
+        }
+
         return new CreateOrderResponse(
                 orderId,
                 totalPrice,
                 OrderStatus.pending.name(),
-                createdAt == null ? null : createdAt.toLocalDateTime()
+                createdAt == null ? null : createdAt.toLocalDateTime(),
+                checkoutUrl
         );
+    }
+
+    @Transactional
+    public String getCheckoutUrl(Long orderId, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        Long userId = SecurityUtils.getCurrentUser().getId();
+
+        Map<String, Object> orderMap;
+        try {
+            orderMap = jdbcTemplate.queryForMap(
+                    "SELECT user_id, status, total_price FROM orders WHERE id = ?",
+                    orderId
+            );
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            throw new NotFoundException("Không tìm thấy đơn hàng");
+        }
+
+        Long orderUserId = ((Number) orderMap.get("user_id")).longValue();
+        if (!orderUserId.equals(userId)) {
+            throw new BadRequestException("Không có quyền truy cập đơn hàng này");
+        }
+
+        String status = (String) orderMap.get("status");
+        if (!"pending".equals(status)) {
+            throw new BadRequestException("Đơn hàng không ở trạng thái chờ thanh toán");
+        }
+
+        long finalTotalPrice = ((Number) orderMap.get("total_price")).longValue();
+
+        try {
+            vn.payos.model.v2.paymentRequests.PaymentLink existingLink = payOS.paymentRequests().get(orderId);
+            if (existingLink.getStatus() == vn.payos.model.v2.paymentRequests.PaymentLinkStatus.PENDING) {
+                return "https://pay.payos.vn/web/" + existingLink.getId();
+            }
+        } catch (Exception ignored) {
+        }
+
+        return createNewPaymentLink(orderId, finalTotalPrice, httpRequest);
+    }
+
+    private String createNewPaymentLink(Long orderId, long totalPrice, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        String itemsSql =
+                """
+                SELECT p.name AS product_name,
+                       oi.quantity,
+                       oi.price_at_purchase AS unit_price
+                FROM order_items oi
+                JOIN product_variants pv ON pv.id = oi.product_variant_id
+                JOIN products p ON p.id = pv.product_id
+                WHERE oi.order_id = ?
+                """;
+        List<Map<String, Object>> orderItems = jdbcTemplate.queryForList(itemsSql, orderId);
+
+        List<vn.payos.model.v2.paymentRequests.PaymentLinkItem> payOSItems = new java.util.ArrayList<>();
+        for (Map<String, Object> item : orderItems) {
+            String name = (String) item.get("product_name");
+            int quantity = ((Number) item.get("quantity")).intValue();
+            int unitPrice = ((Number) item.get("unit_price")).intValue();
+            payOSItems.add(vn.payos.model.v2.paymentRequests.PaymentLinkItem.builder()
+                    .name(name != null && name.length() > 0 ? name : "Sản phẩm")
+                    .quantity(quantity)
+                    .price((long) unitPrice)
+                    .build());
+        }
+
+        String desc = "Don hang " + orderId;
+        if (desc.length() > 25) {
+            desc = desc.substring(0, 25);
+        }
+
+        long newOrderCode = orderId * 10000 + (System.currentTimeMillis() % 10000);
+
+        try {
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest paymentData = vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest.builder()
+                    .orderCode(newOrderCode)
+                    .amount(totalPrice)
+                    .description(desc)
+                    .returnUrl(buildFrontendUrl("/orders.html?payos_success=true", httpRequest))
+                    .cancelUrl(buildFrontendUrl("/orders.html?payos_cancel=true&orderId=" + orderId, httpRequest))
+                    .items(payOSItems)
+                    .build();
+
+            vn.payos.model.v2.paymentRequests.CreatePaymentLinkResponse paymentResponse = payOS.paymentRequests().create(paymentData);
+            return paymentResponse.getCheckoutUrl();
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo link thanh toán: " + e.getMessage(), e);
+        }
+    }
+
+    private String buildFrontendUrl(String path, jakarta.servlet.http.HttpServletRequest httpRequest) {
+        String base = null;
+        if (httpRequest != null) {
+            String referer = httpRequest.getHeader("Referer");
+            if (referer != null && referer.contains("/")) {
+                int lastSlash = referer.lastIndexOf('/');
+                if (lastSlash > 8) { 
+                    base = referer.substring(0, lastSlash);
+                }
+            }
+        }
+        
+        if (base == null || base.isEmpty()) {
+            base = frontendUrl != null ? frontendUrl : "http://localhost:5500";
+        }
+
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+
+        if (!base.endsWith("/frontend") && (base.contains("localhost") || base.contains("127.0.0.1"))) {
+            base += "/frontend";
+        }
+
+        return base + path;
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        Long userId = SecurityUtils.getCurrentUser().getId();
+
+        Map<String, Object> orderMap;
+        try {
+            orderMap = jdbcTemplate.queryForMap(
+                    "SELECT user_id, status FROM orders WHERE id = ?",
+                    orderId
+            );
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            throw new NotFoundException("Không tìm thấy đơn hàng");
+        }
+
+        Long orderUserId = ((Number) orderMap.get("user_id")).longValue();
+        if (!orderUserId.equals(userId)) {
+            throw new BadRequestException("Không có quyền truy cập đơn hàng này");
+        }
+
+        String status = (String) orderMap.get("status");
+        if (!"pending".equals(status)) {
+            return;
+        }
+
+        jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", OrderStatus.cancelled.name(), orderId);
+
+        List<Map<String, Object>> orderItems = jdbcTemplate.queryForList(
+                "SELECT product_variant_id, quantity FROM order_items WHERE order_id = ?",
+                orderId
+        );
+        for (Map<String, Object> item : orderItems) {
+            Long variantId = ((Number) item.get("product_variant_id")).longValue();
+            int quantity = ((Number) item.get("quantity")).intValue();
+            jdbcTemplate.update(
+                    "UPDATE product_variants SET stock = stock + ? WHERE id = ?",
+                    quantity, variantId
+            );
+        }
     }
 
     @Transactional(readOnly = true)
@@ -150,7 +344,7 @@ public class OrderService {
         OrderSearchResult result = getOrdersInternal(false, userId, null, null, page, pageSize);
         List<OrderSummaryResponse> items = result.items().stream()
                 .map(item -> new OrderSummaryResponse(
-                        item.id(), item.shippingName(), item.shippingPhone(), item.shippingAddress(),
+                        item.id(), item.shippingName(), item.shippingPhone(), item.shippingAddress(), item.shippingNote(),
                         item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()))
                 .toList();
 
@@ -163,7 +357,7 @@ public class OrderService {
         List<AdminOrderSummaryResponse> items = result.items().stream()
                 .map(item -> new AdminOrderSummaryResponse(
                         item.id(), item.userId(), item.email(), item.shippingName(), item.shippingPhone(),
-                        item.shippingAddress(), item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()
+                        item.shippingAddress(), item.shippingNote(), item.totalPrice(), item.status(), item.createdAt(), item.updatedAt(), item.orderDetails()
                 ))
                 .toList();
 
@@ -180,7 +374,7 @@ public class OrderService {
         }
     }
 
-    public StatisticsResponse getStatistics() {
+    public StatisticsResponse getStatistics(Integer year, Integer month) {
         String deliveredStatus = OrderStatus.delivered.name();
 
         Map<String, Object> summary = jdbcTemplate.queryForMap(
@@ -220,11 +414,59 @@ public class OrderService {
                 deliveredStatus
         );
 
+        int selectedYear = (year != null) ? year : java.time.LocalDate.now().getYear();
+
+        List<RevenueByDayResponse> revenueByDay = null;
+        if (month != null) {
+            revenueByDay = jdbcTemplate.query(
+                    """
+                            SELECT DAY(created_at) AS day,
+                                   COALESCE(SUM(total_price), 0) AS revenue
+                            FROM orders
+                            WHERE status = ?
+                              AND YEAR(created_at) = ?
+                              AND MONTH(created_at) = ?
+                            GROUP BY DAY(created_at)
+                            ORDER BY day
+                            """,
+                    (rs, rowNum) -> new RevenueByDayResponse(
+                            rs.getInt("day"),
+                            rs.getLong("revenue")
+                    ),
+                    deliveredStatus,
+                    selectedYear,
+                    month
+            );
+        }
+
+        List<DeliveredOrderResponse> deliveredOrders = jdbcTemplate.query(
+                """
+                        SELECT id, created_at, updated_at, total_price
+                        FROM orders
+                        WHERE status = ?
+                          AND YEAR(created_at) = ?
+                          AND (? IS NULL OR MONTH(created_at) = ?)
+                        ORDER BY updated_at DESC
+                        """,
+                (rs, rowNum) -> new DeliveredOrderResponse(
+                        rs.getLong("id"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getTimestamp("updated_at").toLocalDateTime(),
+                        rs.getLong("total_price")
+                ),
+                deliveredStatus,
+                selectedYear,
+                month,
+                month
+        );
+
         return new StatisticsResponse(
                 toLong(summary.get("revenue_this_month")),
                 toLong(summary.get("revenue_year")),
                 toLong(summary.get("revenue_all_time")),
-                revenueByMonth
+                revenueByMonth,
+                revenueByDay,
+                deliveredOrders
         );
     }
 
@@ -275,6 +517,7 @@ public class OrderService {
                             o.shipping_name,
                             o.shipping_phone,
                             o.shipping_address,
+                            o.shipping_note,
                             o.total_price,
                             o.status,
                             o.created_at,
@@ -294,6 +537,7 @@ public class OrderService {
                 rs.getString("shipping_name"),
                 rs.getString("shipping_phone"),
                 rs.getString("shipping_address"),
+                rs.getString("shipping_note"),
                 rs.getLong("total_price"),
                 rs.getString("status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
@@ -312,6 +556,7 @@ public class OrderService {
                         baseRow.shippingName(),
                         baseRow.shippingPhone(),
                         baseRow.shippingAddress(),
+                        baseRow.shippingNote(),
                         baseRow.totalPrice(),
                         baseRow.status(),
                         baseRow.createdAt(),
@@ -324,10 +569,10 @@ public class OrderService {
         Long totalIncompleteOrders = null;
         if (admin) {
             long pendingOrders = orderRepository.countByStatus(OrderStatus.pending);
-            long processingOrders = orderRepository.countByStatus(OrderStatus.processing);
+            long paidOrders = orderRepository.countByStatus(OrderStatus.paid);
             long shippedOrders = orderRepository.countByStatus(OrderStatus.shipped);
             totalPendingOrders = pendingOrders;
-            totalIncompleteOrders = pendingOrders + processingOrders + shippedOrders;
+            totalIncompleteOrders = pendingOrders + paidOrders + shippedOrders;
         }
 
         return new OrderSearchResult(
@@ -354,6 +599,7 @@ public class OrderService {
                                 String shippingName,
                                 String shippingPhone,
                                 String shippingAddress,
+                                String shippingNote,
                                 Long totalPrice,
                                 String status,
                                 java.time.LocalDateTime createdAt,
@@ -366,6 +612,7 @@ public class OrderService {
                                   String shippingName,
                                   String shippingPhone,
                                   String shippingAddress,
+                                  String shippingNote,
                                   Long totalPrice,
                                   String status,
                                   java.time.LocalDateTime createdAt,
